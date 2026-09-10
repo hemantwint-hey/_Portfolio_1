@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,700;0,800;1,300&family=Instrument+Serif:ital@0;1&family=Caveat:wght@400;500&display=swap" rel="stylesheet" />
+<script src="./image-slot.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #EFE9DE; color: #14110E; -webkit-font-smoothing: antialiased; }
+  a { color: #14110E; text-decoration: none; }
+  a:hover { color: #E8763A; }
+</style>
+<script src="./page-transition.js"></script>
+</helmet>
+
+<div ref="{{ pageRef }}" data-screen-label="Home — Hero" style="background:#EFE9DE;font-family:'Poppins',system-ui,sans-serif">
+
+  <section ref="{{ stageRef }}" style="position:relative;height:220vh">
+    <div style="position:sticky;top:0;height:100vh;overflow:hidden;background:#EFE9DE">
+
+      <div style="position:absolute;inset:0;z-index:1">
+        <img ref="{{ f1Ref }}" src="assets/frames/frame1.png" alt="Hemant Kumar Mahto, portrait with an orange circle behind the head" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:66% 20%" />
+        <img ref="{{ f2Ref }}" src="assets/frames/frame2.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:66% 20%;opacity:0;will-change:opacity" />
+        <img ref="{{ f3Ref }}" src="assets/frames/frame3.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:66% 20%;opacity:0;will-change:opacity" />
+        <img ref="{{ f4Ref }}" src="assets/frames/frame4.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:66% 20%;opacity:0;will-change:opacity" />
+        <img ref="{{ f5Ref }}" src="assets/frames/frame5.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:66% 20%;opacity:0;will-change:opacity" />
+        <img ref="{{ f6Ref }}" src="assets/frames/frame6.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:66% 20%;opacity:0;will-change:opacity" />
+        <img ref="{{ f7Ref }}" src="assets/frames/frame7.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:66% 20%;opacity:0;will-change:opacity" />
+        <img ref="{{ f8Ref }}" src="assets/frames/frame8.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:66% 20%;opacity:0;will-change:opacity" />
+        <img ref="{{ f9Ref }}" src="assets/frames/frame9.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:66% 20%;opacity:0;will-change:opacity" />
+      </div>
+
+      <div ref="{{ heroLayerRef }}" style="position:absolute;inset:0;z-index:2;padding:clamp(22px,3.2vw,52px);will-change:transform;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto;pointer-events:none">
+
+        <div style="grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:4px;font-size:clamp(9px,0.72vw,11px);font-weight:400;letter-spacing:0.34em;text-transform:uppercase;color:#14110E">
+          <span>Read</span>
+          <span>Build</span>
+          <span>Break</span>
+          <span>Fix</span>
+          <span>Ship</span>
+          <span style="width:22px;height:1px;background:#14110E;margin-top:12px"></span>
+        </div>
+
+        <div style="grid-column:3;grid-row:1;display:flex;flex-direction:column;gap:4px;text-align:right;align-items:flex-end;font-size:clamp(9px,0.72vw,11px);font-weight:400;letter-spacing:0.34em;text-transform:uppercase;color:#14110E">
+          <span style="margin-bottom:10px">/</span>
+          <span>One</span>
+          <span>System</span>
+          <span>At A</span>
+          <span>Time</span>
+          <span style="width:22px;height:1px;background:#14110E;margin-top:12px"></span>
+        </div>
+
+        <div style="grid-column:1;grid-row:2;min-height:0;align-self:center;display:flex;flex-direction:column;max-width:min(46vw,600px)">
+          <div style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;font-size:clamp(32px,min(4.6vw,7vh),76px);line-height:0.94;letter-spacing:-0.01em">
+            <div>Hey,</div>
+            <div>I'm</div>
+          </div>
+          <h1 style="margin:2px 0 0;font-weight:800;font-size:clamp(44px,min(7.6vw,12vh),126px);line-height:0.92;letter-spacing:-0.045em">Hemant<span style="color:#E8763A">.</span></h1>
+          <div style="margin-top:clamp(10px,1.6vh,22px);display:flex;flex-wrap:wrap;align-items:center;gap:clamp(8px,0.9vw,14px);font-size:clamp(10px,0.82vw,13px);font-weight:500;letter-spacing:0.24em;text-transform:uppercase">
+            <span>Backend</span>
+            <span style="opacity:0.4">|</span>
+            <span>Java &amp; Spring Boot</span>
+            <span style="opacity:0.4">|</span>
+            <span>AI Systems</span>
+          </div>
+          <span style="width:34px;height:1.5px;background:#14110E;margin:clamp(14px,2.2vh,34px) 0 clamp(12px,1.8vh,26px)"></span>
+          <p style="margin:0;max-width:30ch;font-size:clamp(13px,1.02vw,17px);font-weight:300;line-height:1.62;color:#2B2620;text-wrap:pretty">I design APIs and AI-backed services that stay predictable under real load.</p>
+          <a href="#work" style="pointer-events:auto;margin-top:clamp(16px,2.8vh,38px);align-self:flex-start;display:inline-flex;align-items:center;gap:clamp(20px,2vw,34px);padding:clamp(13px,1.15vw,19px) clamp(20px,1.7vw,28px);border-radius:999px;background:#14110E;color:#F4EFE6;font-size:clamp(10px,0.8vw,12px);font-weight:500;letter-spacing:0.22em;text-transform:uppercase;transition:background .35s ease,color .35s ease" style-hover="background:#E8763A;color:#14110E">
+            <span>See the work</span>
+            <span style="font-size:1.2em;line-height:1">&#8594;</span>
+          </a>
+        </div>
+
+        <div style="grid-column:3;grid-row:2;align-self:center;justify-self:end;font-family:'Caveat',cursive;font-weight:500;font-size:clamp(20px,1.9vw,30px);line-height:1.15;text-align:right;color:#14110E;transform:rotate(-8deg);transform-origin:right center">
+          <div>Same code.</div>
+          <div>Higher bar.</div>
+          <span style="display:block;width:64px;height:1px;background:#14110E;margin:8px 0 0 auto;opacity:0.55"></span>
+        </div>
+
+        <div style="grid-column:3;grid-row:3;justify-self:end;display:flex;flex-direction:column;gap:4px;align-items:flex-end;font-size:clamp(9px,0.72vw,11px);font-weight:400;letter-spacing:0.34em;text-transform:uppercase;color:#14110E">
+          <span>APIs</span>
+          <span>Data</span>
+          <span>Scale</span>
+          <span style="width:22px;height:1px;background:#14110E;margin-top:12px"></span>
+        </div>
+
+        <div style="grid-column:1;grid-row:3;align-self:end;font-size:clamp(9px,0.7vw,11px);font-weight:300;letter-spacing:0.12em;color:rgba(20,17,14,0.42)">v1.0</div>
+
+      </div>
+
+      <div ref="{{ expLayerRef }}" data-screen-label="Home — Experience" style="position:absolute;inset:0;z-index:3;padding:clamp(22px,3.2vw,52px);will-change:transform;transform:translateY(100%);pointer-events:none;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto">
+
+        <div style="grid-column:1;grid-row:1;display:flex;align-items:center;gap:12px;font-size:clamp(9px,0.72vw,11px);font-weight:500;letter-spacing:0.34em;text-transform:uppercase;color:#14110E">
+          <span style="width:22px;height:1px;background:#E8763A"></span>
+          <span>Experience</span>
+        </div>
+
+        <div style="grid-column:1;grid-row:2;min-height:0;align-self:center;display:flex;flex-direction:column;gap:clamp(20px,3.4vh,44px);max-width:min(48vw,620px)">
+
+          <div style="display:flex;flex-direction:column;gap:clamp(6px,0.9vh,10px)">
+            <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 16px">
+              <h2 style="margin:0;font-weight:700;font-size:clamp(22px,min(2.6vw,4.4vh),42px);line-height:1.05;letter-spacing:-0.03em">Futurense Technologies</h2>
+              <span style="font-size:clamp(9px,0.72vw,11px);font-weight:400;letter-spacing:0.24em;text-transform:uppercase;color:#6A6157">2026 &middot; Bengaluru</span>
+            </div>
+            <div style="font-size:clamp(10px,0.82vw,13px);font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#E8763A">Tech Intern &mdash; Python Backend</div>
+            <p style="margin:0;max-width:44ch;font-size:clamp(12px,0.98vw,16px);font-weight:300;line-height:1.6;color:#2B2620;text-wrap:pretty">Built and extended the backend of an AI mock-interview platform: API endpoints, auth, and business logic, plus a retrieval-augmented layer that gives the interviewer real context to work from.</p>
+          </div>
+
+          <span style="width:100%;max-width:min(48vw,620px);height:1px;background:rgba(20,17,14,0.14)"></span>
+
+          <div style="display:flex;flex-direction:column;gap:clamp(6px,0.9vh,10px)">
+            <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 16px">
+              <h2 style="margin:0;font-weight:700;font-size:clamp(22px,min(2.6vw,4.4vh),42px);line-height:1.05;letter-spacing:-0.03em">366PI</h2>
+              <span style="font-size:clamp(9px,0.72vw,11px);font-weight:400;letter-spacing:0.24em;text-transform:uppercase;color:#6A6157">Web Application Intern</span>
+            </div>
+            <div style="font-size:clamp(10px,0.82vw,13px);font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#E8763A">SharePoint &middot; Azure &middot; SQL</div>
+            <p style="margin:0;max-width:44ch;font-size:clamp(12px,0.98vw,16px);font-weight:300;line-height:1.6;color:#2B2620;text-wrap:pretty">Shipped HotSync, keeping SharePoint Lists and MS SQL in step, with certificate-based Azure auth so the sync ran securely without a person in the loop.</p>
+          </div>
+
+        </div>
+
+        <div style="grid-column:2;grid-row:2;align-self:center;justify-self:end;display:flex;flex-direction:column;gap:4px;align-items:flex-end;font-size:clamp(9px,0.72vw,11px);font-weight:400;letter-spacing:0.34em;text-transform:uppercase;color:#14110E">
+          <span>Java</span>
+          <span>Spring</span>
+          <span>Python</span>
+          <span>RAG</span>
+          <span style="width:22px;height:1px;background:#14110E;margin-top:12px"></span>
+        </div>
+
+        <div style="grid-column:1;grid-row:3;align-self:end;font-size:clamp(9px,0.7vw,11px);font-weight:300;letter-spacing:0.12em;color:rgba(20,17,14,0.42)">02 &mdash; Experience</div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="work" data-screen-label="Home — Projects" style="padding:clamp(72px,11vh,150px) clamp(22px,3.2vw,52px) clamp(48px,7vh,96px)">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:clamp(16px,3vw,48px);margin-bottom:clamp(32px,5vh,64px)">
+      <div style="display:flex;flex-direction:column;gap:clamp(12px,2vh,20px)">
+        <div style="display:flex;align-items:center;gap:12px;font-size:clamp(9px,0.72vw,11px);font-weight:500;letter-spacing:0.34em;text-transform:uppercase;color:#E8763A">
+          <span style="width:22px;height:1px;background:#E8763A"></span>
+          <span>Projects</span>
+        </div>
+        <h2 style="margin:0;font-weight:800;font-size:clamp(34px,5.4vw,84px);line-height:0.96;letter-spacing:-0.04em">Things I've Built<span style="color:#E8763A">.</span></h2>
+      </div>
+      <p style="margin:0 0 6px;max-width:26ch;text-align:right;font-size:clamp(11px,0.86vw,14px);font-weight:300;line-height:1.6;color:#6A6157;text-wrap:pretty">Backend systems, written to be read six months later.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(16px,1.8vw,28px)">
+
+      <article style="position:relative;display:flex;flex-direction:column;background:#14110E;border-radius:22px;padding:clamp(14px,1.2vw,18px);color:#F4EFE6">
+        <div style="position:relative;width:100%;aspect-ratio:16 / 10;border-radius:14px;overflow:hidden;background:#221E19">
+          <image-slot id="proj-1" shape="rect" placeholder="Drop a screenshot of the e-commerce API"></image-slot>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding:clamp(18px,1.6vw,24px) clamp(6px,0.6vw,10px) 0">
+          <h3 style="margin:0;font-weight:600;font-size:clamp(17px,1.35vw,22px);line-height:1.2;letter-spacing:-0.02em">E-Commerce Backend</h3>
+          <p style="margin:0;font-size:clamp(12px,0.94vw,15px);font-weight:300;line-height:1.55;color:rgba(244,239,230,0.72);text-wrap:pretty">Layered Spring Boot API with JWT auth, role-based access, and the full cart-to-payment flow.</p>
+        </div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:auto;padding:clamp(20px,2vw,30px) clamp(6px,0.6vw,10px) clamp(4px,0.5vw,8px)">
+          <div style="display:flex;flex-wrap:wrap;gap:7px">
+            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">Java</span>
+            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">Spring Boot</span>
+            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">MySQL</span>
+          </div>
+          <a href="#work" aria-label="Open E-Commerce Backend" style="flex:0 0 auto;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#F4EFE6;color:#14110E;font-size:15px;transition:background .3s ease,transform .3s ease" style-hover="background:#E8763A;transform:translate(2px,-2px)">&#8599;</a>
+        </div>
+      </article>
+
+      <article style="position:relative;display:flex;flex-direction:column;background:#14110E;border-radius:22px;padding:clamp(14px,1.2vw,18px);color:#F4EFE6">
+        <div style="position:relative;width:100%;aspect-ratio:16 / 10;border-radius:14px;overflow:hidden;background:#221E19">
+          <image-slot id="proj-2" shape="rect" placeholder="Drop a screenshot of the RL decision system"></image-slot>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding:clamp(18px,1.6vw,24px) clamp(6px,0.6vw,10px) 0">
+          <h3 style="margin:0;font-weight:600;font-size:clamp(17px,1.35vw,22px);line-height:1.2;letter-spacing:-0.02em">Intelligent Decision System</h3>
+          <p style="margin:0;font-size:clamp(12px,0.94vw,15px);font-weight:300;line-height:1.55;color:rgba(244,239,230,0.72);text-wrap:pretty">Q-learning agent with FAISS retrieval and LLM reasoning, visualised side by side.</p>
+        </div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:auto;padding:clamp(20px,2vw,30px) clamp(6px,0.6vw,10px) clamp(4px,0.5vw,8px)">
+          <div style="display:flex;flex-wrap:wrap;gap:7px">
+            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">Python</span>
+            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">Flask</span>
+            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">FAISS</span>
+          </div>
+          <a href="#work" aria-label="Open Intelligent Decision System" style="flex:0 0 auto;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#F4EFE6;color:#14110E;font-size:15px;transition:background .3s ease,transform .3s ease" style-hover="background:#E8763A;transform:translate(2px,-2px)">&#8599;</a>
+        </div>
+      </article>
+
+      <article style="position:relative;display:flex;flex-direction:column;background:#14110E;border-radius:22px;padding:clamp(14px,1.2vw,18px);color:#F4EFE6">
+        <div style="position:relative;width:100%;aspect-ratio:16 / 10;border-radius:14px;overflow:hidden;background:#221E19">
+          <image-slot id="proj-3" shape="rect" placeholder="Drop a screenshot for project three"></image-slot>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;padding:clamp(18px,1.6vw,24px) clamp(6px,0.6vw,10px) 0">
+          <h3 style="margin:0;font-weight:600;font-size:clamp(17px,1.35vw,22px);line-height:1.2;letter-spacing:-0.02em">Project Three</h3>
+          <p style="margin:0;font-size:clamp(12px,0.94vw,15px);font-weight:300;line-height:1.55;color:rgba(244,239,230,0.72);text-wrap:pretty">Placeholder slot — swap in the title, one-line summary, and stack when it ships.</p>
+        </div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:auto;padding:clamp(20px,2vw,30px) clamp(6px,0.6vw,10px) clamp(4px,0.5vw,8px)">
+          <div style="display:flex;flex-wrap:wrap;gap:7px">
+            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">Stack</span>
+            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">TBD</span>
+          </div>
+          <a href="#work" aria-label="Open project three" style="flex:0 0 auto;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#F4EFE6;color:#14110E;font-size:15px;transition:background .3s ease,transform .3s ease" style-hover="background:#E8763A;transform:translate(2px,-2px)">&#8599;</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section id="tools" data-screen-label="Home — Tools" style="padding:clamp(56px,9vh,120px) clamp(22px,3.2vw,52px) clamp(80px,12vh,160px)">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:clamp(16px,3vw,48px);margin-bottom:clamp(32px,5vh,64px)">
+      <div style="display:flex;flex-direction:column;gap:clamp(12px,2vh,20px)">
+        <div style="display:flex;align-items:center;gap:12px;font-size:clamp(9px,0.72vw,11px);font-weight:500;letter-spacing:0.34em;text-transform:uppercase;color:#E8763A">
+          <span style="width:22px;height:1px;background:#E8763A"></span>
+          <span>Skills</span>
+        </div>
+        <h2 style="margin:0;font-weight:800;font-size:clamp(34px,5.4vw,84px);line-height:0.96;letter-spacing:-0.04em">Tools I Work With<span style="color:#E8763A">.</span></h2>
+      </div>
+      <p style="margin:0 0 6px;max-width:26ch;text-align:right;font-size:clamp(11px,0.86vw,14px);font-weight:300;line-height:1.6;color:#6A6157;text-wrap:pretty">Backend and AI first, the rest as the work needs it.</p>
+    </div>
+
+    <div ref="{{ toolsGridRef }}" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,132px),1fr));gap:clamp(10px,1vw,16px)">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/openjdk/14110E" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Java</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/springboot/6DB33F" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Spring Boot</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/springsecurity/6DB33F" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Spring Security</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/hibernate/59666C" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Hibernate</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/apachemaven/C71A36" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Maven</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/python/3776AB" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Python</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/fastapi/009688" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">FastAPI</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/flask/14110E" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Flask</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/googlegemini/8E75B2" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Gemini API</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/mysql/4479A1" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">MySQL</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">PostgreSQL</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/docker/2496ED" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Docker</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/postman/FF6C37" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Postman</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Azure</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/react/61DAFB" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">React</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">JavaScript</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/flutter/02569B" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Flutter</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/kotlin/7F52FF" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Kotlin</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/androidstudio/androidstudio-original.svg" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Android Studio</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/dotnet/512BD4" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">.NET</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/claude/D97757" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Claude Code</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <img src="https://cdn.simpleicons.org/cursor/14110E" alt="" width="30" height="30" style="display:block;width:30px;height:30px" />
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Cursor</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:clamp(20px,2vw,30px) 12px;background:#F7F3EA;border:1px solid rgba(20,17,14,0.09);border-radius:16px;transition:border-color .3s ease,background .3s ease" style-hover="border-color:rgba(232,118,58,0.55);background:#FBF8F1">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#14110E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="display:block" aria-hidden="true">
+          <circle cx="12" cy="12" r="9.2"></circle>
+          <path d="M12 17.2V7.4"></path>
+          <path d="M8.4 11L12 7.2l3.6 3.8"></path>
+        </svg>
+        <span style="font-size:clamp(10px,0.78vw,12px);font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-align:center">Antigravity</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="education" data-screen-label="Home — Education" style="position:relative;overflow:hidden;background:#EFE9DE">
+    <img src="assets/education-bg.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 50%" />
+    <div style="position:absolute;inset:0;background:rgba(247,243,234,0.62)"></div>
+
+    <div style="position:relative;padding:clamp(72px,11vh,150px) clamp(22px,3.2vw,52px)">
+      <div style="width:100%;max-width:min(58ch,max(340px,58%));margin-left:auto;display:flex;flex-direction:column;gap:clamp(28px,4.5vh,56px)">
+
+        <div style="display:flex;flex-direction:column;gap:clamp(12px,2vh,20px)">
+          <div style="display:flex;align-items:center;gap:12px;font-size:clamp(9px,0.72vw,11px);font-weight:500;letter-spacing:0.34em;text-transform:uppercase;color:#E8763A">
+            <span style="width:22px;height:1px;background:#E8763A"></span>
+            <span>Education</span>
+          </div>
+          <h2 style="margin:0;font-weight:800;font-size:clamp(34px,5.4vw,84px);line-height:0.96;letter-spacing:-0.04em;color:#14110E">Where It Started<span style="color:#E8763A">.</span></h2>
+        </div>
+
+        <div style="display:flex;flex-direction:column">
+          <div style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 clamp(16px,1.6vw,26px)">
+
+            <div style="display:flex;flex-direction:column;align-items:center;padding-top:7px">
+              <span style="width:9px;height:9px;border-radius:50%;background:#E8763A"></span>
+              <span style="flex:1;width:1px;background:rgba(20,17,14,0.2)"></span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;padding-bottom:clamp(26px,3.6vh,44px)">
+              <h3 style="margin:0;font-weight:700;font-size:clamp(20px,2.3vw,36px);line-height:1.08;letter-spacing:-0.03em;color:#14110E">Amity University, Jharkhand</h3>
+              <div style="font-size:clamp(11px,0.9vw,15px);font-weight:400;color:#2B2620">Master of Computer Applications</div>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:4px;font-size:clamp(9px,0.74vw,11px);font-weight:500;letter-spacing:0.24em;text-transform:uppercase;color:#6A6157">
+                <span>2024 &ndash; 2026</span>
+                <span style="width:14px;height:1px;background:rgba(20,17,14,0.28)"></span>
+                <span>Ranchi</span>
+                <span style="width:14px;height:1px;background:rgba(20,17,14,0.28)"></span>
+                <span style="color:#14110E">8.6 CGPA</span>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;align-items:center;padding-top:7px">
+              <span style="width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(20,17,14,0.45);background:transparent"></span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <h3 style="margin:0;font-weight:700;font-size:clamp(20px,2.3vw,36px);line-height:1.08;letter-spacing:-0.03em;color:#14110E">Marwari College, Ranchi</h3>
+              <div style="font-size:clamp(11px,0.9vw,15px);font-weight:400;color:#2B2620">Bachelor of Computer Applications</div>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:4px;font-size:clamp(9px,0.74vw,11px);font-weight:500;letter-spacing:0.24em;text-transform:uppercase;color:#6A6157">
+                <span>2021 &ndash; 2024</span>
+                <span style="width:14px;height:1px;background:rgba(20,17,14,0.28)"></span>
+                <span>Ranchi</span>
+                <span style="width:14px;height:1px;background:rgba(20,17,14,0.28)"></span>
+                <span style="color:#14110E">8.40 CGPA</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" data-screen-label="Home — Contact" style="position:relative;overflow:hidden;background:#0B0A09;color:#F4EFE6">
+    <img src="assets/contact-portrait-v3.png" alt="Hemant Kumar Mahto, black and white portrait" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:72% 30%" />
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,10,9,0.96) 0%,rgba(11,10,9,0.9) 42%,rgba(11,10,9,0.45) 72%,rgba(11,10,9,0.25) 100%)"></div>
+
+    <div style="position:relative;padding:clamp(80px,13vh,170px) clamp(22px,3.2vw,52px)">
+      <div style="width:100%;max-width:min(56ch,max(320px,54%));display:flex;flex-direction:column;gap:clamp(20px,3vh,34px)">
+
+        <div style="display:flex;align-items:center;gap:12px;font-size:clamp(9px,0.72vw,11px);font-weight:500;letter-spacing:0.34em;text-transform:uppercase;color:#E8763A">
+          <span style="width:22px;height:1px;background:#E8763A"></span>
+          <span>Contact</span>
+        </div>
+
+        <h2 style="margin:0;font-weight:800;font-size:clamp(34px,5.4vw,84px);line-height:0.96;letter-spacing:-0.04em;color:#FFFFFF">Let's build<br />something<br /><span style="color:#E8763A">that lasts.</span></h2>
+
+        <p style="margin:0;max-width:38ch;font-size:clamp(13px,1.02vw,17px);font-weight:300;line-height:1.62;color:rgba(244,239,230,0.66);text-wrap:pretty">Open to software engineering roles and backend work. If you have a system that needs building or fixing, write to me.</p>
+
+        <div style="display:flex;flex-wrap:wrap;gap:clamp(10px,1vw,14px);margin-top:clamp(4px,1vh,10px)">
+          <a href="mailto:hemantmahto658@gmail.com" style="display:inline-flex;align-items:center;gap:clamp(18px,1.8vw,30px);padding:clamp(13px,1.15vw,19px) clamp(20px,1.7vw,28px);border-radius:999px;background:#E8763A;color:#14110E;font-size:clamp(10px,0.8vw,12px);font-weight:500;letter-spacing:0.22em;text-transform:uppercase;transition:background .35s ease,transform .35s ease" style-hover="background:#FFFFFF;transform:translateY(-2px)">
+            <span>Email me</span>
+            <span style="font-size:1.2em;line-height:1">&#8594;</span>
+          </a>
+          <a href="#contact" style="display:inline-flex;align-items:center;gap:clamp(18px,1.8vw,30px);padding:clamp(13px,1.15vw,19px) clamp(20px,1.7vw,28px);border-radius:999px;border:1px solid rgba(244,239,230,0.32);color:#F4EFE6;font-size:clamp(10px,0.8vw,12px);font-weight:500;letter-spacing:0.22em;text-transform:uppercase;transition:border-color .35s ease,background .35s ease,color .35s ease" style-hover="border-color:#F4EFE6;background:#F4EFE6;color:#14110E">
+            <span>Download CV</span>
+            <span style="font-size:1.1em;line-height:1">&#8595;</span>
+          </a>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:clamp(14px,1.6vw,24px);margin-top:clamp(6px,1.4vh,14px)">
+          <a href="https://www.linkedin.com/" aria-label="LinkedIn" style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="#F4EFE6" style="display:block" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"></path></svg>
+          </a>
+          <a href="https://github.com/" aria-label="GitHub" style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
+            <img src="https://cdn.simpleicons.org/github/F4EFE6" alt="" width="15" height="15" style="display:block;width:15px;height:15px" />
+          </a>
+          <a href="https://leetcode.com/" aria-label="LeetCode" style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
+            <img src="https://cdn.simpleicons.org/leetcode/F4EFE6" alt="" width="15" height="15" style="display:block;width:15px;height:15px" />
+          </a>
+          <a href="https://x.com/" aria-label="X" style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
+            <img src="https://cdn.simpleicons.org/x/F4EFE6" alt="" width="14" height="14" style="display:block;width:14px;height:14px" />
+          </a>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:clamp(24px,4.5vh,54px);padding-top:clamp(20px,3vh,32px);border-top:1px solid rgba(244,239,230,0.14)">
+          <span style="font-size:clamp(9px,0.7vw,11px);font-weight:500;letter-spacing:0.28em;text-transform:uppercase;color:#E8763A">Off the clock</span>
+          <a href="{{ artistHref }}" onClick="{{ onGoArtist }}" onPointerEnter="{{ onWarmArtist }}" onFocus="{{ onWarmArtist }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:clamp(18px,1.8vw,30px);padding:clamp(13px,1.15vw,19px) clamp(20px,1.7vw,28px);border-radius:999px;background:#F4EFE6;border:1px solid #F4EFE6;color:#14110E;font-size:clamp(10px,0.8vw,12px);font-weight:600;letter-spacing:0.22em;text-transform:uppercase;box-shadow:0 0 0 6px rgba(232,118,58,0.16);transition:background .35s ease,color .35s ease,box-shadow .35s ease,transform .35s ease" style-hover="background:#E8763A;border-color:#E8763A;box-shadow:0 0 0 10px rgba(232,118,58,0.24);transform:translateY(-2px)">
+            <span>My other profession</span>
+            <span style="font-size:1.2em;line-height:1">&#8599;</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <footer style="position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding:clamp(18px,2.4vh,26px) clamp(22px,3.2vw,52px);border-top:1px solid rgba(244,239,230,0.12);font-size:clamp(9px,0.7vw,11px);font-weight:300;letter-spacing:0.18em;text-transform:uppercase;color:rgba(244,239,230,0.42)">
+      <span>Hemant Kumar Mahto</span>
+      <span>Ranchi &middot; India</span>
+      <span>v1.0 &mdash; 2026</span>
+    </footer>
+  </section>
+
+
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;scrollLength&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:320,&quot;min&quot;:180,&quot;max&quot;:600,&quot;step&quot;:20,&quot;unit&quot;:&quot;vh&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;holdStart&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.14,&quot;min&quot;:0,&quot;max&quot;:0.5,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Portrait frames&quot;},&quot;holdEnd&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.94,&quot;min&quot;:0.6,&quot;max&quot;:1,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Portrait frames&quot;},&quot;pushStart&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.52,&quot;min&quot;:0.2,&quot;max&quot;:0.8,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Panel push&quot;},&quot;pushEnd&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.9,&quot;min&quot;:0.6,&quot;max&quot;:1,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Panel push&quot;}}">
+class Component extends DCLogic {
+  /* ------------------------------------------------------------------
+     Scroll-progress → frame mapping.
+     Nine supplied frames are stacked in order; each only needs to fade
+     IN over the one beneath it, so the whole sequence is one table.
+     Add a transformation later by appending a track + a ref.        */
+  FRAMES = 9;
+
+  buildTracks() {
+    const start = this.props.holdStart ?? 0.14;   // frame 1 holds until here
+    const end = this.props.holdEnd ?? 0.94;       // last frame settled by here
+    const step = (end - start) / (this.FRAMES - 1);
+    const t = {};
+    for (let i = 2; i <= this.FRAMES; i++) {
+      const a = start + step * (i - 2);
+      t["f" + i] = [[a, 0], [a + step, 1]];
+    }
+    return t;
+  }
+
+  /* Vertical push: hero panel exits up as the Experience panel rides up
+     behind it over the SAME range, so the two read as one stack moving.
+     Values are viewport percentages; opacity is only an edge softener. */
+  buildPush() {
+    const a = this.props.pushStart ?? 0.52;
+    const b = this.props.pushEnd ?? 0.9;
+    /* Position-only: the panels are driven purely by translateY. Any opacity
+       ramp here reads as "the text went dim", so both stay fully opaque. */
+    return {
+      heroY:    [[a, 0], [b, -100]],
+      expY:     [[a, 100], [b, 0]],
+      heroFade: [[a, 1], [b, 1]],
+      expFade:  [[a, 1], [b, 1]]
+    };
+  }
+
+  r = {
+    stage: React.createRef(), heroLayer: React.createRef(), expLayer: React.createRef(),
+    toolsGrid: React.createRef(), page: React.createRef(),
+    reveal: React.createRef()
+  };
+
+  state = { revealMounted: false, worldOpen: false };
+
+  /* World swap: the artist page is revealed by a clip boundary sweeping
+     left -> right (see page-transition.js); the route commits at the end. */
+  ARTIST_URL = "Artist%20World.dc.html";
+
+  /* The destination is the real Artist World component mounted in this tree
+     (see the reveal layer in the template) — no iframe, nothing to fetch, so
+     the sweep can start on the next frame after the click. */
+
+  /* NO navigation. Both worlds live in this one document: the artist world is
+     mounted in a fixed layer and revealed by a clip boundary. A document load
+     would reset scroll, run the host loading bar, and re-run the hero's
+     scroll-driven opacity from a stale position — the dim-text-then-jump bug.
+     Keeping one document removes all three at the source. */
+  /* Plain navigation for now — the transition treatment is parked. */
+  onGoArtist = (e) => {
+    const btn = e && e.currentTarget;
+    if (btn && btn.style) {
+      btn.style.transform = "scale(0.95)";
+      setTimeout(function () { btn.style.transform = ""; }, 110);
+    }
+  };
+
+  closeWorld = () => {};
+
+  warmArtist = () => {};
+
+  /* Sibling page URL that keeps the current query string — the host serves
+     these files with an auth token there, and dropping it yields a blank page. */
+  sibling(file, hash) {
+    return file + (location.search || "") + (hash || "");
+  }
+
+  /* Skills grid: one-shot stagger reveal in reading order, fired when the
+     grid is ~25% visible. Idempotent — never re-hides once revealed. */
+  STAGGER = { step: 45, dur: 340, lift: 18, scale: 0.94 };
+
+  armToolsReveal() {
+    const grid = this.r.toolsGrid.current;
+    if (!grid || this.toolsArmed) return;
+    this.toolsArmed = true;
+    const cards = Array.prototype.slice.call(grid.children);
+    const s = this.STAGGER;
+    cards.forEach((c) => {
+      c.style.opacity = "0";
+      c.style.transform = "translateY(" + s.lift + "px) scale(" + s.scale + ")";
+      c.style.transition = "opacity " + s.dur + "ms cubic-bezier(.22,.61,.36,1), transform " +
+        s.dur + "ms cubic-bezier(.22,.61,.36,1), border-color .3s ease, background .3s ease";
+      c.style.willChange = "opacity, transform";
+    });
+    const reveal = () => {
+      cards.forEach((c, i) => {
+        c.style.transitionDelay = (i * s.step) + "ms, " + (i * s.step) + "ms, 0ms, 0ms";
+        c.style.opacity = "1";
+        c.style.transform = "none";
+      });
+      setTimeout(function () {
+        cards.forEach(function (c) { c.style.willChange = ""; c.style.transitionDelay = ""; });
+      }, cards.length * s.step + s.dur + 60);
+    };
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          this.io.disconnect();
+          requestAnimationFrame(reveal);
+        }
+      });
+    }, { threshold: 0.25 });
+    this.io.observe(grid);
+  }
+
+  constructor(props) {
+    super(props);
+    for (let i = 1; i <= this.FRAMES; i++) this.r["f" + i] = React.createRef();
+  }
+
+  sample(stops, p) {
+    if (p <= stops[0][0]) return stops[0][1];
+    for (let i = 1; i < stops.length; i++) {
+      const [p0, v0] = stops[i - 1], [p1, v1] = stops[i];
+      if (p <= p1) {
+        const u = p1 === p0 ? 1 : (p - p0) / (p1 - p0);
+        return v0 + (v1 - v0) * (u * u * (3 - 2 * u));
+      }
+    }
+    return stops[stops.length - 1][1];
+  }
+
+  progress() {
+    const el = this.r.stage.current;
+    if (!el) return 0;
+    const rect = el.getBoundingClientRect();
+    const span = Math.max(1, rect.height - window.innerHeight);
+    return Math.min(1, Math.max(0, -rect.top / span));
+  }
+
+  apply = () => {
+    this.raf = 0;
+    const p = this.progress();
+    const tracks = this.tracks || (this.tracks = this.buildTracks());
+    for (const k in tracks) {
+      const el = this.r[k] && this.r[k].current;
+      if (el) el.style.opacity = this.sample(tracks[k], p);
+    }
+
+    const push = this.push || (this.push = this.buildPush());
+    const hero = this.r.heroLayer.current, exp = this.r.expLayer.current;
+    if (hero) {
+      hero.style.transform = "translateY(" + this.sample(push.heroY, p).toFixed(2) + "%)";
+      hero.style.opacity = "1";
+    }
+    if (exp) {
+      exp.style.transform = "translateY(" + this.sample(push.expY, p).toFixed(2) + "%)";
+      exp.style.opacity = "1";
+    }
+  };
+
+  onScroll = () => { if (!this.raf) this.raf = requestAnimationFrame(this.apply); };
+
+  componentDidMount() {
+    const el = this.r.stage.current;
+    if (el) el.style.height = (this.props.scrollLength ?? 320) + "vh";
+    this.tracks = this.buildTracks();
+    this.push = this.buildPush();
+    window.addEventListener("scroll", this.onScroll, { passive: true });
+    window.addEventListener("resize", this.onScroll);
+    this.apply();
+    this.armToolsReveal();
+    if (!this.landed) {
+      this.landed = true;
+      this.landOnHash();
+      // pre-paint the artist page while the visitor reads, so the reveal
+      // sweeps over real content the instant they click
+      const warm = this.warmArtist;
+      if (window.requestIdleCallback) requestIdleCallback(warm, { timeout: 3000 });
+      else setTimeout(warm, 2200);
+      // the embedded artist world asks to close through this event
+      window.addEventListener("portfolio-close-world", this.closeWorld);
+    }
+  }
+
+  /* Fragment targets resolve before the template mounts, so land on the hash
+     ourselves. Order matters: keep the page invisible, jump, RECOMPUTE the
+     scroll-driven opacities against the new position, then reveal — otherwise
+     the first painted frame shows hero text at a stale (dimmed) opacity and
+     the jump is visible as a flash. */
+  landOnHash() {
+    if (location.hash !== "#contact") return;
+    const page = this.r.page.current;
+    if (history.scrollRestoration) history.scrollRestoration = "manual";
+    if (page) page.style.visibility = "hidden";
+
+    let tries = 0;
+    const settle = () => {
+      const c = document.querySelector("#contact");
+      if (c) {
+        window.scrollTo(0, c.getBoundingClientRect().top + window.scrollY);
+        this.apply();               // resolve opacities at the final position
+      }
+      tries += 1;
+      // late-loading images shift #contact; re-land until it stops moving
+      if (tries < 6 && (!c || Math.abs(c.getBoundingClientRect().top) > 2)) {
+        setTimeout(settle, 60);
+        return;
+      }
+      if (page) page.style.visibility = "";
+    };
+    settle();
+    setTimeout(function () { if (page) page.style.visibility = ""; }, 900);
+  }
+
+  componentDidUpdate() { this.componentDidMount(); }
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.onScroll);
+    window.removeEventListener("resize", this.onScroll);
+    window.removeEventListener("portfolio-close-world", this.closeWorld);
+    if (this.raf) cancelAnimationFrame(this.raf);
+    if (this.io) this.io.disconnect();
+  }
+
+  renderVals() {
+    const v = {
+      stageRef: this.r.stage, heroLayerRef: this.r.heroLayer,
+      expLayerRef: this.r.expLayer, toolsGridRef: this.r.toolsGrid,
+      pageRef: this.r.page,
+      artistHref: this.sibling(this.ARTIST_URL),
+      onGoArtist: this.onGoArtist, onWarmArtist: this.warmArtist,
+      revealRef: this.r.reveal, revealMounted: this.state.revealMounted
+    };
+    for (let i = 1; i <= this.FRAMES; i++) v["f" + i + "Ref"] = this.r["f" + i];
+    return v;
+  }
+}
+</script>
+</body>
+</html>

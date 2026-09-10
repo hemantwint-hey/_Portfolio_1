@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Caveat:wght@400;500;600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet" />
+<script src="./image-slot.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0B0A09; color: #EFE3D2; -webkit-font-smoothing: antialiased; }
+  a { color: #EFE3D2; text-decoration: none; }
+  a:hover { color: #E8973F; }
+  @keyframes bookFlipShade { 0% { opacity: 0; } 48% { opacity: 0.6; } 100% { opacity: 0; } }
+  @keyframes bookLeafNext { from { transform: rotateY(0deg); } to { transform: rotateY(-180deg); } }
+  @keyframes bookLeafPrev { from { transform: rotateY(-180deg); } to { transform: rotateY(0deg); } }
+  @keyframes bookOccludeNext { from { clip-path: inset(0 0 0 100%); } to { clip-path: inset(0 0 0 0); } }
+  @keyframes bookOccludePrev { from { clip-path: inset(0 0 0 0); } to { clip-path: inset(0 0 0 100%); } }
+</style>
+<script src="./page-transition.js"></script>
+</helmet>
+
+<div ref="{{ pageRef }}" data-screen-label="Artist — Sketches" style="background:#0B0A09;font-family:'Poppins',system-ui,sans-serif;min-height:100vh;overflow-x:clip">
+
+  <header style="position:sticky;top:0;z-index:40;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:clamp(16px,2vw,26px) clamp(18px,2.6vw,42px);background:rgba(11,10,9,0.82);backdrop-filter:blur(6px)">
+    <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(15px,1.3vw,20px);font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:#EFE3D2">Hemant</span>
+    <nav style="display:flex;flex-wrap:wrap;gap:clamp(14px,2.2vw,38px);font-size:clamp(11px,0.9vw,14px);font-weight:400">
+      <a href="#sketches" style="padding-bottom:5px;border-bottom:1.5px solid #E8973F;color:#EFE3D2">Sketches</a>
+      <a href="#sketches" style="padding-bottom:5px;border-bottom:1.5px solid transparent;color:rgba(239,227,210,0.62)">Artwork</a>
+      <a href="#poetry" style="padding-bottom:5px;border-bottom:1.5px solid transparent;color:rgba(239,227,210,0.62)">Poetry</a>
+    </nav>
+    <button ref="{{ backBtnRef }}" type="button" onClick="{{ onBack }}" onPointerEnter="{{ onWarmDev }}" onFocus="{{ onWarmDev }}" style="display:inline-flex;align-items:center;gap:10px;padding:11px 20px;border-radius:999px;border:1px solid rgba(239,227,210,0.34);background:transparent;color:#EFE3D2;font-family:inherit;font-size:clamp(10px,0.82vw,13px);font-weight:400;cursor:pointer;transition:border-color .3s ease,background .3s ease,color .3s ease,transform .12s ease" style-hover="border-color:#E8973F;background:rgba(232,151,63,0.14)">
+      <span style="font-size:1.1em;line-height:1">&#8592;</span>
+      <span>Back to Developer</span>
+    </button>
+  </header>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,560px),1fr));align-items:start">
+
+    <div id="sketches" style="position:sticky;top:clamp(58px,7.4vh,86px);align-self:start;height:min(calc(100vh - clamp(58px,7.4vh,86px)),760px);background-image:url('assets/artist-hero.png');background-size:cover;background-position:22% 50%;background-color:#0B0A09">
+      <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,10,9,0.55) 0%,rgba(11,10,9,0.1) 34%,rgba(11,10,9,0.35) 100%)"></div>
+
+      <div style="position:absolute;left:clamp(14px,1.8vw,30px);top:clamp(22px,4vh,52px);display:flex;flex-direction:column;gap:clamp(18px,3vh,34px);align-items:flex-start">
+        <span style="width:1px;height:clamp(60px,14vh,150px);background:linear-gradient(180deg,rgba(239,227,210,0.5),#E8973F,rgba(239,227,210,0.15))"></span>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:clamp(8px,0.62vw,10px);font-weight:400;letter-spacing:0.32em;text-transform:uppercase;color:rgba(239,227,210,0.7)">
+          <span>A</span>
+          <span>Different</span>
+          <span>Side</span>
+          <span>Of</span>
+          <span>Me</span>
+        </div>
+      </div>
+
+      <div style="position:absolute;left:0;right:0;bottom:0;padding:clamp(30px,6vh,64px) clamp(20px,3vw,48px) clamp(20px,3.4vh,38px) clamp(52px,7vw,120px);background:linear-gradient(180deg,rgba(11,10,9,0) 0%,rgba(11,10,9,0.72) 46%,rgba(11,10,9,0.92) 100%);display:flex;gap:14px;align-items:flex-start">
+        <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(30px,3vw,52px);line-height:0.6;color:rgba(239,227,210,0.55)">&ldquo;</span>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <p style="margin:0;max-width:26ch;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:clamp(15px,1.35vw,23px);line-height:1.4;color:#F3E9DB;text-wrap:pretty">Creativity keeps me human in a world of logic.</p>
+          <span style="width:38px;height:1px;background:rgba(239,227,210,0.55)"></span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:clamp(34px,6vh,72px);padding:clamp(30px,5vh,70px) clamp(20px,3vw,48px) clamp(60px,10vh,120px)">
+
+      <div style="display:flex;flex-direction:column;gap:clamp(16px,2.4vh,26px)">
+        <h1 style="margin:0;font-family:'Caveat',cursive;font-weight:500;font-size:clamp(44px,5.6vw,96px);line-height:0.98;letter-spacing:-0.01em;color:#F3E9DB">
+          <span style="display:block">Same Mind.</span>
+          <span style="display:block">Different</span>
+          <span style="display:block;color:#E8973F">Canvas.</span>
+        </h1>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:clamp(8px,1vw,16px);font-size:clamp(9px,0.72vw,11px);font-weight:400;letter-spacing:0.32em;text-transform:uppercase;color:rgba(239,227,210,0.62)">
+          <span>Sketch</span>
+          <span style="opacity:0.45">/</span>
+          <span>Art</span>
+          <span style="opacity:0.45">/</span>
+          <span>Poetry</span>
+        </div>
+      </div>
+
+      <div style="position:relative;display:flex;flex-direction:column;gap:clamp(14px,2vh,20px);padding:clamp(16px,1.6vw,24px);border:1px solid rgba(239,227,210,0.14);border-radius:6px;background:#171310">
+        <div style="position:relative;width:100%;aspect-ratio:4 / 3;overflow:hidden;border-radius:3px;background:#221C15">
+          <image-slot id="artist-notebook" shape="rect" placeholder="Drop a sketchbook page"></image-slot>
+        </div>
+        <p style="margin:0;max-width:30ch;font-family:'Caveat',cursive;font-size:clamp(17px,1.5vw,25px);line-height:1.25;color:rgba(239,227,210,0.86)">Somewhere I feel more alive with a pencil in my hand.</p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:clamp(16px,2.6vh,26px)">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px">
+          <div style="display:flex;align-items:center;gap:14px">
+            <h2 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:clamp(19px,1.8vw,30px);line-height:1;letter-spacing:-0.01em;color:#F3E9DB">Featured Sketches</h2>
+            <span style="width:clamp(20px,3vw,44px);height:1px;background:rgba(239,227,210,0.34)"></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:clamp(12px,1.4vw,22px);font-size:clamp(10px,0.8vw,13px);color:rgba(239,227,210,0.66)">
+            <button type="button" onClick="{{ onSketchPrev }}" aria-label="Previous sketches" style="border:0;background:transparent;color:inherit;font-family:inherit;font-size:1.1em;cursor:pointer;padding:4px">&#8592;</button>
+            <button type="button" onClick="{{ onSketchNext }}" aria-label="Next sketches" style="border:0;background:transparent;color:inherit;font-family:inherit;font-size:1.1em;cursor:pointer;padding:4px">&#8594;</button>
+            <button type="button" onClick="{{ onOpenArtwork }}" style="display:inline-flex;align-items:center;gap:9px;border:0;background:transparent;color:inherit;font-family:inherit;font-size:1em;cursor:pointer;padding:4px" style-hover="color:#E8973F"><span>View All</span><span>&#8594;</span></button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,132px),1fr));gap:clamp(10px,1vw,16px)">
+          <sc-for list="{{ sketches }}" as="s" hint-placeholder-count="5">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="position:relative;width:100%;aspect-ratio:1;overflow:hidden;border-radius:3px;background:#221C15;border:1px solid rgba(239,227,210,0.1)">
+                <image-slot id="{{ s.slot }}" shape="rect" placeholder="Sketch"></image-slot>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <span style="font-size:clamp(10px,0.82vw,13px);font-weight:400;color:#F3E9DB">{{ s.title }}</span>
+                <span style="font-size:clamp(9px,0.72vw,11px);font-weight:300;color:rgba(239,227,210,0.5)">{{ s.medium }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div id="poetry" style="display:flex;flex-direction:column;gap:clamp(16px,2.6vh,26px)">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px">
+          <div style="display:flex;align-items:center;gap:14px">
+            <h2 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:clamp(19px,1.8vw,30px);line-height:1;letter-spacing:-0.01em;color:#F3E9DB">Poetry</h2>
+            <span style="width:clamp(20px,3vw,44px);height:1px;background:rgba(239,227,210,0.34)"></span>
+          </div>
+          <button type="button" onClick="{{ onOpenPoetry }}" style="display:inline-flex;align-items:center;gap:9px;border:0;background:transparent;color:rgba(239,227,210,0.66);font-family:inherit;font-size:clamp(10px,0.8vw,13px);cursor:pointer;padding:4px" style-hover="color:#E8973F"><span>View All</span><span>&#8594;</span></button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:clamp(14px,1.6vw,24px);padding:clamp(14px,1.4vw,20px);border:1px solid rgba(239,227,210,0.13);border-radius:6px;background:#12100E">
+          <div style="position:relative;min-height:clamp(150px,22vh,230px);overflow:hidden;border-radius:3px;background:#1B1712">
+            <image-slot id="artist-poem-art" shape="rect" placeholder="Drop a moody illustration"></image-slot>
+          </div>
+          <div style="display:flex;flex-direction:column;justify-content:space-between;gap:clamp(16px,2.4vh,26px);padding:clamp(6px,1vh,14px) 0">
+            <div style="display:flex;flex-direction:column;gap:7px;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(14px,1.25vw,21px);line-height:1.45;color:#EFE3D2">
+              <sc-for list="{{ poemLines }}" as="line" hint-placeholder-count="4">
+                <span>{{ line }}</span>
+              </sc-for>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+              <span style="font-size:clamp(9px,0.72vw,11px);font-weight:300;letter-spacing:0.22em;text-transform:uppercase;color:rgba(239,227,210,0.42)">{{ poemMeta }}</span>
+              <div style="display:flex;align-items:center;gap:16px;color:rgba(239,227,210,0.66)">
+                <button type="button" onClick="{{ onPoemPrev }}" aria-label="Previous poem" style="border:0;background:transparent;color:inherit;font-family:inherit;font-size:1.1em;cursor:pointer;padding:4px">&#8592;</button>
+                <button type="button" onClick="{{ onPoemNext }}" aria-label="Next poem" style="border:0;background:transparent;color:inherit;font-family:inherit;font-size:1.1em;cursor:pointer;padding:4px">&#8594;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end">
+        <div style="display:flex;flex-direction:column;gap:10px;padding:clamp(18px,1.8vw,26px) clamp(20px,2vw,30px);background:#1C1813;border:1px solid rgba(239,227,210,0.1);transform:rotate(3deg);box-shadow:0 18px 40px rgba(0,0,0,0.45)">
+          <p style="margin:0;max-width:16ch;font-family:'Caveat',cursive;font-size:clamp(19px,1.7vw,28px);line-height:1.2;color:rgba(239,227,210,0.88)">Same person... different expressions.</p>
+          <span style="width:44px;height:1px;background:rgba(232,151,63,0.6)"></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <sc-if value="{{ showArtwork }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Artist — Artwork gallery" style="position:fixed;inset:0;z-index:70;background:#0B0A09;overflow-y:auto;overflow-x:hidden">
+      <div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:clamp(24px,3vw,52px);align-items:start;padding:clamp(22px,3.4vh,44px) clamp(20px,3vw,52px) clamp(40px,7vh,80px)">
+
+        <button type="button" onClick="{{ onCloseView }}" style="position:absolute;right:clamp(20px,3vw,52px);top:clamp(22px,3.4vh,44px);z-index:5;display:inline-flex;align-items:center;gap:10px;padding:11px 20px;border-radius:999px;border:1px solid rgba(239,227,210,0.34);background:rgba(11,10,9,0.7);color:#EFE3D2;font-family:inherit;font-size:clamp(10px,0.82vw,13px);cursor:pointer;transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8973F;background:rgba(232,151,63,0.14)">
+          <span>&#8592;</span>
+          <span>Close</span>
+        </button>
+
+        <div style="display:flex;gap:clamp(18px,2.6vw,44px);align-items:flex-start">
+          <div style="display:flex;flex-direction:column;gap:clamp(16px,2.6vh,30px);padding-top:clamp(48px,9vh,110px);flex:0 0 auto">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(11px,0.9vw,14px);letter-spacing:0.2em;color:#E8973F">02</span>
+              <span style="width:26px;height:1px;background:#E8973F"></span>
+            </div>
+            <h2 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;font-size:clamp(38px,5.4vw,86px);line-height:0.9;letter-spacing:0.01em;color:#F6EFE4">Art<br />Work</h2>
+            <div style="display:flex;flex-direction:column;gap:4px;font-size:clamp(8px,0.64vw,10px);font-weight:400;letter-spacing:0.3em;text-transform:uppercase;color:rgba(239,227,210,0.6)">
+              <span>Pencil</span>
+              <span>Charcoal</span>
+              <span>Ideas</span>
+              <span>Emotions</span>
+            </div>
+            <span style="width:26px;height:1px;background:#E8973F"></span>
+            <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(26px,2.8vw,46px);line-height:1;color:rgba(239,227,210,0.16)">&#34269;<br />&#34899;</span>
+          </div>
+
+          <div style="flex:1 1 0;min-width:0;padding-top:clamp(48px,9vh,110px);display:flex;flex-direction:column;gap:clamp(14px,2vh,22px)">
+            <div style="position:relative;width:100%;aspect-ratio:4 / 5;overflow:hidden;background:#1B1712;border:1px solid rgba(239,227,210,0.12)">
+              <image-slot id="{{ featured.slot }}" shape="rect" placeholder="Featured artwork"></image-slot>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px">
+              <div style="display:flex;flex-direction:column;gap:5px">
+                <span style="font-size:clamp(12px,1vw,16px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase;color:#F6EFE4">{{ featured.title }}</span>
+                <span style="font-size:clamp(10px,0.78vw,12px);font-weight:300;color:rgba(239,227,210,0.52)">{{ featured.caption }}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:clamp(12px,1.4vw,22px)">
+                <span style="font-size:clamp(10px,0.78vw,12px);letter-spacing:0.16em;color:rgba(239,227,210,0.52)"><span style="color:#E8973F">{{ featured.index }}</span> / {{ featured.total }}</span>
+                <span style="width:clamp(18px,2.4vw,38px);height:1px;background:rgba(239,227,210,0.26)"></span>
+                <button type="button" onClick="{{ onFeaturedPrev }}" aria-label="Previous artwork" style="display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1px solid rgba(239,227,210,0.3);background:transparent;color:#EFE3D2;font-family:inherit;font-size:15px;cursor:pointer;transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8973F;background:rgba(232,151,63,0.14)">&#8592;</button>
+                <button type="button" onClick="{{ onFeaturedNext }}" aria-label="Next artwork" style="display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1px solid rgba(239,227,210,0.3);background:transparent;color:#EFE3D2;font-family:inherit;font-size:15px;cursor:pointer;transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8973F;background:rgba(232,151,63,0.14)">&#8594;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:clamp(18px,2.4vw,40px);align-items:flex-start;padding-top:clamp(48px,9vh,110px);border-left:1px solid rgba(239,227,210,0.12);padding-left:clamp(18px,2.6vw,44px)">
+          <div style="flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:clamp(18px,2.6vh,30px)">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px">
+              <div style="display:flex;align-items:center;gap:14px">
+                <h3 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:clamp(19px,1.8vw,30px);line-height:1;color:#F6EFE4">More Artworks</h3>
+                <span style="width:clamp(20px,3vw,52px);height:1px;background:rgba(239,227,210,0.3)"></span>
+              </div>
+              <button type="button" onClick="{{ onCloseView }}" style="display:inline-flex;align-items:center;gap:9px;border:0;background:transparent;color:rgba(239,227,210,0.66);font-family:inherit;font-size:clamp(10px,0.8vw,13px);cursor:pointer;padding:4px" style-hover="color:#E8973F"><span>Back</span><span>&#8594;</span></button>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:clamp(12px,1.4vw,22px)">
+              <sc-for list="{{ gallery }}" as="g" hint-placeholder-count="6">
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <div style="position:relative;width:100%;aspect-ratio:1;overflow:hidden;background:#1B1712;border:1px solid rgba(239,227,210,0.1)">
+                    <image-slot id="{{ g.slot }}" shape="rect" placeholder="Artwork"></image-slot>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:3px">
+                    <span style="font-size:clamp(10px,0.82vw,13px);font-weight:400;color:#F3E9DB">{{ g.title }}</span>
+                    <span style="font-size:clamp(9px,0.72vw,11px);font-weight:300;color:rgba(239,227,210,0.5)">{{ g.caption }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:clamp(40px,10vh,120px);padding-top:clamp(30px,5vh,60px)">
+            <div style="display:flex;flex-direction:column;gap:5px;font-size:clamp(8px,0.62vw,10px);letter-spacing:0.3em;text-transform:uppercase;color:rgba(239,227,210,0.5)">
+              <span>Art lives</span>
+              <span>In the silence</span>
+              <span style="width:22px;height:1px;background:#E8973F;margin-top:8px"></span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px;font-size:clamp(8px,0.62vw,10px);letter-spacing:0.3em;text-transform:uppercase;color:rgba(239,227,210,0.5)">
+              <span>Some</span>
+              <span>Things</span>
+              <span>Are</span>
+              <span>Better</span>
+              <span>Drawn</span>
+              <span style="width:22px;height:1px;background:#E8973F;margin-top:8px"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showPoetry }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Artist — Poetry gallery" style="position:fixed;inset:0;z-index:70;background:#0B0A09;overflow-y:auto;overflow-x:hidden">
+      <div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,600px),1fr));gap:clamp(24px,3vw,52px);align-items:start;padding:clamp(22px,3.4vh,44px) clamp(20px,3vw,52px) clamp(40px,7vh,80px)">
+
+        <button type="button" onClick="{{ onCloseView }}" style="position:absolute;right:clamp(20px,3vw,52px);top:clamp(22px,3.4vh,44px);z-index:5;display:inline-flex;align-items:center;gap:10px;padding:11px 20px;border-radius:999px;border:1px solid rgba(239,227,210,0.34);background:rgba(11,10,9,0.7);color:#EFE3D2;font-family:inherit;font-size:clamp(10px,0.82vw,13px);cursor:pointer;transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8973F;background:rgba(232,151,63,0.14)">
+          <span>&#8592;</span>
+          <span>Close</span>
+        </button>
+
+        <div style="position:relative;overflow:hidden;align-self:stretch;min-height:clamp(320px,52vh,680px);border:1px solid rgba(239,227,210,0.12);background:#0D0C0B">
+          <div style="position:absolute;inset:0;background:radial-gradient(120% 78% at 50% 96%,#3A2A22 0%,#191512 46%,#0D0C0B 100%)"></div>
+          <div style="position:absolute;inset:0">
+            <image-slot id="artist-poetry-sidebar" shape="rect" placeholder="Landscape"></image-slot>
+          </div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,12,11,0.88) 0%,rgba(13,12,11,0.3) 38%,rgba(13,12,11,0.6) 100%);pointer-events:none"></div>
+
+          <div style="position:relative;display:flex;flex-direction:column;gap:clamp(16px,2.6vh,30px);height:100%;padding:clamp(24px,3vw,44px)">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(11px,0.9vw,14px);letter-spacing:0.2em;color:#E8973F">03</span>
+              <span style="width:26px;height:1px;background:#E8973F"></span>
+            </div>
+            <h2 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:clamp(38px,5.4vw,86px);line-height:0.9;letter-spacing:0.06em;text-transform:uppercase;color:#FFFFFF">Poetry</h2>
+            <div style="display:flex;flex-direction:column;gap:5px;font-size:clamp(8px,0.64vw,10px);letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,255,255,0.72)">
+              <span>Thoughts</span>
+              <span>Fragments</span>
+              <span>Late nights</span>
+              <span>A quieter me</span>
+            </div>
+            <span style="width:clamp(60px,7vw,120px);height:1px;background:rgba(255,255,255,0.28)"></span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:clamp(16px,2.4vh,26px)">
+          <div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));padding:clamp(10px,1.6vw,28px) clamp(12px,1.8vw,32px);background-color:#E4D8C0;background-image:url('assets/book-spread.png');background-size:cover;background-position:center;background-repeat:no-repeat;box-shadow:0 30px 70px rgba(0,0,0,0.55);perspective:1900px">
+
+            <div style="position:relative;z-index:4;align-self:stretch;min-height:100%;transform-style:preserve-3d">
+              <div style="position:absolute;right:0;top:0;bottom:0;width:22px;background:linear-gradient(90deg,rgba(255,250,238,0.28),rgba(58,48,34,0.1) 54%,rgba(58,48,34,0.32));pointer-events:none;z-index:5"></div>
+              <div style="position:absolute;left:clamp(14px,1.6vw,26px);bottom:clamp(10px,1.4vw,20px);width:clamp(26px,3vw,48px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 38% 34%,rgba(52,42,30,0.34) 0%,rgba(52,42,30,0.1) 46%,rgba(52,42,30,0) 62%);pointer-events:none"></div>
+
+              <div style="display:flex;flex-direction:column;gap:clamp(14px,2vh,22px);height:100%;padding:clamp(22px,2.4vw,40px);visibility:{{ leftBaseVisibility }}">
+                <div style="position:relative;padding:clamp(8px,0.8vw,13px);background:rgba(255,250,238,0.5);box-shadow:0 2px 10px rgba(58,48,34,0.22),inset 0 0 0 1px rgba(96,80,54,0.16)">
+                  <div style="position:relative;width:100%;aspect-ratio:1;overflow:hidden;background:#CFC2A8;box-shadow:inset 0 0 26px rgba(58,48,34,0.24)">
+                    <image-slot id="{{ leftBase.slot }}" shape="rect" placeholder="Illustration for this poem"></image-slot>
+                  </div>
+                </div>
+                <p style="margin:0;max-width:22ch;font-family:'Caveat',cursive;font-size:clamp(17px,1.5vw,26px);line-height:1.25;color:#3A3227;transform:rotate(-4deg)">{{ leftBase.note }}</p>
+              </div>
+
+
+            </div>
+
+            <div style="position:relative;align-self:stretch;min-height:100%;transform-style:preserve-3d">
+              <div style="position:absolute;left:0;top:0;bottom:0;width:30px;background:linear-gradient(90deg,rgba(48,38,26,0.42),rgba(48,38,26,0.12) 44%,rgba(255,250,238,0.3));pointer-events:none;z-index:3"></div>
+              <div style="position:absolute;right:clamp(12px,1.4vw,22px);top:clamp(14px,2vw,32px);width:clamp(30px,3.4vw,54px);height:clamp(80px,10vw,150px);pointer-events:none;opacity:0.28;z-index:2">
+                <svg viewBox="0 0 60 170" width="100%" height="100%" fill="none" stroke="#5A4A32" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+                  <path d="M30 168 C30 120 28 76 22 34"></path>
+                  <path d="M24 132 C40 126 48 112 50 96"></path>
+                  <path d="M25 104 C12 98 6 84 6 68"></path>
+                  <path d="M24 76 C40 70 47 58 48 44"></path>
+                  <ellipse cx="52" cy="93" rx="7" ry="3.4" transform="rotate(-24 52 93)"></ellipse>
+                  <ellipse cx="5" cy="65" rx="7" ry="3.4" transform="rotate(28 5 65)"></ellipse>
+                  <ellipse cx="50" cy="41" rx="6.4" ry="3.2" transform="rotate(-30 50 41)"></ellipse>
+                </svg>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:clamp(14px,2.2vh,24px);height:100%;padding:clamp(26px,2.8vw,48px) clamp(22px,2.4vw,40px) clamp(26px,2.8vw,48px) clamp(40px,3.4vw,56px)">
+                <h3 style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:400;font-size:clamp(24px,2.6vw,42px);line-height:1.12;color:#1F1A14">{{ basePage.title }}</h3>
+                <div style="display:flex;flex-direction:column;gap:4px;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(14px,1.25vw,21px);line-height:1.5;color:#2C2519">
+                  <sc-for list="{{ basePage.lines }}" as="line" hint-placeholder-count="8">
+                    <span style="min-height:1em">{{ line }}</span>
+                  </sc-for>
+                </div>
+                <span style="width:26px;height:1.5px;background:rgba(31,26,20,0.55);margin-top:auto"></span>
+                <span style="font-size:clamp(10px,0.8vw,13px);font-weight:300;letter-spacing:0.1em;color:rgba(31,26,20,0.62)">{{ basePage.date }}</span>
+              </div>
+
+
+            </div>
+          </div>
+
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px">
+            <span style="font-size:clamp(9px,0.72vw,11px);letter-spacing:0.24em;text-transform:uppercase;color:rgba(239,227,210,0.44)">Same person &mdash; different expressions</span>
+            <div style="display:flex;align-items:center;gap:clamp(12px,1.6vw,22px);font-size:clamp(10px,0.8vw,13px);color:rgba(239,227,210,0.7)">
+              <span style="letter-spacing:0.16em;color:rgba(239,227,210,0.5)"><span style="color:#E8973F">{{ poemIndex }}</span> / {{ poemTotal }}</span>
+              <button type="button" onClick="{{ onPoemPrev }}" aria-label="Previous poem" style="display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1px solid rgba(239,227,210,0.3);background:transparent;color:#EFE3D2;font-family:inherit;font-size:15px;cursor:pointer;transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8973F;background:rgba(232,151,63,0.14)">&#8592;</button>
+              <button type="button" onClick="{{ onPoemNext }}" aria-label="Next poem" style="display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1px solid rgba(239,227,210,0.3);background:transparent;color:#EFE3D2;font-family:inherit;font-size:15px;cursor:pointer;transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8973F;background:rgba(232,151,63,0.14)">&#8594;</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  /* Populate these two arrays with real work — the layout reads them as-is. */
+  SKETCHES = [
+    { slot: "artist-sketch-1", title: "A Quiet Rebellion", medium: "Pencil on Paper", year: "2024" },
+    { slot: "artist-sketch-2", title: "The Hunter", medium: "Pencil on Paper", year: "2024" },
+    { slot: "artist-sketch-3", title: "Mountains Speak", medium: "Charcoal", year: "2023" },
+    { slot: "artist-sketch-4", title: "Stillness", medium: "Graphite", year: "2024" },
+    { slot: "artist-sketch-5", title: "Silent Streets", medium: "Pencil", year: "2023" },
+    { slot: "artist-sketch-6", title: "Wild", medium: "Charcoal", year: "2024" },
+    { slot: "artist-sketch-7", title: "The Path", medium: "Ink", year: "2025" }
+  ];
+
+  POEMS = [
+    {
+      slot: "artist-poem-art", title: "In the Middle of Chaos", date: "2024.11.18",
+      note: "The same moon witnesses a different me.",
+      lines: ["I built a quiet place in my mind", "Where words breathe", "And thoughts finally rest.", "", "In the middle of chaos", "I still find pieces of peace", "In the things I create,", "In the silence I keep,", "And in the version of me", "That never gave up."]
+    },
+    {
+      slot: "artist-poem-art-2", title: "A Quieter Me", date: "2025.02.09",
+      note: "A calmer me still exists somewhere inside.",
+      lines: ["The pencil knows an hour", "The keyboard never learns.", "", "Slower, softer, honest,", "Asking nothing in return", "Except the time it takes", "To finish one true line."]
+    },
+    {
+      slot: "artist-poem-art-3", title: "Two Hands", date: "2025.07.30",
+      note: "One builds. One draws. Both keep me whole.",
+      lines: ["Two hands, one habit:", "One builds what holds,", "One draws what leaves.", "", "Neither is the whole of me,", "But between them", "Nothing goes unsaid."]
+    }
+  ];
+
+  /* World swap: the developer page is revealed by a clip boundary sweeping
+     right -> left — the mirror of the outbound leg. */
+  DEV_URL = "Hero%20Scroll.dc.html";
+
+  state = { poem: 0, sketchOffset: 0, featured: 0, view: null, flip: null, early: false, late: false };
+
+  r = {
+    page: React.createRef(), backBtn: React.createRef()
+  };
+
+  warmDev = () => {};
+
+  onBack = (e) => {
+    if (this.leaving) return;
+    if (e && e.preventDefault) e.preventDefault();
+    this.leaving = true;
+    const btn = this.r.backBtn.current;
+    if (btn) {
+      btn.style.transform = "scale(0.95)";
+      setTimeout(function () { btn.style.transform = ""; }, 110);
+    }
+    location.href = this.sibling(this.DEV_URL, "#contact");
+  };
+
+  isEmbedded() {
+    const el = this.r.page.current;
+    return !!(el && el.closest && el.closest("[data-page-reveal-host]"));
+  }
+
+  /* Sibling page URL that keeps the current query string — the host serves
+     these files with an auth token there, and dropping it yields a blank page. */
+  sibling(file, hash) {
+    return file + (location.search || "") + (hash || "");
+  }
+
+  /* Book page turn. The right page is a leaf pivoting on the spine:
+     front face is whichever poem the reader is leaving, back face is the
+     one arriving, so past 90deg the new page is what shows. */
+  FLIP_MS = 620;
+
+  startFlip(dir) {
+    if (this.flipping) return;
+    const n = this.POEMS.length;
+    const target = (this.state.poem + (dir > 0 ? 1 : n - 1)) % n;
+    this.flipping = true;
+    this.setState({ flip: { dir: dir, target: target }, early: false, late: false });
+    /* Two gates, one near each end of the arc. Which page each gate serves
+       depends on direction, because prev runs the same arc backwards: the
+       sheet covers the LEFT page early on a next turn and late on a prev. */
+    setTimeout(() => this.setState({ early: true }), this.FLIP_MS * 0.18);
+    setTimeout(() => this.setState({ late: true }), this.FLIP_MS * 0.85);
+    setTimeout(() => {
+      this.flipping = false;
+      this.setState({ poem: target, flip: null, early: false, late: false });
+    }, this.FLIP_MS + 40);
+  }
+
+
+  onPoemPrev = () => this.startFlip(-1);
+  onPoemNext = () => this.startFlip(1);
+
+  onSketchPrev = () => this.setState((s) => ({ sketchOffset: (s.sketchOffset + this.SKETCHES.length - 1) % this.SKETCHES.length }));
+  onSketchNext = () => this.setState((s) => ({ sketchOffset: (s.sketchOffset + 1) % this.SKETCHES.length }));
+
+  onFeaturedPrev = () => this.setState((s) => ({ featured: (s.featured + this.SKETCHES.length - 1) % this.SKETCHES.length }));
+  onFeaturedNext = () => this.setState((s) => ({ featured: (s.featured + 1) % this.SKETCHES.length }));
+
+  onOpenArtwork = () => this.setState({ view: "artwork" });
+  onOpenPoetry = () => this.setState({ view: "poetry" });
+  onCloseView = () => this.setState({ view: null });
+
+  renderVals() {
+    const n = this.SKETCHES.length;
+    const off = this.state.sketchOffset;
+    /* The home strip and the gallery show the same works in two places, so
+       the strip gets its own slot ids — image-slot persists drops by id. */
+    const sketches = [];
+    for (let i = 0; i < n; i++) {
+      const s = this.SKETCHES[(off + i) % n];
+      sketches.push({ slot: s.slot + "-strip", title: s.title, medium: s.medium });
+    }
+    const poem = this.POEMS[this.state.poem];
+    const flip = this.state.flip;
+    const fwd = !flip || flip.dir > 0;
+    const fi = this.state.featured;
+    const f = this.SKETCHES[fi];
+    const pad = (x) => String(x).padStart(2, "0");
+    const gallery = [];
+    for (let i = 1; i < n; i++) {
+      const g = this.SKETCHES[(fi + i) % n];
+      gallery.push({ slot: g.slot, title: g.title, caption: g.medium + "  |  " + g.year });
+    }
+    return {
+      pageRef: this.r.page, backBtnRef: this.r.backBtn, onWarmDev: this.warmDev,
+      sketches: sketches,
+      poemLines: poem.lines,
+      poemMeta: poem.date,
+      poem: poem,
+      leftPage: poem,
+      /* The LEFT page is the sheet that turns: the illustration and caption
+         live inside its faces, so they are clipped by the page itself and
+         vanish right-to-left as it rotates on the spine. The right page
+         swaps at the halfway point, hidden behind the turning sheet. */
+      /* The RIGHT page is the sheet that turns, hinged on the spine. It lies
+         over the right page at the start of a next turn and over the left page
+         at the end, so each underlying page swaps while it is covered. */
+      basePage: flip && (fwd ? this.state.early : this.state.late) ? this.POEMS[flip.target] : poem,
+      leftBase: poem,
+      /* The sheet's back is blank paper, so the arriving artwork lives in
+         exactly one place — the left page underneath, revealed from the
+         midpoint as the sheet swings clear of it. */
+      leftBaseVisibility: "visible",
+      /* Face 0 is the right page itself; face 1 is its back, which lands on
+         the left side. On a prev turn the sheet arrives folded, so they trade. */
+      leafFront: flip && !fwd ? this.POEMS[flip.target] : poem,
+      leafBack: flip ? (fwd ? this.POEMS[flip.target] : poem) : poem,
+      flipping: !!flip,
+      /* The leaf turn runs as a CSS keyframe animation applied at mount —
+         an imperative transition does not survive the render cycle. */
+      /* Parchment creeping across the left page from its right edge, on the
+         same clock as the rotation — the photo is occluded, never faded. */
+      occludeAnim: "bookOccludeNext " + this.FLIP_MS + "ms cubic-bezier(.45,.05,.55,.95) both",
+      /* The sweeping parchment carries the ARRIVING artwork, so the old one is
+         covered and the new one uncovered by the same moving edge. */
+      incoming: flip ? this.POEMS[flip.target] : poem,
+      leafAnim: (flip && flip.dir < 0 ? "bookLeafPrev " : "bookLeafNext ") +
+        this.FLIP_MS + "ms cubic-bezier(.45,.05,.55,.95) both",
+      poemIndex: pad(this.state.poem + 1),
+      poemTotal: pad(this.POEMS.length),
+      featured: {
+        slot: f.slot, title: f.title,
+        caption: f.medium + "  |  " + f.year,
+        index: pad(fi + 1), total: pad(n)
+      },
+      gallery: gallery.slice(0, 6),
+      showArtwork: this.state.view === "artwork",
+      showPoetry: this.state.view === "poetry",
+      onBack: this.onBack,
+      onPoemPrev: this.onPoemPrev, onPoemNext: this.onPoemNext,
+      onSketchPrev: this.onSketchPrev, onSketchNext: this.onSketchNext,
+      onFeaturedPrev: this.onFeaturedPrev, onFeaturedNext: this.onFeaturedNext,
+      onOpenArtwork: this.onOpenArtwork, onOpenPoetry: this.onOpenPoetry,
+      onCloseView: this.onCloseView
+    };
+  }
+}
+</script>
+</body>
+</html>
