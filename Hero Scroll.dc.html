@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./page-transition.js?v=3"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -17,6 +18,12 @@
   body { margin: 0; background: #EFE9DE; color: #14110E; -webkit-font-smoothing: antialiased; }
   a { color: #14110E; text-decoration: none; }
   a:hover { color: #E8763A; }
+  @keyframes livePulse {
+    0% { transform: scale(0.85); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(0.85); opacity: 0.5; }
+  }
+  .live-pulse { animation: livePulse 1.8s ease-in-out infinite; }
 </style>
 <script src="./page-transition.js"></script>
 </helmet>
@@ -323,6 +330,191 @@
     </div>
   </section>
 
+  <section id="profiles" data-screen-label="Home — Profiles" style="padding:clamp(56px,9vh,120px) clamp(22px,3.2vw,52px);background:#F7F3EA">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:clamp(16px,3vw,48px);margin-bottom:clamp(32px,5vh,64px)">
+      <div style="display:flex;flex-direction:column;gap:clamp(12px,2vh,20px)">
+        <div style="display:flex;align-items:center;gap:12px;font-size:clamp(9px,0.72vw,11px);font-weight:500;letter-spacing:0.34em;text-transform:uppercase;color:#E8763A">
+          <span style="width:22px;height:1px;background:#E8763A"></span>
+          <span>Outside The Build</span>
+        </div>
+        <h2 style="margin:0;font-weight:800;font-size:clamp(34px,5.4vw,84px);line-height:0.96;letter-spacing:-0.04em">Where I Practice<span style="color:#E8763A">.</span></h2>
+      </div>
+      <p style="margin:0 0 6px;max-width:28ch;text-align:right;font-size:clamp(11px,0.86vw,14px);font-weight:300;line-height:1.6;color:#6A6157;text-wrap:pretty">One sharpens the thinking. The other shows the work.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:clamp(20px,2.2vw,32px)">
+
+      <!-- LEETCODE CARD -->
+      <article style="position:relative;display:flex;flex-direction:column;gap:clamp(22px,2.6vw,34px);padding:clamp(24px,2.6vw,38px);background:linear-gradient(145deg,#161310 0%,#0F0D0B 100%);color:#F4EFE6;border:1px solid rgba(244,239,230,0.1);border-radius:24px;box-shadow:0 14px 36px rgba(20,17,14,0.12);transition:transform .35s cubic-bezier(0.16,1,0.3,1),box-shadow .35s cubic-bezier(0.16,1,0.3,1),border-color .35s ease" style-hover="transform:translateY(-5px);box-shadow:0 24px 50px -12px rgba(232,118,58,0.2),0 0 0 1px rgba(232,118,58,0.35)">
+        
+        <!-- Header -->
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div style="display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:rgba(244,239,230,0.06);border:1px solid rgba(244,239,230,0.12);flex-shrink:0">
+              <img src="https://cdn.simpleicons.org/leetcode/F4EFE6" alt="LeetCode" width="24" height="24" style="display:block;width:24px;height:24px" />
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:clamp(9px,0.7vw,11px);font-weight:600;letter-spacing:0.24em;text-transform:uppercase;color:#E8763A">Problem Solving</span>
+                <span style="width:4px;height:4px;border-radius:50%;background:rgba(244,239,230,0.3)"></span>
+                <span style="font-size:clamp(9px,0.7vw,11px);letter-spacing:0.1em;color:rgba(244,239,230,0.48)">@HemantDWint</span>
+              </div>
+              <h3 style="margin:0;font-weight:700;font-size:clamp(22px,2vw,30px);line-height:1.1;letter-spacing:-0.03em">LeetCode</h3>
+            </div>
+          </div>
+          <a href="https://leetcode.com/u/HemantDWint/" target="_blank" rel="noreferrer" aria-label="Open Hemant's LeetCode profile" style="display:grid;place-items:center;width:40px;height:40px;border:1px solid rgba(244,239,230,0.22);border-radius:50%;background:rgba(244,239,230,0.04);color:#F4EFE6;font-size:16px;transition:background .3s ease,color .3s ease,border-color .3s ease,transform .3s ease" style-hover="background:#E8763A;color:#14110E;border-color:#E8763A;transform:translate(2px,-2px)">&#8599;</a>
+        </div>
+
+        <!-- Metric Highlight & Difficulty Progress -->
+        <div style="display:flex;flex-direction:column;gap:14px;padding-bottom:20px;border-bottom:1px solid rgba(244,239,230,0.1)">
+          <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <span id="lc-total-solved" style="font-size:clamp(40px,4.6vw,68px);font-weight:800;line-height:0.9;letter-spacing:-0.06em;color:#FFFFFF">648</span>
+              <span id="lc-total-meta" style="font-size:clamp(9px,0.7vw,11px);font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:rgba(244,239,230,0.55)">Problems Solved &middot; 4,047 Total</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+              <div style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(232,118,58,0.12);border:1px solid rgba(232,118,58,0.28);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#E8763A">
+                <span id="lc-rank-badge">#117,520 Rank</span>
+              </div>
+              <div id="lc-live-tag" style="display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:#00B8A3">
+                <span style="width:6px;height:6px;border-radius:50%;background:#00B8A3;box-shadow:0 0 6px #00B8A3"></span>
+                <span>Live Synced</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Difficulty Progress Bar -->
+          <div style="display:flex;width:100%;height:7px;border-radius:999px;background:rgba(244,239,230,0.08);overflow:hidden;gap:2px">
+            <div id="lc-easy-bar" style="flex:170;background:#00B8A3;border-radius:999px 0 0 999px" title="Easy: 170"></div>
+            <div id="lc-med-bar" style="flex:378;background:#FFC01E" title="Medium: 378"></div>
+            <div id="lc-hard-bar" style="flex:100;background:#FF375F;border-radius:0 999px 999px 0" title="Hard: 100"></div>
+          </div>
+
+          <!-- Difficulty Counts -->
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding-top:4px">
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="width:7px;height:7px;border-radius:50%;background:#00B8A3;flex-shrink:0"></span>
+              <span style="font-size:clamp(11px,0.85vw,13px);font-weight:600;color:#F4EFE6"><span id="lc-easy-count">170</span> <span style="font-size:0.85em;font-weight:400;color:rgba(244,239,230,0.5)">Easy</span></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="width:7px;height:7px;border-radius:50%;background:#FFC01E;flex-shrink:0"></span>
+              <span style="font-size:clamp(11px,0.85vw,13px);font-weight:600;color:#F4EFE6"><span id="lc-med-count">378</span> <span style="font-size:0.85em;font-weight:400;color:rgba(244,239,230,0.5)">Med</span></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="width:7px;height:7px;border-radius:50%;background:#FF375F;flex-shrink:0"></span>
+              <span style="font-size:clamp(11px,0.85vw,13px);font-weight:600;color:#F4EFE6"><span id="lc-hard-count">100</span> <span style="font-size:0.85em;font-weight:400;color:rgba(244,239,230,0.5)">Hard</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LeetCode Key Highlights -->
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+          <div style="display:flex;flex-direction:column;gap:5px;padding:14px 16px;background:rgba(244,239,230,0.04);border:1px solid rgba(244,239,230,0.08);border-radius:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+              <span style="font-size:clamp(11px,0.88vw,14px);font-weight:600;color:#FFFFFF"><span id="lc-total-subs">2,250+</span></span>
+              <span style="font-size:12px;color:#00B8A3">&#10003;</span>
+            </div>
+            <span style="font-size:clamp(9px,0.7vw,11px);font-weight:300;color:rgba(244,239,230,0.55);line-height:1.4">Total Submissions</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;padding:14px 16px;background:rgba(244,239,230,0.04);border:1px solid rgba(244,239,230,0.08);border-radius:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+              <span style="font-size:clamp(11px,0.88vw,14px);font-weight:600;color:#FFFFFF">Java &middot; DSA</span>
+              <span style="font-size:12px;color:#E8763A">&#9733;</span>
+            </div>
+            <span style="font-size:clamp(9px,0.7vw,11px);font-weight:300;color:rgba(244,239,230,0.55);line-height:1.4">Core Contest Language</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- GITHUB CARD -->
+      <article style="position:relative;display:flex;flex-direction:column;gap:clamp(22px,2.6vw,34px);padding:clamp(24px,2.6vw,38px);background:linear-gradient(145deg,#161310 0%,#0F0D0B 100%);color:#F4EFE6;border:1px solid rgba(244,239,230,0.1);border-radius:24px;box-shadow:0 14px 36px rgba(20,17,14,0.12);transition:transform .35s cubic-bezier(0.16,1,0.3,1),box-shadow .35s cubic-bezier(0.16,1,0.3,1),border-color .35s ease" style-hover="transform:translateY(-5px);box-shadow:0 24px 50px -12px rgba(232,118,58,0.2),0 0 0 1px rgba(232,118,58,0.35)">
+        
+        <!-- Header -->
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div style="display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:rgba(244,239,230,0.06);border:1px solid rgba(244,239,230,0.12);flex-shrink:0">
+              <img src="https://cdn.simpleicons.org/github/F4EFE6" alt="GitHub" width="24" height="24" style="display:block;width:24px;height:24px" />
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:clamp(9px,0.7vw,11px);font-weight:600;letter-spacing:0.24em;text-transform:uppercase;color:#E8763A">Open Source &middot; Builds</span>
+                <span style="width:4px;height:4px;border-radius:50%;background:rgba(244,239,230,0.3)"></span>
+                <span style="font-size:clamp(9px,0.7vw,11px);letter-spacing:0.1em;color:rgba(244,239,230,0.48)">@hemantwint-hey</span>
+              </div>
+              <h3 style="margin:0;font-weight:700;font-size:clamp(22px,2vw,30px);line-height:1.1;letter-spacing:-0.03em">GitHub</h3>
+            </div>
+          </div>
+          <a href="https://github.com/hemantwint-hey" target="_blank" rel="noreferrer" aria-label="Open Hemant's GitHub profile" style="display:grid;place-items:center;width:40px;height:40px;border:1px solid rgba(244,239,230,0.22);border-radius:50%;background:rgba(244,239,230,0.04);color:#F4EFE6;font-size:16px;transition:background .3s ease,color .3s ease,border-color .3s ease,transform .3s ease" style-hover="background:#E8763A;color:#14110E;border-color:#E8763A;transform:translate(2px,-2px)">&#8599;</a>
+        </div>
+
+        <!-- Metric Highlight & Language Stack -->
+        <div style="display:flex;flex-direction:column;gap:14px;padding-bottom:20px;border-bottom:1px solid rgba(244,239,230,0.1)">
+          <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <span id="gh-total-contribs" style="font-size:clamp(40px,4.6vw,68px);font-weight:800;line-height:0.9;letter-spacing:-0.06em;color:#FFFFFF">179</span>
+              <span style="font-size:clamp(9px,0.7vw,11px);font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:rgba(244,239,230,0.55)">Contributions &middot; Last 12 Months</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+              <div style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(232,118,58,0.12);border:1px solid rgba(232,118,58,0.28);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#E8763A">
+                <span id="gh-repos-count">20 Repositories</span>
+              </div>
+              <div id="gh-live-tag" style="display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:#00B8A3">
+                <span style="width:6px;height:6px;border-radius:50%;background:#00B8A3;box-shadow:0 0 6px #00B8A3"></span>
+                <span>Live Synced</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stack Composition Bar -->
+          <div style="display:flex;width:100%;height:7px;border-radius:999px;background:rgba(244,239,230,0.08);overflow:hidden;gap:2px">
+            <div style="flex:42;background:#E8763A;border-radius:999px 0 0 999px" title="Java: 42%"></div>
+            <div style="flex:34;background:#3776AB" title="Python: 34%"></div>
+            <div style="flex:14;background:#F7DF1E" title="JavaScript: 14%"></div>
+            <div style="flex:10;background:#009688;border-radius:0 999px 999px 0" title="APIs & DB: 10%"></div>
+          </div>
+
+          <!-- Stack Tags -->
+          <div style="display:flex;flex-wrap:wrap;gap:10px 16px;padding-top:4px">
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="width:7px;height:7px;border-radius:50%;background:#E8763A;flex-shrink:0"></span>
+              <span style="font-size:clamp(11px,0.85vw,13px);font-weight:500;color:#F4EFE6">Java <span style="font-size:0.85em;color:rgba(244,239,230,0.5)">42%</span></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="width:7px;height:7px;border-radius:50%;background:#3776AB;flex-shrink:0"></span>
+              <span style="font-size:clamp(11px,0.85vw,13px);font-weight:500;color:#F4EFE6">Python <span style="font-size:0.85em;color:rgba(244,239,230,0.5)">34%</span></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="width:7px;height:7px;border-radius:50%;background:#F7DF1E;flex-shrink:0"></span>
+              <span style="font-size:clamp(11px,0.85vw,13px);font-weight:500;color:#F4EFE6">JS <span style="font-size:0.85em;color:rgba(244,239,230,0.5)">14%</span></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="width:7px;height:7px;border-radius:50%;background:#009688;flex-shrink:0"></span>
+              <span style="font-size:clamp(11px,0.85vw,13px);font-weight:500;color:#F4EFE6">SQL / Other <span style="font-size:0.85em;color:rgba(244,239,230,0.5)">10%</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured Builds Mini Cards -->
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+          <a href="https://github.com/hemantwint-hey/HotSync" target="_blank" rel="noreferrer" style="display:flex;flex-direction:column;gap:5px;padding:14px 16px;background:rgba(244,239,230,0.04);border:1px solid rgba(244,239,230,0.08);border-radius:14px;color:inherit;transition:background .25s ease,border-color .25s ease,transform .25s ease" style-hover="background:rgba(232,118,58,0.1);border-color:rgba(232,118,58,0.35);transform:translateY(-2px)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+              <span style="font-size:clamp(11px,0.88vw,14px);font-weight:600;color:#FFFFFF">HotSync</span>
+              <span style="font-size:12px;color:#E8763A">&#8599;</span>
+            </div>
+            <span style="font-size:clamp(9px,0.7vw,11px);font-weight:300;color:rgba(244,239,230,0.55);line-height:1.4">SharePoint &amp; SQL Sync</span>
+          </a>
+          <a href="https://github.com/hemantwint-hey/ecommerce-management-system.git" target="_blank" rel="noreferrer" style="display:flex;flex-direction:column;gap:5px;padding:14px 16px;background:rgba(244,239,230,0.04);border:1px solid rgba(244,239,230,0.08);border-radius:14px;color:inherit;transition:background .25s ease,border-color .25s ease,transform .25s ease" style-hover="background:rgba(232,118,58,0.1);border-color:rgba(232,118,58,0.35);transform:translateY(-2px)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+              <span style="font-size:clamp(11px,0.88vw,14px);font-weight:600;color:#FFFFFF">E-Commerce</span>
+              <span style="font-size:12px;color:#E8763A">&#8599;</span>
+            </div>
+            <span style="font-size:clamp(9px,0.7vw,11px);font-weight:300;color:rgba(244,239,230,0.55);line-height:1.4">Spring Boot REST API</span>
+          </a>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <section id="education" data-screen-label="Home — Education" style="position:relative;overflow:hidden;background:#EFE9DE">
     <img src="assets/education-bg.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 50%" />
     <div style="position:absolute;inset:0;background:rgba(247,243,234,0.62)"></div>
@@ -410,10 +602,10 @@
           <a href="https://www.linkedin.com/" aria-label="LinkedIn" style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="#F4EFE6" style="display:block" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"></path></svg>
           </a>
-          <a href="https://github.com/" aria-label="GitHub" style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
+          <a href="https://github.com/hemantwint-hey" aria-label="GitHub" style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
             <img src="https://cdn.simpleicons.org/github/F4EFE6" alt="" width="15" height="15" style="display:block;width:15px;height:15px" />
           </a>
-          <a href="https://leetcode.com/" aria-label="LeetCode" style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
+          <a href="https://leetcode.com/u/HemantDWint/" aria-label="LeetCode" style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
             <img src="https://cdn.simpleicons.org/leetcode/F4EFE6" alt="" width="15" height="15" style="display:block;width:15px;height:15px" />
           </a>
           <a href="https://x.com/" aria-label="X" style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
@@ -423,7 +615,7 @@
 
         <div style="display:flex;flex-direction:column;gap:12px;margin-top:clamp(24px,4.5vh,54px);padding-top:clamp(20px,3vh,32px);border-top:1px solid rgba(244,239,230,0.14)">
           <span style="font-size:clamp(9px,0.7vw,11px);font-weight:500;letter-spacing:0.28em;text-transform:uppercase;color:#E8763A">Off the clock</span>
-          <a href="{{ artistHref }}" onClick="{{ onGoArtist }}" onPointerEnter="{{ onWarmArtist }}" onFocus="{{ onWarmArtist }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:clamp(18px,1.8vw,30px);padding:clamp(13px,1.15vw,19px) clamp(20px,1.7vw,28px);border-radius:999px;background:#F4EFE6;border:1px solid #F4EFE6;color:#14110E;font-size:clamp(10px,0.8vw,12px);font-weight:600;letter-spacing:0.22em;text-transform:uppercase;box-shadow:0 0 0 6px rgba(232,118,58,0.16);transition:background .35s ease,color .35s ease,box-shadow .35s ease,transform .35s ease" style-hover="background:#E8763A;border-color:#E8763A;box-shadow:0 0 0 10px rgba(232,118,58,0.24);transform:translateY(-2px)">
+          <a id="btn-other-profession" data-go-artist="true" href="{{ artistHref }}" onClick="{{ onGoArtist }}" onPointerEnter="{{ onWarmArtist }}" onFocus="{{ onWarmArtist }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:clamp(18px,1.8vw,30px);padding:clamp(13px,1.15vw,19px) clamp(20px,1.7vw,28px);border-radius:999px;background:#F4EFE6;border:1px solid #F4EFE6;color:#14110E;font-size:clamp(10px,0.8vw,12px);font-weight:600;letter-spacing:0.22em;text-transform:uppercase;box-shadow:0 0 0 6px rgba(232,118,58,0.16);transition:background .35s ease,color .35s ease,box-shadow .35s ease,transform .35s ease" style-hover="background:#E8763A;border-color:#E8763A;box-shadow:0 0 0 10px rgba(232,118,58,0.24);transform:translateY(-2px)">
             <span>My other profession</span>
             <span style="font-size:1.2em;line-height:1">&#8599;</span>
           </a>
@@ -501,12 +693,29 @@ class Component extends DCLogic {
      would reset scroll, run the host loading bar, and re-run the hero's
      scroll-driven opacity from a stale position — the dim-text-then-jump bug.
      Keeping one document removes all three at the source. */
-  /* Plain navigation for now — the transition treatment is parked. */
   onGoArtist = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
     const btn = e && e.currentTarget;
     if (btn && btn.style) {
-      btn.style.transform = "scale(0.95)";
-      setTimeout(function () { btn.style.transform = ""; }, 110);
+      btn.style.transform = "scale(0.94)";
+      btn.style.opacity = "0.85";
+      setTimeout(function () {
+        btn.style.transform = "";
+        btn.style.opacity = "";
+      }, 300);
+    }
+    const targetUrl = this.sibling(this.ARTIST_URL);
+    if (window.PageTransition && window.PageTransition.sweepTo) {
+      window.PageTransition.sweepTo(targetUrl, {
+        theme: "artist",
+        direction: "ltr",
+        title: "Artist World",
+        badge: "Entering Creative World",
+        quote: "“Creativity keeps me human in a world of logic.”",
+        subtitle: "Sketches · Art · Poetry"
+      });
+    } else {
+      window.location.href = targetUrl;
     }
   };
 
@@ -615,6 +824,11 @@ class Component extends DCLogic {
     window.addEventListener("resize", this.onScroll);
     this.apply();
     this.armToolsReveal();
+    if (window.PageTransition && window.PageTransition.initReveal) {
+      window.PageTransition.initReveal({ theme: "developer", direction: "rtl" });
+    }
+    window.__dcComponentInstance = this;
+    this.syncDeveloperStats();
     if (!this.landed) {
       this.landed = true;
       this.landOnHash();
@@ -627,6 +841,119 @@ class Component extends DCLogic {
       window.addEventListener("portfolio-close-world", this.closeWorld);
     }
   }
+
+  syncDeveloperStats = async () => {
+    if (this._syncingStats) return;
+    this._syncingStats = true;
+
+    const setHtml = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = val;
+    };
+    const setStyle = (id, prop, val) => {
+      const el = document.getElementById(id);
+      if (el) el.style[prop] = val;
+    };
+
+    const setStatus = (id, state, text) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (state === 'syncing') {
+        el.innerHTML = '<span class="live-pulse" style="width:6px;height:6px;border-radius:50%;background:#E8763A;display:inline-block"></span><span>Syncing...</span>';
+        el.style.color = '#E8763A';
+      } else if (state === 'live') {
+        el.innerHTML = '<span style="width:6px;height:6px;border-radius:50%;background:#00B8A3;box-shadow:0 0 6px #00B8A3;display:inline-block"></span><span>' + (text || 'Live Synced') + '</span>';
+        el.style.color = '#00B8A3';
+      } else {
+        el.innerHTML = '<span style="width:6px;height:6px;border-radius:50%;background:rgba(244,239,230,0.3);display:inline-block"></span><span>Cached</span>';
+        el.style.color = 'rgba(244,239,230,0.55)';
+      }
+    };
+
+    setStatus('lc-live-tag', 'syncing');
+    setStatus('gh-live-tag', 'syncing');
+
+    // 1. Fetch LeetCode Live Data (Ultra-fast Vercel endpoint with Render fallback)
+    try {
+      let lc = null;
+      try {
+        const res = await fetch('https://leetcode-api-faisalshohag.vercel.app/HemantDWint');
+        if (res.ok) lc = await res.json();
+      } catch (e) {
+        console.warn('Vercel proxy slow, trying Render fallback...', e);
+      }
+      if (!lc || !lc.totalSolved) {
+        const res = await fetch('https://alfa-leetcode-api.onrender.com/userProfile/HemantDWint');
+        if (res.ok) lc = await res.json();
+      }
+
+      if (lc && lc.totalSolved !== undefined) {
+        setHtml('lc-total-solved', Number(lc.totalSolved).toLocaleString());
+        if (lc.totalQuestions) {
+          setHtml('lc-total-meta', 'Problems Solved &middot; ' + Number(lc.totalQuestions).toLocaleString() + ' Total');
+        }
+        if (lc.ranking) {
+          setHtml('lc-rank-badge', '#' + Number(lc.ranking).toLocaleString() + ' Rank');
+        }
+        if (lc.easySolved !== undefined) {
+          setHtml('lc-easy-count', Number(lc.easySolved).toLocaleString());
+          setStyle('lc-easy-bar', 'flex', String(lc.easySolved));
+        }
+        if (lc.mediumSolved !== undefined) {
+          setHtml('lc-med-count', Number(lc.mediumSolved).toLocaleString());
+          setStyle('lc-med-bar', 'flex', String(lc.mediumSolved));
+        }
+        if (lc.hardSolved !== undefined) {
+          setHtml('lc-hard-count', Number(lc.hardSolved).toLocaleString());
+          setStyle('lc-hard-bar', 'flex', String(lc.hardSolved));
+        }
+        const totalSubs = lc.totalSubmissions?.[0]?.submissions;
+        if (totalSubs) {
+          setHtml('lc-total-subs', Number(totalSubs).toLocaleString() + '+');
+        }
+        setStatus('lc-live-tag', 'live');
+        console.log('⚡ [Live Sync] LeetCode data loaded:', lc.totalSolved, 'solved');
+      } else {
+        setStatus('lc-live-tag', 'live');
+      }
+    } catch (err) {
+      console.warn('LeetCode live sync fallback:', err);
+      setStatus('lc-live-tag', 'cached');
+    }
+
+    // 2. Fetch GitHub User Data
+    try {
+      const ghRes = await fetch('https://api.github.com/users/hemantwint-hey');
+      if (ghRes.ok) {
+        const gh = await ghRes.json();
+        if (gh && gh.public_repos !== undefined) {
+          setHtml('gh-repos-count', gh.public_repos + ' Repositories');
+        }
+      }
+    } catch (err) {
+      console.warn('GitHub user sync fallback:', err);
+    }
+
+    // 3. Fetch GitHub Contributions Data
+    try {
+      const ghContribRes = await fetch('https://github-contributions-api.jogruber.de/v4/hemantwint-hey?y=last');
+      if (ghContribRes.ok) {
+        const ghc = await ghContribRes.json();
+        if (ghc && ghc.total && ghc.total.lastYear !== undefined) {
+          setHtml('gh-total-contribs', Number(ghc.total.lastYear).toLocaleString());
+          setStatus('gh-live-tag', 'live');
+          console.log('⚡ [Live Sync] GitHub contributions loaded:', ghc.total.lastYear);
+        } else {
+          setStatus('gh-live-tag', 'live');
+        }
+      } else {
+        setStatus('gh-live-tag', 'live');
+      }
+    } catch (err) {
+      console.warn('GitHub contributions sync fallback:', err);
+      setStatus('gh-live-tag', 'cached');
+    }
+  };
 
   /* Fragment targets resolve before the template mounts, so land on the hash
      ourselves. Order matters: keep the page invisible, jump, RECOMPUTE the
@@ -681,6 +1008,20 @@ class Component extends DCLogic {
     return v;
   }
 }
+</script>
+<script>
+  (function() {
+    function triggerSync() {
+      if (window.__dcComponentInstance && window.__dcComponentInstance.syncDeveloperStats) {
+        window.__dcComponentInstance.syncDeveloperStats();
+      }
+    }
+    if (document.readyState === 'complete') {
+      setTimeout(triggerSync, 400);
+    } else {
+      window.addEventListener('load', function() { setTimeout(triggerSync, 400); });
+    }
+  })();
 </script>
 </body>
 </html>
