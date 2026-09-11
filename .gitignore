@@ -1,0 +1,5 @@
+# Scratch and temporary directories
+scratch/
+frames/
+assets/frames_backup/
+assets/vision_frames_backup/

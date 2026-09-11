@@ -24,6 +24,31 @@
     100% { transform: scale(0.85); opacity: 0.5; }
   }
   .live-pulse { animation: livePulse 1.8s ease-in-out infinite; }
+
+  /* Experience card interactive hover */
+  .exp-card {
+    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .exp-card:hover {
+    background: rgba(20, 17, 14, 0.055) !important;
+    border-color: rgba(232, 118, 58, 0.45) !important;
+    transform: translateY(-2.5px);
+    box-shadow: 0 14px 30px rgba(20, 17, 14, 0.08);
+  }
+  .exp-card:hover .exp-arrow {
+    background: #E8763A !important;
+    color: #14110E !important;
+    transform: translate(2px, -2px);
+  }
+  @media (max-width: 960px) {
+    #company-detail-drawer {
+      grid-template-columns: 1fr !important;
+      overflow-y: auto !important;
+    }
+    #company-suit-col {
+      display: none !important;
+    }
+  }
 </style>
 <script src="./page-transition.js"></script>
 </helmet>
@@ -43,6 +68,8 @@
         <img ref="{{ f7Ref }}" src="assets/frames/frame7.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:66% 20%;opacity:0;will-change:opacity" />
         <img ref="{{ f8Ref }}" src="assets/frames/frame8.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:66% 20%;opacity:0;will-change:opacity" />
         <img ref="{{ f9Ref }}" src="assets/frames/frame9.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:66% 20%;opacity:0;will-change:opacity" />
+        <!-- Canvas for 20-frame head-turn scrubbing, perfectly overlaid on f9 -->
+        <canvas ref="{{ visionCanvasRef }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;opacity:0;will-change:opacity"></canvas>
       </div>
 
       <div ref="{{ heroLayerRef }}" style="position:absolute;inset:0;z-index:2;padding:clamp(22px,3.2vw,52px);will-change:transform;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto;pointer-events:none">
@@ -112,24 +139,38 @@
 
         <div style="grid-column:1;grid-row:2;min-height:0;align-self:center;display:flex;flex-direction:column;gap:clamp(20px,3.4vh,44px);max-width:min(48vw,620px)">
 
-          <div style="display:flex;flex-direction:column;gap:clamp(6px,0.9vh,10px)">
-            <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 16px">
-              <h2 style="margin:0;font-weight:700;font-size:clamp(22px,min(2.6vw,4.4vh),42px);line-height:1.05;letter-spacing:-0.03em">Futurense Technologies</h2>
-              <span style="font-size:clamp(9px,0.72vw,11px);font-weight:400;letter-spacing:0.24em;text-transform:uppercase;color:#6A6157">2026 &middot; Bengaluru</span>
+          <!-- Futurense Technologies Card -->
+          <div id="exp-card-futurense" onClick="{{ onOpenFuturense }}" role="button" tabindex="0" class="exp-card" style="pointer-events:auto;cursor:pointer;display:flex;flex-direction:column;gap:clamp(6px,0.9vh,10px);padding:clamp(12px,1.2vw,16px) clamp(14px,1.4vw,20px);border-radius:18px;background:rgba(20,17,14,0.02);border:1px solid rgba(20,17,14,0.08)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px">
+                <h2 style="margin:0;font-weight:700;font-size:clamp(20px,min(2.4vw,4vh),38px);line-height:1.05;letter-spacing:-0.03em">Futurense Technologies</h2>
+                <span style="font-size:clamp(9px,0.72vw,11px);font-weight:400;letter-spacing:0.24em;text-transform:uppercase;color:#6A6157">2026 &middot; Bengaluru</span>
+              </div>
+              <span class="exp-arrow" style="display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:999px;background:rgba(232,118,58,0.12);color:#E8763A;font-size:clamp(9px,0.7vw,11px);font-weight:600;letter-spacing:0.1em;text-transform:uppercase;transition:all .3s ease">
+                <span>Explore</span>
+                <span style="font-size:1.15em;line-height:1">&#8599;</span>
+              </span>
             </div>
             <div style="font-size:clamp(10px,0.82vw,13px);font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#E8763A">Tech Intern &mdash; Python Backend</div>
-            <p style="margin:0;max-width:44ch;font-size:clamp(12px,0.98vw,16px);font-weight:300;line-height:1.6;color:#2B2620;text-wrap:pretty">Built and extended the backend of an AI mock-interview platform: API endpoints, auth, and business logic, plus a retrieval-augmented layer that gives the interviewer real context to work from.</p>
+            <p style="margin:0;max-width:44ch;font-size:clamp(12px,0.98vw,15.5px);font-weight:300;line-height:1.6;color:#2B2620;text-wrap:pretty">Built and extended the backend of an AI mock-interview platform: API endpoints, auth, and business logic, plus a retrieval-augmented layer that gives the interviewer real context to work from.</p>
           </div>
 
           <span style="width:100%;max-width:min(48vw,620px);height:1px;background:rgba(20,17,14,0.14)"></span>
 
-          <div style="display:flex;flex-direction:column;gap:clamp(6px,0.9vh,10px)">
-            <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 16px">
-              <h2 style="margin:0;font-weight:700;font-size:clamp(22px,min(2.6vw,4.4vh),42px);line-height:1.05;letter-spacing:-0.03em">366PI</h2>
-              <span style="font-size:clamp(9px,0.72vw,11px);font-weight:400;letter-spacing:0.24em;text-transform:uppercase;color:#6A6157">Web Application Intern</span>
+          <!-- 366PI Card -->
+          <div id="exp-card-366pi" onClick="{{ onOpen366PI }}" role="button" tabindex="0" class="exp-card" style="pointer-events:auto;cursor:pointer;display:flex;flex-direction:column;gap:clamp(6px,0.9vh,10px);padding:clamp(12px,1.2vw,16px) clamp(14px,1.4vw,20px);border-radius:18px;background:rgba(20,17,14,0.02);border:1px solid rgba(20,17,14,0.08)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px">
+                <h2 style="margin:0;font-weight:700;font-size:clamp(20px,min(2.4vw,4vh),38px);line-height:1.05;letter-spacing:-0.03em">366PI</h2>
+                <span style="font-size:clamp(9px,0.72vw,11px);font-weight:400;letter-spacing:0.24em;text-transform:uppercase;color:#6A6157">Web Application Intern</span>
+              </div>
+              <span class="exp-arrow" style="display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:999px;background:rgba(232,118,58,0.12);color:#E8763A;font-size:clamp(9px,0.7vw,11px);font-weight:600;letter-spacing:0.1em;text-transform:uppercase;transition:all .3s ease">
+                <span>Explore</span>
+                <span style="font-size:1.15em;line-height:1">&#8599;</span>
+              </span>
             </div>
             <div style="font-size:clamp(10px,0.82vw,13px);font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#E8763A">SharePoint &middot; Azure &middot; SQL</div>
-            <p style="margin:0;max-width:44ch;font-size:clamp(12px,0.98vw,16px);font-weight:300;line-height:1.6;color:#2B2620;text-wrap:pretty">Shipped HotSync, keeping SharePoint Lists and MS SQL in step, with certificate-based Azure auth so the sync ran securely without a person in the loop.</p>
+            <p style="margin:0;max-width:44ch;font-size:clamp(12px,0.98vw,15.5px);font-weight:300;line-height:1.6;color:#2B2620;text-wrap:pretty">Shipped HotSync, keeping SharePoint Lists and MS SQL in step, with certificate-based Azure auth so the sync ran securely without a person in the loop.</p>
           </div>
 
         </div>
@@ -145,6 +186,79 @@
         <div style="grid-column:1;grid-row:3;align-self:end;font-size:clamp(9px,0.7vw,11px);font-weight:300;letter-spacing:0.12em;color:rgba(20,17,14,0.42)">02 &mdash; Experience</div>
 
       </div>
+
+      <!-- Vision Layer: What's Next Editorial (z-index: 4) -->
+      <div id="vision" ref="{{ visionLayerRef }}" data-screen-label="Home — Vision" style="position:absolute;inset:0;z-index:4;padding:clamp(22px,3.2vw,52px);will-change:transform;transform:translateY(100%);pointer-events:none;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto">
+
+        <!-- Top Eyebrow row -->
+        <div style="grid-column:1;grid-row:1;display:flex;align-items:center;gap:12px;font-size:clamp(9px,0.72vw,11px);font-weight:500;letter-spacing:0.34em;text-transform:uppercase;color:#14110E">
+          <span style="width:22px;height:1px;background:#E8763A"></span>
+          <span>What's Next</span>
+        </div>
+
+        <div style="grid-column:2;grid-row:1;display:flex;flex-direction:column;gap:4px;text-align:right;align-items:flex-end;font-size:clamp(9px,0.72vw,11px);font-weight:400;letter-spacing:0.34em;text-transform:uppercase;color:#14110E">
+          <span style="color:#E8763A;font-weight:600">2026+</span>
+          <span>Vision</span>
+          <span style="width:22px;height:1px;background:#14110E;margin-top:12px"></span>
+        </div>
+
+        <!-- Center Editorial Content -->
+        <div style="grid-column:1;grid-row:2;min-height:0;align-self:center;display:flex;flex-direction:column;gap:clamp(16px,2.4vh,32px);max-width:min(48vw,620px);pointer-events:auto">
+          
+          <div style="display:flex;flex-direction:column;gap:clamp(8px,1.2vh,14px)">
+            <h2 style="margin:0;font-weight:800;font-size:clamp(36px,min(5.2vw,8.5vh),84px);line-height:0.95;letter-spacing:-0.04em">
+              Still Building<span style="color:#E8763A">.</span>
+            </h2>
+            <div style="font-size:clamp(10px,0.82vw,13px);font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:#E8763A">
+              Product Engineering &middot; Scalable Architecture
+            </div>
+          </div>
+
+          <p style="margin:0;max-width:44ch;font-size:clamp(13px,1.02vw,16.5px);font-weight:300;line-height:1.65;color:#2B2620;text-wrap:pretty">
+            I’m working toward a software engineering role at a high-velocity product company — building scalable backend architectures, distributed systems, and real-time AI integrations that solve tangible problems. I care about writing software that stays maintainable under load and is built to be read six months later.
+          </p>
+
+          <!-- Focus Area Tags -->
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <div style="display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:rgba(20,17,14,0.05);border:1px solid rgba(20,17,14,0.12);font-size:clamp(10px,0.76vw,12px);font-weight:500;letter-spacing:0.06em;color:#14110E">
+                <span style="width:6px;height:6px;border-radius:50%;background:#E8763A"></span>
+                <span>Scalable Backend Systems</span>
+              </div>
+              <div style="display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:rgba(20,17,14,0.05);border:1px solid rgba(20,17,14,0.12);font-size:clamp(10px,0.76vw,12px);font-weight:500;letter-spacing:0.06em;color:#14110E">
+                <span style="width:6px;height:6px;border-radius:50%;background:#E8763A"></span>
+                <span>Applied AI &amp; Retrieval Pipelines</span>
+              </div>
+              <div style="display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:rgba(20,17,14,0.05);border:1px solid rgba(20,17,14,0.12);font-size:clamp(10px,0.76vw,12px);font-weight:500;letter-spacing:0.06em;color:#14110E">
+                <span style="width:6px;height:6px;border-radius:50%;background:#E8763A"></span>
+                <span>Product Reliability at Scale</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Corner Tags -->
+        <div style="grid-column:2;grid-row:2;align-self:center;justify-self:end;display:flex;flex-direction:column;gap:4px;align-items:flex-end;font-size:clamp(9px,0.72vw,11px);font-weight:400;letter-spacing:0.34em;text-transform:uppercase;color:#14110E">
+          <span>Backend</span>
+          <span>Systems</span>
+          <span>AI Ops</span>
+          <span>Growth</span>
+          <span style="width:22px;height:1px;background:#14110E;margin-top:12px"></span>
+        </div>
+
+        <!-- Bottom row -->
+        <div style="grid-column:1;grid-row:3;align-self:end;display:flex;align-items:center;gap:16px;font-size:clamp(9px,0.7vw,11px);font-weight:300;letter-spacing:0.12em;color:rgba(20,17,14,0.5)">
+          <span>03 &mdash; Vision</span>
+          <span>&middot;</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;color:#14110E;font-weight:500">
+            <span class="live-pulse" style="width:6px;height:6px;border-radius:50%;background:#00B8A3"></span>
+            <span>Open to Opportunities</span>
+          </span>
+        </div>
+
+      </div>
+
     </div>
   </section>
 
@@ -633,20 +747,199 @@
 
 
 
+  <!-- =========================================================
+       COMPANY EXPERIENCE DEEP-DIVE SLIDE-IN SHOWCASE
+       Featuring full-length suit portrait + detailed work breakdown
+       ========================================================= -->
+  <div id="company-detail-modal" ref="{{ companyModalRef }}" onClick="{{ onCloseCompany }}" style="position:fixed;inset:0;z-index:2147483640;pointer-events:none;opacity:0;transition:opacity 400ms ease;overflow:hidden;background:rgba(20,17,14,0.65);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)">
+    
+    <!-- Outer Drawer Wrapper (Slides in from Right) -->
+    <div id="company-detail-drawer" ref="{{ companyDrawerRef }}" style="position:absolute;top:0;right:0;bottom:0;width:100%;max-width:100vw;height:100vh;background:#EFE9DE;transform:translateX(100%);transition:transform 550ms cubic-bezier(0.16,1,0.3,1);display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,1fr);overflow:hidden;box-shadow:-20px 0 60px rgba(0,0,0,0.35)">
+      
+      <!-- Left Column: Editorial Details & Accomplishments (Scrollable) -->
+      <div style="position:relative;z-index:2;height:100%;overflow-y:auto;padding:clamp(22px,3.2vh,44px) clamp(22px,3.4vw,56px);display:flex;flex-direction:column;gap:clamp(18px,2.5vh,32px)">
+        
+        <!-- Header Bar: Back Button + Switcher Tabs + Close Icon -->
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding-bottom:16px;border-bottom:1px solid rgba(20,17,14,0.12)">
+          <button id="btn-back-company" type="button" onClick="{{ onCloseCompany }}" style="display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;background:rgba(20,17,14,0.08);border:1px solid rgba(20,17,14,0.16);font-family:'Poppins',sans-serif;font-size:clamp(10px,0.76vw,12px);font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#14110E;cursor:pointer;transition:all .25s ease">
+            <span>&larr;</span>
+            <span>Back</span>
+          </button>
+
+          <!-- Company Switcher Tabs -->
+          <div style="display:inline-flex;align-items:center;gap:4px;padding:4px;background:rgba(20,17,14,0.06);border-radius:999px;border:1px solid rgba(20,17,14,0.1)">
+            <button id="tab-btn-futurense" type="button" onClick="{{ onSelectFuturense }}" style="padding:7px 18px;border-radius:999px;border:none;background:#14110E;color:#F4EFE6;font-family:'Poppins',sans-serif;font-size:clamp(10px,0.76vw,12px);font-weight:600;letter-spacing:0.08em;cursor:pointer;transition:all .25s ease">
+              Futurense
+            </button>
+            <button id="tab-btn-366pi" type="button" onClick="{{ onSelect366PI }}" style="padding:7px 18px;border-radius:999px;border:none;background:transparent;color:#14110E;font-family:'Poppins',sans-serif;font-size:clamp(10px,0.76vw,12px);font-weight:500;letter-spacing:0.08em;cursor:pointer;transition:all .25s ease">
+              366PI
+            </button>
+          </div>
+
+          <button id="btn-close-company" type="button" onClick="{{ onCloseCompany }}" aria-label="Close" style="display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:rgba(20,17,14,0.06);border:1px solid rgba(20,17,14,0.14);color:#14110E;font-size:16px;cursor:pointer;transition:all .25s ease">
+            &#10005;
+          </button>
+        </div>
+
+        <!-- Dynamic Content: Futurense View -->
+        <div id="company-view-futurense" style="display:flex;flex-direction:column;gap:clamp(16px,2.2vh,28px)">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:999px;background:rgba(232,118,58,0.15);border:1px solid rgba(232,118,58,0.35);color:#E8763A;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;align-self:flex-start">
+              <span>07/2026 &ndash; 10/2026 &middot; Bengaluru</span>
+            </div>
+            <h1 style="margin:4px 0 0;font-weight:800;font-size:clamp(26px,min(3.4vw,5vh),48px);line-height:1.02;letter-spacing:-0.035em;color:#14110E">
+              Futurense Technologies<span style="color:#E8763A">.</span>
+            </h1>
+            <div style="font-size:clamp(11px,0.9vw,14px);font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#E8763A">
+              Tech Intern &mdash; Python Backend &amp; AI Systems
+            </div>
+          </div>
+
+          <p style="margin:0;font-size:clamp(12px,0.96vw,15.5px);font-weight:300;line-height:1.65;color:#2B2620;text-wrap:pretty">
+            Engineered the Python backend for an AI-powered mock interview platform, architecting context-aware retrieval pipelines and scalable microservice APIs.
+          </p>
+
+          <!-- Core Contributions List -->
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#14110E">Key Engineering Contributions</span>
+
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:14px;background:rgba(20,17,14,0.03);border:1px solid rgba(20,17,14,0.08)">
+              <span style="width:7px;height:7px;border-radius:50%;background:#E8763A;margin-top:7px;flex-shrink:0"></span>
+              <div style="font-size:clamp(12px,0.88vw,14px);line-height:1.56;color:#2B2620">
+                <strong>RAG Context Retrieval:</strong> Implemented Retrieval-Augmented Generation (RAG) into the AI interview engine, delivering relevant contextual knowledge to interview interactions.
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:14px;background:rgba(20,17,14,0.03);border:1px solid rgba(20,17,14,0.08)">
+              <span style="width:7px;height:7px;border-radius:50%;background:#E8763A;margin-top:7px;flex-shrink:0"></span>
+              <div style="font-size:clamp(12px,0.88vw,14px);line-height:1.56;color:#2B2620">
+                <strong>Python Backend APIs:</strong> Developed and extended core REST endpoints, request/response flows, auth middleware, and backend business logic.
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:14px;background:rgba(20,17,14,0.03);border:1px solid rgba(20,17,14,0.08)">
+              <span style="width:7px;height:7px;border-radius:50%;background:#E8763A;margin-top:7px;flex-shrink:0"></span>
+              <div style="font-size:clamp(12px,0.88vw,14px);line-height:1.56;color:#2B2620">
+                <strong>End-to-End Request Tracing:</strong> Mapped and optimized the frontend-to-backend API flow, tracing requests through distributed services to maintain low latency.
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:14px;background:rgba(20,17,14,0.03);border:1px solid rgba(20,17,14,0.08)">
+              <span style="width:7px;height:7px;border-radius:50%;background:#E8763A;margin-top:7px;flex-shrink:0"></span>
+              <div style="font-size:clamp(12px,0.88vw,14px);line-height:1.56;color:#2B2620">
+                <strong>Production Maintenance:</strong> Worked across active production codebases, debugging and extending backend functionality while maintaining backwards compatibility.
+              </div>
+            </div>
+          </div>
+
+          <!-- Technologies Used -->
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#14110E">Technologies &amp; Architecture</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <span style="padding:6px 13px;border-radius:999px;background:#14110E;color:#F4EFE6;font-size:11.5px;font-weight:500">Python 3</span>
+              <span style="padding:6px 13px;border-radius:999px;background:#14110E;color:#F4EFE6;font-size:11.5px;font-weight:500">FastAPI</span>
+              <span style="padding:6px 13px;border-radius:999px;background:#14110E;color:#F4EFE6;font-size:11.5px;font-weight:500">Retrieval-Augmented Generation</span>
+              <span style="padding:6px 13px;border-radius:999px;background:#14110E;color:#F4EFE6;font-size:11.5px;font-weight:500">Vector Search</span>
+              <span style="padding:6px 13px;border-radius:999px;background:#14110E;color:#F4EFE6;font-size:11.5px;font-weight:500">JWT Auth</span>
+              <span style="padding:6px 13px;border-radius:999px;background:#14110E;color:#F4EFE6;font-size:11.5px;font-weight:500">RESTful Services</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Content: 366PI View -->
+        <div id="company-view-366pi" style="display:none;flex-direction:column;gap:clamp(16px,2.2vh,28px)">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:999px;background:rgba(232,118,58,0.15);border:1px solid rgba(232,118,58,0.35);color:#E8763A;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;align-self:flex-start">
+              <span>6 Weeks &middot; Web Application Intern</span>
+            </div>
+            <h1 style="margin:4px 0 0;font-weight:800;font-size:clamp(26px,min(3.4vw,5vh),48px);line-height:1.02;letter-spacing:-0.035em;color:#14110E">
+              366PI<span style="color:#E8763A">.</span>
+            </h1>
+            <div style="font-size:clamp(11px,0.9vw,14px);font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#E8763A">
+              Enterprise Cloud &amp; Automated Synchronization
+            </div>
+          </div>
+
+          <p style="margin:0;font-size:clamp(12px,0.96vw,15.5px);font-weight:300;line-height:1.65;color:#2B2620;text-wrap:pretty">
+            Engineered enterprise integration solutions connecting SharePoint Online collaboration platforms with Microsoft SQL Server databases and Azure security infrastructure.
+          </p>
+
+          <!-- Core Contributions List -->
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#14110E">Key Engineering Contributions</span>
+
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:14px;background:rgba(20,17,14,0.03);border:1px solid rgba(20,17,14,0.08)">
+              <span style="width:7px;height:7px;border-radius:50%;background:#E8763A;margin-top:7px;flex-shrink:0"></span>
+              <div style="font-size:clamp(12px,0.88vw,14px);line-height:1.56;color:#2B2620">
+                <strong>HotSync Data Synchronization:</strong> Implemented and supported HotSync functionality to synchronize SharePoint Lists with Microsoft SQL Server, ensuring reliable bi-directional data flow.
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:14px;background:rgba(20,17,14,0.03);border:1px solid rgba(20,17,14,0.08)">
+              <span style="width:7px;height:7px;border-radius:50%;background:#E8763A;margin-top:7px;flex-shrink:0"></span>
+              <div style="font-size:clamp(12px,0.88vw,14px);line-height:1.56;color:#2B2620">
+                <strong>Azure Certificate Authentication:</strong> Configured Azure-based certificate authentication to securely connect SharePoint Online with MS SQL without human intervention in the automated sync.
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:14px;background:rgba(20,17,14,0.03);border:1px solid rgba(20,17,14,0.08)">
+              <span style="width:7px;height:7px;border-radius:50%;background:#E8763A;margin-top:7px;flex-shrink:0"></span>
+              <div style="font-size:clamp(12px,0.88vw,14px);line-height:1.56;color:#2B2620">
+                <strong>Windmill Automation App:</strong> Deployed and validated Windmill Automation App reviews on staging servers, testing permissions, configurations, and deployment readiness.
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:14px;background:rgba(20,17,14,0.03);border:1px solid rgba(20,17,14,0.08)">
+              <span style="width:7px;height:7px;border-radius:50%;background:#E8763A;margin-top:7px;flex-shrink:0"></span>
+              <div style="font-size:clamp(12px,0.88vw,14px);line-height:1.56;color:#2B2620">
+                <strong>Enterprise Web Ecosystem:</strong> Gained hands-on production exposure to SPFx, React components, ASP.NET Core, and Azure DevOps integration.
+              </div>
+            </div>
+          </div>
+
+          <!-- Technologies Used -->
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+            <span style="font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#14110E">Technologies &amp; Architecture</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <span style="padding:6px 13px;border-radius:999px;background:#14110E;color:#F4EFE6;font-size:11.5px;font-weight:500">SharePoint Online</span>
+              <span style="padding:6px 13px;border-radius:999px;background:#14110E;color:#F4EFE6;font-size:11.5px;font-weight:500">Microsoft SQL Server</span>
+              <span style="padding:6px 13px;border-radius:999px;background:#14110E;color:#F4EFE6;font-size:11.5px;font-weight:500">Azure Cert Auth</span>
+              <span style="padding:6px 13px;border-radius:999px;background:#14110E;color:#F4EFE6;font-size:11.5px;font-weight:500">ASP.NET Core</span>
+              <span style="padding:6px 13px;border-radius:999px;background:#14110E;color:#F4EFE6;font-size:11.5px;font-weight:500">SPFx &amp; React</span>
+              <span style="padding:6px 13px;border-radius:999px;background:#14110E;color:#F4EFE6;font-size:11.5px;font-weight:500">HotSync</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Full-Height Suit Portrait Showcase -->
+      <div id="company-suit-col" style="position:relative;height:100%;overflow:hidden;background:#EFE9DE;display:flex;align-items:flex-end;justify-content:center">
+        <img src="assets/suit-portrait.png" alt="Hemant Kumar Mahto in sharp black suit" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center;transition:transform 700ms cubic-bezier(0.16,1,0.3,1)" />
+        <div style="position:absolute;inset:0;background:linear-gradient(90deg, #EFE9DE 0%, rgba(239,233,222,0) 25%);pointer-events:none"></div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;scrollLength&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:320,&quot;min&quot;:180,&quot;max&quot;:600,&quot;step&quot;:20,&quot;unit&quot;:&quot;vh&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;holdStart&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.14,&quot;min&quot;:0,&quot;max&quot;:0.5,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Portrait frames&quot;},&quot;holdEnd&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.94,&quot;min&quot;:0.6,&quot;max&quot;:1,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Portrait frames&quot;},&quot;pushStart&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.52,&quot;min&quot;:0.2,&quot;max&quot;:0.8,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Panel push&quot;},&quot;pushEnd&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.9,&quot;min&quot;:0.6,&quot;max&quot;:1,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Panel push&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;scrollLength&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:540,&quot;min&quot;:200,&quot;max&quot;:800,&quot;step&quot;:20,&quot;unit&quot;:&quot;vh&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;holdStart&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.06,&quot;min&quot;:0,&quot;max&quot;:0.5,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Portrait frames&quot;},&quot;holdEnd&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.36,&quot;min&quot;:0.2,&quot;max&quot;:0.6,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Portrait frames&quot;},&quot;pushStart&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.22,&quot;min&quot;:0.1,&quot;max&quot;:0.5,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Panel push&quot;},&quot;pushEnd&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.36,&quot;min&quot;:0.2,&quot;max&quot;:0.6,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Panel push&quot;}}">
 class Component extends DCLogic {
   /* ------------------------------------------------------------------
-     Scroll-progress → frame mapping.
-     Nine supplied frames are stacked in order; each only needs to fade
-     IN over the one beneath it, so the whole sequence is one table.
-     Add a transformation later by appending a track + a ref.        */
+     Unified Hero + Experience + Vision Scroll-Driven Sequence.
+     - 0.00 to 0.36: Hero text + frame 1 -> frame 9 crossfades
+     - 0.36 to 0.54: Experience reading hold (portrait on frame 9)
+     - 0.54 to 0.68: Experience exits up (-100%) as Vision enters (0%)
+     - 0.54 to 0.90: Canvas scrubs 20-frame head turn (forward -> profile)
+     - 0.90 to 1.00: Vision reading hold on profile pose
+     - 1.00+: Stage unpins and rolls up into Projects (#work)
+  ------------------------------------------------------------------ */
   FRAMES = 9;
 
   buildTracks() {
-    const start = this.props.holdStart ?? 0.14;   // frame 1 holds until here
-    const end = this.props.holdEnd ?? 0.94;       // last frame settled by here
+    const start = this.props.holdStart ?? 0.06;
+    const end = this.props.holdEnd ?? 0.36;
     const step = (end - start) / (this.FRAMES - 1);
     const t = {};
     for (let i = 2; i <= this.FRAMES; i++) {
@@ -656,29 +949,111 @@ class Component extends DCLogic {
     return t;
   }
 
-  /* Vertical push: hero panel exits up as the Experience panel rides up
-     behind it over the SAME range, so the two read as one stack moving.
-     Values are viewport percentages; opacity is only an edge softener. */
+  /* Vertical push for the 3 editorial layers:
+     - Hero exits up (-100%) between 0.22 and 0.36 as Experience enters (100% -> 0%)
+     - Experience holds from 0.36 to 0.54
+     - Experience exits up (-100%) between 0.54 and 0.68 as Vision enters (100% -> 0%)
+     - Vision holds from 0.68 to 1.00 */
   buildPush() {
-    const a = this.props.pushStart ?? 0.52;
-    const b = this.props.pushEnd ?? 0.9;
-    /* Position-only: the panels are driven purely by translateY. Any opacity
-       ramp here reads as "the text went dim", so both stay fully opaque. */
     return {
-      heroY:    [[a, 0], [b, -100]],
-      expY:     [[a, 100], [b, 0]],
-      heroFade: [[a, 1], [b, 1]],
-      expFade:  [[a, 1], [b, 1]]
+      heroY:   [[0.22, 0], [0.36, -100]],
+      expY:    [[0.22, 100], [0.36, 0], [0.54, 0], [0.68, -100]],
+      visionY: [[0.54, 100], [0.68, 0]]
     };
   }
 
   r = {
     stage: React.createRef(), heroLayer: React.createRef(), expLayer: React.createRef(),
+    visionLayer: React.createRef(), visionCanvas: React.createRef(),
     toolsGrid: React.createRef(), page: React.createRef(),
-    reveal: React.createRef()
+    reveal: React.createRef(),
+    companyModal: React.createRef(), companyDrawer: React.createRef()
   };
 
   state = { revealMounted: false, worldOpen: false };
+
+  /* ------------------------------------------------------------------
+     Company Experience Deep-Dive Showcase Methods
+  ------------------------------------------------------------------ */
+  onOpenFuturense = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    this.openCompanyDrawer("futurense");
+  };
+
+  onOpen366PI = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    this.openCompanyDrawer("366pi");
+  };
+
+  onCloseCompany = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    this.closeCompanyDrawer();
+  };
+
+  onSelectFuturense = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    this.switchCompanyTab("futurense");
+  };
+
+  onSelect366PI = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    this.switchCompanyTab("366pi");
+  };
+
+  openCompanyDrawer = (companyId) => {
+    this.companyDrawerOpen = true;
+    this.switchCompanyTab(companyId);
+    const modal = this.r.companyModal && this.r.companyModal.current;
+    const drawer = this.r.companyDrawer && this.r.companyDrawer.current;
+    if (modal) {
+      modal.style.pointerEvents = "all";
+      modal.style.opacity = "1";
+    }
+    if (drawer) {
+      drawer.style.transform = "translateX(0%)";
+    }
+    document.body.style.overflow = "hidden";
+  };
+
+  closeCompanyDrawer = () => {
+    this.companyDrawerOpen = false;
+    const modal = this.r.companyModal && this.r.companyModal.current;
+    const drawer = this.r.companyDrawer && this.r.companyDrawer.current;
+    if (drawer) {
+      drawer.style.transform = "translateX(100%)";
+    }
+    if (modal) {
+      modal.style.opacity = "0";
+      setTimeout(() => {
+        if (!this.companyDrawerOpen && modal) {
+          modal.style.pointerEvents = "none";
+        }
+      }, 550);
+    }
+    document.body.style.overflow = "";
+  };
+
+  switchCompanyTab = (companyId) => {
+    const isFut = companyId === "futurense";
+    const vFut = document.getElementById("company-view-futurense");
+    const v366 = document.getElementById("company-view-366pi");
+    const tabFut = document.getElementById("tab-btn-futurense");
+    const tab366 = document.getElementById("tab-btn-366pi");
+
+    if (vFut) vFut.style.display = isFut ? "flex" : "none";
+    if (v366) v366.style.display = isFut ? "none" : "flex";
+
+    if (tabFut) {
+      tabFut.style.background = isFut ? "#14110E" : "transparent";
+      tabFut.style.color = isFut ? "#F4EFE6" : "#14110E";
+      tabFut.style.fontWeight = isFut ? "600" : "500";
+    }
+    if (tab366) {
+      tab366.style.background = isFut ? "transparent" : "#14110E";
+      tab366.style.color = isFut ? "#14110E" : "#F4EFE6";
+      tab366.style.fontWeight = isFut ? "500" : "600";
+    }
+  };
 
   /* World swap: the artist page is revealed by a clip boundary sweeping
      left -> right (see page-transition.js); the route commits at the end. */
@@ -792,6 +1167,44 @@ class Component extends DCLogic {
     return Math.min(1, Math.max(0, -rect.top / span));
   }
 
+  drawVisionFrame(idx) {
+    const canvas = this.r.visionCanvas && this.r.visionCanvas.current;
+    const img = this.visionFrames && this.visionFrames[idx];
+    if (!canvas || !img || !img.complete || img.naturalWidth === 0) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    if (w === 0 || h === 0) return;
+
+    const targetW = Math.round(w * dpr);
+    const targetH = Math.round(h * dpr);
+    if (canvas.width !== targetW || canvas.height !== targetH) {
+      canvas.width = targetW;
+      canvas.height = targetH;
+    }
+
+    ctx.save();
+    ctx.scale(dpr, dpr);
+
+    const iw = img.naturalWidth;
+    const ih = img.naturalHeight;
+    const scale = Math.max(w / iw, h / ih);
+    const nw = iw * scale;
+    const nh = ih * scale;
+
+    // Center alignment at 66% horizontal and 20% vertical matching Hero framing
+    const x = (w - nw) * 0.66;
+    const y = (h - nh) * 0.20;
+
+    ctx.clearRect(0, 0, w, h);
+    ctx.drawImage(img, x, y, nw, nh);
+    ctx.restore();
+  }
+
   apply = () => {
     this.raf = 0;
     const p = this.progress();
@@ -802,7 +1215,10 @@ class Component extends DCLogic {
     }
 
     const push = this.push || (this.push = this.buildPush());
-    const hero = this.r.heroLayer.current, exp = this.r.expLayer.current;
+    const hero = this.r.heroLayer && this.r.heroLayer.current;
+    const exp = this.r.expLayer && this.r.expLayer.current;
+    const vision = this.r.visionLayer && this.r.visionLayer.current;
+
     if (hero) {
       hero.style.transform = "translateY(" + this.sample(push.heroY, p).toFixed(2) + "%)";
       hero.style.opacity = "1";
@@ -811,17 +1227,62 @@ class Component extends DCLogic {
       exp.style.transform = "translateY(" + this.sample(push.expY, p).toFixed(2) + "%)";
       exp.style.opacity = "1";
     }
+    if (vision) {
+      vision.style.transform = "translateY(" + this.sample(push.visionY, p).toFixed(2) + "%)";
+      vision.style.opacity = "1";
+    }
+
+    // Scrub 20-frame head-turn sequence on canvas:
+    // Starts at p = 0.54 (the instant Experience begins sliding up to exit and Vision enters)
+    // Runs smoothly until p = 0.90 (profile pose holds from 0.90 to 1.00)
+    const canvas = this.r.visionCanvas && this.r.visionCanvas.current;
+    if (p >= 0.54) {
+      if (canvas && canvas.style.opacity !== "1") canvas.style.opacity = "1";
+      const turnSpan = 0.90 - 0.54;
+      const frameP = Math.min(1, Math.max(0, (p - 0.54) / turnSpan));
+      const frameIdx = Math.min(19, Math.round(frameP * 19));
+      if (this.currentVisionFrameIdx !== frameIdx) {
+        this.currentVisionFrameIdx = frameIdx;
+        this.drawVisionFrame(frameIdx);
+      }
+    } else {
+      if (canvas && canvas.style.opacity !== "0") canvas.style.opacity = "0";
+      if (this.currentVisionFrameIdx !== 0) {
+        this.currentVisionFrameIdx = 0;
+        this.drawVisionFrame(0);
+      }
+    }
   };
 
   onScroll = () => { if (!this.raf) this.raf = requestAnimationFrame(this.apply); };
 
   componentDidMount() {
     const el = this.r.stage.current;
-    if (el) el.style.height = (this.props.scrollLength ?? 320) + "vh";
+    if (el) el.style.height = (this.props.scrollLength ?? 540) + "vh";
     this.tracks = this.buildTracks();
     this.push = this.buildPush();
+
+    // Preload all 20 frames for What's Next head-turn sequence
+    this.visionFrames = [];
+    this.visionFramesLoaded = 0;
+    for (let i = 1; i <= 20; i++) {
+      const num = String(i).padStart(3, "0");
+      const img = new Image();
+      img.src = "assets/vision-frames/frame-" + num + ".png";
+      img.onload = () => {
+        this.visionFramesLoaded++;
+        if (this.visionFramesLoaded === 1) {
+          this.drawVisionFrame(0);
+        }
+      };
+      this.visionFrames.push(img);
+    }
+
     window.addEventListener("scroll", this.onScroll, { passive: true });
-    window.addEventListener("resize", this.onScroll);
+    window.addEventListener("resize", () => {
+      this.drawVisionFrame(this.currentVisionFrameIdx || 0);
+      this.onScroll();
+    });
     this.apply();
     this.armToolsReveal();
     if (window.PageTransition && window.PageTransition.initReveal) {
@@ -840,6 +1301,33 @@ class Component extends DCLogic {
       // the embedded artist world asks to close through this event
       window.addEventListener("portfolio-close-world", this.closeWorld);
     }
+    this.onKeyDown = (e) => {
+      if (e.key === "Escape" && this.companyDrawerOpen) {
+        this.closeCompanyDrawer();
+      }
+    };
+    window.addEventListener("keydown", this.onKeyDown);
+
+    // Direct DOM bindings for Company Experience Drawer & Tabs
+    const expFut = document.getElementById("exp-card-futurense");
+    const exp366 = document.getElementById("exp-card-366pi");
+    if (expFut) expFut.onclick = (e) => { e.preventDefault(); this.openCompanyDrawer("futurense"); };
+    if (exp366) exp366.onclick = (e) => { e.preventDefault(); this.openCompanyDrawer("366pi"); };
+
+    const drawerEl = document.getElementById("company-detail-drawer");
+    if (drawerEl) drawerEl.onclick = (e) => { e.stopPropagation(); };
+
+    const modalEl = document.getElementById("company-detail-modal");
+    if (modalEl) modalEl.onclick = (e) => { if (e.target === modalEl) this.closeCompanyDrawer(); };
+
+    const tabFut = document.getElementById("tab-btn-futurense");
+    const tab366 = document.getElementById("tab-btn-366pi");
+    const btnBack = document.getElementById("btn-back-company");
+    const btnClose = document.getElementById("btn-close-company");
+    if (tabFut) tabFut.onclick = (e) => { e.stopPropagation(); this.switchCompanyTab("futurense"); };
+    if (tab366) tab366.onclick = (e) => { e.stopPropagation(); this.switchCompanyTab("366pi"); };
+    if (btnBack) btnBack.onclick = (e) => { e.stopPropagation(); this.closeCompanyDrawer(); };
+    if (btnClose) btnClose.onclick = (e) => { e.stopPropagation(); this.closeCompanyDrawer(); };
   }
 
   syncDeveloperStats = async () => {
@@ -991,6 +1479,7 @@ class Component extends DCLogic {
     window.removeEventListener("scroll", this.onScroll);
     window.removeEventListener("resize", this.onScroll);
     window.removeEventListener("portfolio-close-world", this.closeWorld);
+    if (this.onKeyDown) window.removeEventListener("keydown", this.onKeyDown);
     if (this.raf) cancelAnimationFrame(this.raf);
     if (this.io) this.io.disconnect();
   }
@@ -1002,7 +1491,21 @@ class Component extends DCLogic {
       pageRef: this.r.page,
       artistHref: this.sibling(this.ARTIST_URL),
       onGoArtist: this.onGoArtist, onWarmArtist: this.warmArtist,
-      revealRef: this.r.reveal, revealMounted: this.state.revealMounted
+      revealRef: this.r.reveal, revealMounted: this.state.revealMounted,
+      visionLayerRef: this.r.visionLayer,
+      visionCanvasRef: this.r.visionCanvas,
+      // Company Drawer refs & handlers
+      companyModalRef: this.r.companyModal,
+      companyDrawerRef: this.r.companyDrawer,
+      onOpenFuturense: this.onOpenFuturense,
+      onOpen366PI: this.onOpen366PI,
+      onCloseCompany: this.onCloseCompany,
+      onSelectFuturense: this.onSelectFuturense,
+      onSelect366PI: this.onSelect366PI,
+      // Compatibility fallbacks
+      visionStageRef: this.r.stage,
+      visionFallbackRef: this.r.f9,
+      visionTextRef: this.r.visionLayer
     };
     for (let i = 1; i <= this.FRAMES; i++) v["f" + i + "Ref"] = this.r["f" + i];
     return v;
