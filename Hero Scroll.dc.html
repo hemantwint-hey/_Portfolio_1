@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./page-transition.js?v=3"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -11,10 +10,10 @@
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,700;0,800;1,300&family=Instrument+Serif:ital@0;1&family=Caveat:wght@400;500&display=swap" rel="stylesheet" />
-<script src="./image-slot.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Poppins:ital,wght@0,300;0,400;0,500;0,700;0,800;1,300&family=Instrument+Serif:ital@0;1&family=Caveat:wght@400;500&display=swap" rel="stylesheet" />
 <style>
   * { box-sizing: border-box; }
+  html, body { scroll-behavior: auto !important; }
   body { margin: 0; background: #EFE9DE; color: #14110E; -webkit-font-smoothing: antialiased; }
   a { color: #14110E; text-decoration: none; }
   a:hover { color: #E8763A; }
@@ -49,13 +48,613 @@
       display: none !important;
     }
   }
+
+  /* ---------- Phone and small tablet ----------
+       The three pinned layers sit straight on the portrait, so colour alone
+       cannot make them readable. Each layer gets a light wash behind its own
+       content, and the cards get a real backing. Desktop is untouched. */
+  @media (max-width: 820px) {
+    /* Only the experience and vision layers carry a wash. The hero has no
+       accent colour over the face and reads fine on the bare photograph. */
+    .stg-wash::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: linear-gradient(180deg,
+        rgba(240,236,228,0.62) 0%,
+        rgba(240,236,228,0.52) 55%,
+        rgba(240,236,228,0.26) 100%);
+    }
+
+    .stg-layer { color: #000000; }
+
+    .stg-layer [style*="color:#2B2620"],
+    .stg-layer [style*="color:#6A6157"],
+    .stg-layer [style*="color:#14110E"],
+    .stg-layer [style*="color:rgba(20,17,14"],
+    .stg-layer h1,
+    .stg-layer h2,
+    .stg-layer h3,
+    .stg-layer p { color: #000000 !important; }
+
+    /* accents keep their identity but at a weight that survives the photo */
+    .stg-layer [style*="color:#E8763A"] { color: #A83E12 !important; }
+    .stg-layer [style*="background:rgba(232,118,58,0.12)"] {
+      background: rgba(168,62,18,0.16) !important;
+    }
+    .stg-layer [style*="background:#E8763A"] { background: #A83E12 !important; }
+
+    /* light text on the dark pill must stay light */
+    .stg-layer [style*="color:#F4EFE6"],
+    .stg-layer [style*="color:#F4EFE6"] span { color: #F4EFE6 !important; }
+
+    /* the experience cards become opaque panels rather than faint outlines */
+    .stg-layer .exp-card,
+    .stg-layer [style*="border-radius:18px"] {
+      background: rgba(252,250,246,0.92) !important;
+      border-color: rgba(20,17,14,0.18) !important;
+    }
+
+    .stg-layer [style*="opacity:0.4"] { opacity: 0.85 !important; }
+    .stg-layer [style*="opacity:0.55"] { opacity: 0.9 !important; }
+  }
+
+  /* ---------- Projects: cards and the project detail drawer ---------- */
+  /* One horizontal rail: the cards run left to right and the row scrolls,
+     so a fourth project never drops onto a lonely second line. */
+  .proj-grid {
+    display: flex;
+    gap: clamp(16px, 1.8vw, 28px);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px 2px 20px;            /* room for the hover lift and the bar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(20,17,14,0.22) rgba(20,17,14,0.06);
+  }
+  .proj-grid > .proj-card {
+    flex: 0 0 clamp(290px, 27vw, 400px);
+    scroll-snap-align: start;
+  }
+  @media (max-width: 720px) {
+    .proj-grid > .proj-card { flex-basis: min(84vw, 360px); }
+  }
+  .proj-grid::-webkit-scrollbar { height: 6px; }
+  .proj-grid::-webkit-scrollbar-track { background: rgba(20,17,14,0.06); border-radius: 999px; }
+  .proj-grid::-webkit-scrollbar-thumb { background: rgba(20,17,14,0.22); border-radius: 999px; }
+  .proj-grid::-webkit-scrollbar-thumb:hover { background: #E8763A; }
+
+  .proj-card { cursor: pointer; transition: transform .45s cubic-bezier(.22,.61,.36,1), box-shadow .45s ease; }
+  .proj-card:hover { transform: translateY(-6px); box-shadow: 0 22px 48px rgba(20,17,14,0.22); }
+  .proj-card:focus-visible { outline: 2px solid #E8763A; outline-offset: 4px; }
+  .proj-arrow { transition: background .3s ease, transform .3s ease; }
+  .proj-card:hover .proj-arrow { background: #E8763A; transform: translate(2px,-2px); }
+
+  @media (max-width: 960px) {
+    #project-detail-drawer { grid-template-columns: 1fr !important; overflow-y: auto !important; }
+    #project-hero-col { display: none !important; }
+  }
+
+  /* Zorro Slash & Transition Engine */
+  #zorro-slash-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483645;
+    pointer-events: none;
+    overflow: hidden;
+    display: none;
+  }
+  #zorro-impact-flash {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483646;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.96) 0%, rgba(232, 118, 58, 0.55) 45%, transparent 80%);
+    mix-blend-mode: screen;
+    transition: opacity 120ms ease;
+  }
+  .slash-blade-beam {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 300vmax;
+    height: 6px;
+    margin-left: -150vmax;
+    margin-top: -3px;
+    background: #FFFFFF;
+    box-shadow: 0 0 16px #FFFFFF, 0 0 34px #E8763A, 0 0 75px #FF9D5C, 0 0 130px rgba(232, 118, 58, 0.95);
+    transform-origin: center center;
+    filter: blur(0.5px);
+    will-change: transform, opacity;
+  }
+  .slash-blade-fan {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 300vmax;
+    height: 160px;
+    margin-left: -150vmax;
+    margin-top: -80px;
+    background: linear-gradient(180deg, rgba(232, 118, 58, 0.65) 0%, rgba(255, 157, 92, 0.25) 35%, transparent 100%);
+    transform-origin: center center;
+    filter: blur(16px);
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  @keyframes cameraPunch {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-5px, 4px); }
+    50% { transform: translate(4px, -3px); }
+    75% { transform: translate(-3px, 2px); }
+    100% { transform: translate(0, 0); }
+  }
+  .camera-punch {
+    animation: cameraPunch 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* =========================================================
+     ARTIST WORLD — hand-drawn sketchbook. Paper and ink only.
+     ========================================================= */
+  /* The Artist world is NOT part of the developer scroll. It is unreachable
+     until "My other profession" opens it, then it becomes its own full-screen
+     scroll surface layered over the developer page. */
+  #artist-world { display: none; }
+  /* !important: the section carries an inline position:relative, which would
+     otherwise beat these and leave the world in the document flow. */
+  #artist-world.world-open {
+    display: block;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 40;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #artist-world {
+    --paper: #F2EEE5;
+    --paper-deep: #E8E2D5;
+    --ink: #16130F;
+    --charcoal: #332E28;
+    --gray: #6E675D;
+    --rule: rgba(22, 19, 15, 0.22);
+  }
+
+  /* One-shot staggered reveal, armed when the hero scrolls into view. */
+  #artist-world .ink-in {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 900ms cubic-bezier(.22,.61,.36,1), transform 900ms cubic-bezier(.22,.61,.36,1);
+  }
+  #artist-hero.revealed .ink-in { opacity: 1; transform: none; }
+  #artist-hero.revealed .ink-in.d1 { transition-delay: 120ms; }
+  #artist-hero.revealed .ink-in.d2 { transition-delay: 240ms; }
+  #artist-hero.revealed .ink-in.d3 { transition-delay: 360ms; }
+  #artist-hero.revealed .ink-in.d4 { transition-delay: 480ms; }
+  #artist-hero.revealed .ink-in.d5 { transition-delay: 620ms; }
+  #artist-hero.revealed .ink-in.d6 { transition-delay: 760ms; }
+
+  /* Nav underline drawn like an ink stroke. */
+  .ink-link { position: relative; color: var(--gray); transition: color .3s ease; }
+  .ink-link::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -5px; height: 1.5px;
+    background: var(--ink); transform: scaleX(0); transform-origin: left center;
+    transition: transform .42s cubic-bezier(.22,.61,.36,1);
+  }
+  .ink-link:hover { color: var(--ink); }
+  .ink-link:hover::after, .ink-link.is-active::after { transform: scaleX(1); }
+  .ink-link.is-active { color: var(--ink); }
+
+  /* Buttons nudge like a pen lifting off the page. */
+  .ink-btn { transition: background .3s ease, color .3s ease, border-color .3s ease, transform .3s cubic-bezier(.22,.61,.36,1); }
+  .ink-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); transform: translateY(-2px) rotate(-0.35deg); }
+  .ink-btn .arr { transition: transform .3s cubic-bezier(.22,.61,.36,1); display: inline-block; }
+  .ink-btn:hover .arr { transform: translateX(5px); }
+
+  /* ---------- Sketch gallery: loose sheets on a studio wall ---------- */
+  .sk-card {
+    position: relative;
+    cursor: pointer;
+    background: #FBF9F3;
+    padding: 12px 12px 0;
+    /* hand-cut rather than die-cut */
+    border-radius: 2px 4px 3px 5px / 4px 2px 5px 3px;
+    box-shadow: 0 2px 3px rgba(22,19,15,0.09), 0 10px 22px rgba(22,19,15,0.10);
+    transition: transform .5s cubic-bezier(.22,.61,.36,1), box-shadow .5s ease;
+  }
+  .sk-card::after {                     /* strip of tape */
+    content: "";
+    position: absolute;
+    top: -9px; left: 50%;
+    width: 62px; height: 19px;
+    transform: translateX(-50%) rotate(-2.2deg);
+    background: rgba(224,214,193,0.72);
+    border-left: 1px solid rgba(22,19,15,0.07);
+    border-right: 1px solid rgba(22,19,15,0.07);
+    box-shadow: 0 1px 2px rgba(22,19,15,0.08);
+  }
+  .sk-card:nth-child(4n+1) { transform: rotate(-1.5deg); }
+  .sk-card:nth-child(4n+2) { transform: rotate(1.1deg); }
+  .sk-card:nth-child(4n+3) { transform: rotate(-0.6deg); }
+  .sk-card:nth-child(4n+4) { transform: rotate(1.7deg); }
+  .sk-card:nth-child(4n+2)::after { width: 48px; transform: translateX(-50%) rotate(3.4deg); }
+  .sk-card:nth-child(4n+3)::after { width: 70px; transform: translateX(-50%) rotate(-4deg); }
+  .sk-card:hover {
+    transform: rotate(0deg) translateY(-7px) scale(1.015);
+    box-shadow: 0 6px 10px rgba(22,19,15,0.10), 0 22px 44px rgba(22,19,15,0.20);
+    z-index: 2;
+  }
+  .sk-card img { width: 100%; aspect-ratio: 1; object-fit: cover; object-position: 50% 38%; display: block; filter: grayscale(1) contrast(1.06); }
+
+  .sk-pin {                              /* pinned margin note */
+    background: #FBF9F3;
+    padding: 14px 16px;
+    border-radius: 2px 5px 3px 4px / 5px 2px 4px 3px;
+    box-shadow: 0 2px 3px rgba(22,19,15,0.08), 0 10px 20px rgba(22,19,15,0.10);
+  }
+
+  /* ---------- Sketch modal: a sheet lifted off the wall ---------- */
+  #sketch-modal {
+    position: fixed; inset: 0; z-index: 2147483500;
+    display: none; align-items: center; justify-content: center;
+    padding: clamp(14px, 3vh, 40px);
+    background: rgba(16,13,10,0.62);
+    backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+    opacity: 0; transition: opacity .42s ease;
+  }
+  #sketch-modal.open { opacity: 1; }
+  #sketch-sheet {
+    position: relative;
+    width: min(1120px, 100%);
+    max-height: 100%;
+    overflow-y: auto;
+    background: #FAF7F0;
+    padding: clamp(20px, 3vw, 44px);
+    border-radius: 2px 5px 3px 6px / 5px 2px 6px 3px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+    /* lifts off the wall rather than scaling from nothing */
+    transform: translateY(26px) rotate(-1.4deg) scale(0.975);
+    opacity: 0;
+    transition: transform .58s cubic-bezier(.19,.9,.28,1), opacity .42s ease;
+  }
+  #sketch-modal.open #sketch-sheet { transform: translateY(0) rotate(-0.45deg) scale(1); opacity: 1; }
+  #sketch-sheet::before {                /* tape holding it up */
+    content: "";
+    position: absolute; top: -13px; left: 50%;
+    width: 108px; height: 26px;
+    transform: translateX(-50%) rotate(-1.6deg);
+    background: rgba(224,214,193,0.8);
+    border-left: 1px solid rgba(22,19,15,0.07);
+    border-right: 1px solid rgba(22,19,15,0.07);
+  }
+  #sketch-swap { transition: transform .34s cubic-bezier(.3,.8,.4,1), opacity .34s ease; }
+  #sketch-swap.out-left  { transform: translateX(-26px); opacity: 0; }
+  #sketch-swap.out-right { transform: translateX(26px);  opacity: 0; }
+
+  .sk-ctl {
+    display: grid; place-items: center;
+    width: 38px; height: 38px;
+    border: 1px solid rgba(22,19,15,0.3);
+    background: transparent; color: #16130F;
+    font-family: inherit; font-size: 14px; cursor: pointer;
+    border-radius: 2px;
+    transition: background .25s ease, color .25s ease, transform .25s ease;
+  }
+  .sk-ctl:hover { background: #16130F; color: #FAF7F0; transform: translateY(-1px); }
+  .sk-ctl:disabled { opacity: .3; cursor: default; }
+  .sk-ctl:disabled:hover { background: transparent; color: #16130F; transform: none; }
+
+  @media (max-width: 820px) {
+    #sketch-grid-cols { grid-template-columns: repeat(auto-fit, minmax(min(100%,150px), 1fr)) !important; }
+    #sketch-modal-body { grid-template-columns: 1fr !important; }
+    .sk-side-note { display: none !important; }
+  }
+
+  /* ---------- Poetry: a journal, quieter than the sketchbook ---------- */
+  #artist-poetry { --parch: #EFE9DB; --parch-deep: #E4DCC9; }
+
+  .pm-page {                             /* one leaf of the open book */
+    position: relative;
+    background:
+      radial-gradient(120% 90% at 50% 0%, rgba(255,253,247,0.9) 0%, rgba(243,237,223,0) 60%),
+      linear-gradient(180deg, #F7F2E6 0%, #EFE8D8 100%);
+    box-shadow: inset 0 0 60px rgba(140,124,96,0.16);
+  }
+  .pm-spine {                            /* the gutter between the pages */
+    background: linear-gradient(90deg, rgba(90,78,58,0) 0%, rgba(90,78,58,0.20) 42%, rgba(70,60,44,0.34) 50%, rgba(90,78,58,0.20) 58%, rgba(90,78,58,0) 100%);
+  }
+
+  .pm-verse {                            /* long verse set in two columns, like a printed page */
+    columns: 2; column-gap: clamp(18px, 2.2vw, 38px);
+  }
+  .pm-verse > p { break-inside: avoid; -webkit-column-break-inside: avoid; }
+  @media (max-width: 1040px) { .pm-verse { columns: 1; } }
+
+  .pm-card {                             /* a leaf torn from the notebook */
+    position: relative;
+    cursor: pointer;
+    background: linear-gradient(180deg, #FAF5E9 0%, #F2EBD9 100%);
+    padding: 16px 15px 15px 15px;
+    border-radius: 2px 4px 3px 5px / 4px 2px 5px 3px;
+    box-shadow: 0 2px 3px rgba(60,50,34,0.10), 0 12px 26px rgba(60,50,34,0.13);
+    transition: transform .5s cubic-bezier(.22,.61,.36,1), box-shadow .5s ease;
+  }
+  .pm-card:nth-child(4n+1) { transform: rotate(-1.6deg); }
+  .pm-card:nth-child(4n+2) { transform: rotate(1.2deg); }
+  .pm-card:nth-child(4n+3) { transform: rotate(-0.7deg); }
+  .pm-card:nth-child(4n+4) { transform: rotate(1.8deg); }
+  .pm-card:hover {
+    transform: rotate(0deg) translateY(-8px);
+    box-shadow: 0 6px 10px rgba(60,50,34,0.12), 0 24px 48px rgba(60,50,34,0.24);
+    z-index: 2;
+  }
+  .pm-card .pm-read .arr { transition: transform .3s cubic-bezier(.22,.61,.36,1); display: inline-block; }
+  .pm-card:hover .pm-read .arr { transform: translateX(6px); }
+
+  .pm-tape {                             /* torn tape */
+    position: absolute; top: -10px; left: 50%;
+    width: 58px; height: 20px;
+    transform: translateX(-50%) rotate(-3deg);
+    background: rgba(214,200,172,0.78);
+    border-left: 1px solid rgba(60,50,34,0.08);
+    border-right: 1px solid rgba(60,50,34,0.08);
+  }
+  .pm-clip {                             /* paper clip */
+    position: absolute; top: -13px; right: 16px;
+    width: 13px; height: 30px;
+    border: 1.6px solid rgba(60,50,34,0.42);
+    border-radius: 7px;
+    border-bottom-color: transparent;
+  }
+  .pm-rings {                            /* spiral binding down the left */
+    position: absolute; left: -5px; top: 14px; bottom: 14px;
+    width: 10px;
+    background-image: radial-gradient(circle at 50% 50%, rgba(60,50,34,0.48) 0 2.6px, transparent 2.8px);
+    background-size: 10px 15px;
+  }
+
+  /* ---------- Poem sheet ---------- */
+  #poem-modal {
+    position: fixed; inset: 0; z-index: 2147483500;
+    display: none; align-items: center; justify-content: center;
+    padding: clamp(14px, 3vh, 44px);
+    background: rgba(14,11,8,0.72);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    opacity: 0; transition: opacity .45s ease;
+  }
+  #poem-modal.open { opacity: 1; }
+  #poem-sheet {
+    position: relative;
+    width: min(680px, 100%);
+    max-height: 100%;
+    overflow-y: auto;
+    padding: clamp(30px, 4.4vw, 62px) clamp(26px, 4vw, 58px) clamp(26px, 3.6vw, 48px);
+    background:
+      radial-gradient(110% 80% at 50% 0%, rgba(255,252,244,0.95) 0%, rgba(240,233,217,0) 62%),
+      linear-gradient(180deg, #F8F3E6 0%, #EDE5D2 100%);
+    border-radius: 3px 6px 4px 7px / 6px 3px 7px 4px;
+    box-shadow: 0 34px 90px rgba(0,0,0,0.6);
+    /* the sheet is lifted and set down, never scaled up from nothing */
+    transform: translateY(30px) rotate(-1.8deg);
+    opacity: 0;
+    transition: transform .62s cubic-bezier(.19,.9,.28,1), opacity .44s ease;
+  }
+  #poem-modal.open #poem-sheet { transform: translateY(0) rotate(-0.5deg); opacity: 1; }
+  #poem-sheet::before {
+    content: "";
+    position: absolute; top: -14px; left: 50%;
+    width: 104px; height: 27px;
+    transform: translateX(-50%) rotate(-1.8deg);
+    background: rgba(214,200,172,0.8);
+    border-left: 1px solid rgba(60,50,34,0.08);
+    border-right: 1px solid rgba(60,50,34,0.08);
+  }
+
+  /* Turning a leaf: pivots on its spine edge rather than sliding flat. */
+  #poem-swap { transition: transform .44s cubic-bezier(.32,.75,.4,1), opacity .4s ease; }
+  #poem-swap.turn-next { transform: perspective(1500px) rotateY(-15deg) translateX(-46px); opacity: 0; transform-origin: left center; }
+  #poem-swap.turn-prev { transform: perspective(1500px) rotateY(15deg) translateX(46px); opacity: 0; transform-origin: right center; }
+
+  .pm-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    display: grid; place-items: center;
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 1px solid rgba(240,233,217,0.42);
+    background: rgba(20,16,12,0.35);
+    color: #F0E9D9; font-size: 17px; cursor: pointer; font-family: inherit;
+    transition: background .28s ease, border-color .28s ease, transform .28s ease;
+  }
+  .pm-nav:hover { background: rgba(240,233,217,0.92); color: #16130F; border-color: transparent; }
+  #poem-prev { left: clamp(10px, 4vw, 62px); }
+  #poem-next { right: clamp(10px, 4vw, 62px); }
+  #poem-prev:hover { transform: translateY(-50%) translateX(-3px); }
+  #poem-next:hover { transform: translateY(-50%) translateX(3px); }
+
+  @media (max-width: 860px) {
+    #poem-book { grid-template-columns: 1fr !important; }
+    .pm-spine { display: none !important; }
+    .pm-margin-note { display: none !important; }
+    #poem-prev { left: 6px; } #poem-next { right: 6px; }
+    .pm-nav { width: 38px; height: 38px; font-size: 15px; }
+  }
+
+  /* ---------- Thoughts + About: deeper into the same journal ---------- */
+  #artist-thoughts, #artist-about {
+    --parch: #EDE6D6;
+    --parch-deep: #E4DBC7;
+    --ink-warm: rgba(38,31,21,0.88);
+    --accent: #8A6A3F;
+  }
+  /* paper grain, built from gradients so there is no texture file to load */
+  .paper-grain::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    opacity: .5;
+    background-image:
+      repeating-linear-gradient(94deg, rgba(120,100,70,0.035) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(6deg, rgba(120,100,70,0.03) 0 1px, transparent 1px 4px),
+      radial-gradient(80% 60% at 20% 10%, rgba(150,128,92,0.09) 0%, transparent 60%),
+      radial-gradient(70% 70% at 90% 85%, rgba(120,100,70,0.10) 0%, transparent 62%);
+  }
+
+  .th-filter {
+    position: relative; padding: 5px 2px; background: transparent; border: 0;
+    font-family: inherit; font-size: clamp(11px,0.88vw,13.5px); letter-spacing: 0.03em;
+    color: rgba(38,31,21,0.5); cursor: pointer; transition: color .28s ease;
+  }
+  .th-filter::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1.5px;
+    background: #16130F; transform: scaleX(0); transform-origin: left center;
+    transition: transform .4s cubic-bezier(.22,.61,.36,1);
+  }
+  .th-filter:hover { color: var(--ink-warm); }
+  .th-filter.on { color: #16130F; }
+  .th-filter.on::after, .th-filter:hover::after { transform: scaleX(1); }
+
+  .th-card {
+    position: relative; cursor: pointer;
+    background: linear-gradient(177deg, #FAF5E7 0%, #F1E9D6 100%);
+    padding: 17px 16px 15px;
+    border-radius: 2px 4px 3px 5px / 4px 2px 5px 3px;
+    box-shadow: 0 2px 3px rgba(58,47,30,0.10), 0 13px 28px rgba(58,47,30,0.14);
+    transition: transform .5s cubic-bezier(.22,.61,.36,1), box-shadow .5s ease;
+  }
+  .th-card:nth-child(5n+1) { transform: rotate(-1.7deg); }
+  .th-card:nth-child(5n+2) { transform: rotate(1.1deg); }
+  .th-card:nth-child(5n+3) { transform: rotate(-0.5deg); }
+  .th-card:nth-child(5n+4) { transform: rotate(1.6deg); }
+  .th-card:nth-child(5n+5) { transform: rotate(-1.1deg); }
+  .th-card:hover {
+    transform: rotate(0deg) translateY(-8px);
+    box-shadow: 0 7px 11px rgba(58,47,30,0.13), 0 26px 50px rgba(58,47,30,0.24);
+    z-index: 2;
+  }
+  .th-card .arr { display: inline-block; transition: transform .3s cubic-bezier(.22,.61,.36,1); }
+  .th-card:hover .arr { transform: translateX(6px); }
+  .th-pin {                              /* push pin */
+    position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+    width: 13px; height: 13px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 32%, #6E5B3C 0%, #3A2F1E 70%);
+    box-shadow: 0 2px 4px rgba(40,32,18,0.45);
+  }
+
+  /* Thought sheet — a torn notebook page */
+  #thought-modal {
+    position: fixed; inset: 0; z-index: 2147483500;
+    display: none; align-items: center; justify-content: center;
+    padding: clamp(14px,3vh,44px);
+    background: rgba(12,10,7,0.74);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    opacity: 0; transition: opacity .45s ease;
+  }
+  #thought-modal.open { opacity: 1; }
+  #thought-sheet {
+    position: relative; width: min(860px,100%); max-height: 100%; overflow-y: auto;
+    padding: clamp(28px,3.8vw,54px) clamp(24px,3.4vw,50px) clamp(24px,3vw,42px);
+    background:
+      radial-gradient(110% 80% at 50% 0%, rgba(255,251,241,0.95) 0%, rgba(238,230,212,0) 62%),
+      linear-gradient(178deg, #F8F2E2 0%, #EBE2CC 100%);
+    border-radius: 3px 6px 4px 7px / 6px 3px 7px 4px;
+    box-shadow: 0 34px 92px rgba(0,0,0,0.62);
+    transform: translateY(28px) rotate(-1.5deg); opacity: 0;
+    transition: transform .6s cubic-bezier(.19,.9,.28,1), opacity .44s ease;
+  }
+  #thought-modal.open #thought-sheet { transform: translateY(0) rotate(-0.4deg); opacity: 1; }
+  #thought-sheet::before {
+    content: ""; position: absolute; top: -13px; left: 50%;
+    width: 112px; height: 26px; transform: translateX(-50%) rotate(1.4deg);
+    background: rgba(212,197,166,0.82);
+    border-left: 1px solid rgba(58,47,30,0.08); border-right: 1px solid rgba(58,47,30,0.08);
+  }
+  #thought-swap { transition: transform .44s cubic-bezier(.32,.75,.4,1), opacity .4s ease; }
+  #thought-swap.turn-next { transform: perspective(1500px) rotateY(-14deg) translateX(-44px); opacity: 0; transform-origin: left center; }
+  #thought-swap.turn-prev { transform: perspective(1500px) rotateY(14deg) translateX(44px); opacity: 0; transform-origin: right center; }
+
+  /* About scrapbook pieces */
+  .ab-note {
+    position: relative;
+    background: linear-gradient(177deg, #FAF5E7 0%, #F0E8D4 100%);
+    padding: 16px 18px;
+    box-shadow: 0 2px 3px rgba(58,47,30,0.10), 0 12px 26px rgba(58,47,30,0.15);
+  }
+  .ab-note ul { margin: 0; padding-left: 17px; }
+  .ab-note li { margin-bottom: 5px; }
+  .ab-polaroid {
+    background: #FBF7EC; padding: 13px 13px 46px;
+    box-shadow: 0 4px 8px rgba(58,47,30,0.16), 0 22px 46px rgba(58,47,30,0.28);
+  }
+  .ab-film {                             /* strip of negatives */
+    background: #1A1610; padding: 7px 5px;
+    border-top: 1px dashed rgba(240,232,214,0.24);
+    border-bottom: 1px dashed rgba(240,232,214,0.24);
+    display: flex; gap: 5px;
+  }
+  .ab-spine {
+    padding: 7px 15px; background: #DCD2BB; border: 1px solid rgba(58,47,30,0.32);
+    font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(38,31,21,0.78);
+  }
+
+  @media (max-width: 900px) {
+    .th-margin { display: none !important; }
+    #about-grid { grid-template-columns: 1fr !important; }
+    #thought-prev { left: 6px; } #thought-next { right: 6px; }
+  }
+
+  @keyframes scrollNudge {
+    0%, 100% { transform: translateY(0); opacity: .5; }
+    50% { transform: translateY(6px); opacity: 1; }
+  }
+  .scroll-nudge { animation: scrollNudge 2.4s ease-in-out infinite; }
+
+  @media (max-width: 900px) {
+    #artist-nav-links { display: none !important; }
+    #artist-page-index { display: none !important; }
+    #artist-hero-copy { max-width: 100% !important; }
+  }
+
+  @keyframes soundWave {
+    0%, 100% { height: 4px; }
+    50% { height: 16px; }
+  }
+  .eq-bar-1 { animation: soundWave 0.8s ease-in-out infinite; }
+  .eq-bar-2 { animation: soundWave 1.1s ease-in-out 0.2s infinite; }
+  .eq-bar-3 { animation: soundWave 0.7s ease-in-out 0.4s infinite; }
+  .eq-bar-4 { animation: soundWave 0.9s ease-in-out 0.1s infinite; }
+
+  .artist-card {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+  }
+  .artist-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(232, 151, 63, 0.45);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(232, 151, 63, 0.15);
+  }
+  .seal-stamp {
+    display: inline-grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1.5px solid #C93B2B;
+    color: #C93B2B;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 4px;
+    user-select: none;
+    line-height: 1;
+    box-shadow: 0 0 10px rgba(201, 59, 43, 0.25);
+  }
+
 </style>
-<script src="./page-transition.js"></script>
 </helmet>
 
 <div ref="{{ pageRef }}" data-screen-label="Home — Hero" style="background:#EFE9DE;font-family:'Poppins',system-ui,sans-serif">
 
-  <section ref="{{ stageRef }}" style="position:relative;height:220vh">
+  <section ref="{{ stageRef }}" style="position:relative;height:300vh">
     <div style="position:sticky;top:0;height:100vh;overflow:hidden;background:#EFE9DE">
 
       <div style="position:absolute;inset:0;z-index:1">
@@ -72,7 +671,7 @@
         <canvas ref="{{ visionCanvasRef }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;opacity:0;will-change:opacity"></canvas>
       </div>
 
-      <div ref="{{ heroLayerRef }}" style="position:absolute;inset:0;z-index:2;padding:clamp(22px,3.2vw,52px);will-change:transform;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto;pointer-events:none">
+      <div ref="{{ heroLayerRef }}" class="stg-layer" style="position:absolute;inset:0;z-index:2;padding:clamp(22px,3.2vw,52px);will-change:transform;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto;pointer-events:none">
 
         <div style="grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:4px;font-size:clamp(9px,0.72vw,11px);font-weight:400;letter-spacing:0.34em;text-transform:uppercase;color:#14110E">
           <span>Read</span>
@@ -130,7 +729,7 @@
 
       </div>
 
-      <div ref="{{ expLayerRef }}" data-screen-label="Home — Experience" style="position:absolute;inset:0;z-index:3;padding:clamp(22px,3.2vw,52px);will-change:transform;transform:translateY(100%);pointer-events:none;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto">
+      <div ref="{{ expLayerRef }}" data-screen-label="Home — Experience" class="stg-layer stg-wash" style="position:absolute;inset:0;z-index:3;padding:clamp(22px,3.2vw,52px);will-change:transform;transform:translateY(100%);pointer-events:none;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto">
 
         <div style="grid-column:1;grid-row:1;display:flex;align-items:center;gap:12px;font-size:clamp(9px,0.72vw,11px);font-weight:500;letter-spacing:0.34em;text-transform:uppercase;color:#14110E">
           <span style="width:22px;height:1px;background:#E8763A"></span>
@@ -188,7 +787,7 @@
       </div>
 
       <!-- Vision Layer: What's Next Editorial (z-index: 4) -->
-      <div id="vision" ref="{{ visionLayerRef }}" data-screen-label="Home — Vision" style="position:absolute;inset:0;z-index:4;padding:clamp(22px,3.2vw,52px);will-change:transform;transform:translateY(100%);pointer-events:none;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto">
+      <div id="vision" ref="{{ visionLayerRef }}" data-screen-label="Home — Vision" class="stg-layer stg-wash" style="position:absolute;inset:0;z-index:4;padding:clamp(22px,3.2vw,52px);will-change:transform;transform:translateY(100%);pointer-events:none;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto">
 
         <!-- Top Eyebrow row -->
         <div style="grid-column:1;grid-row:1;display:flex;align-items:center;gap:12px;font-size:clamp(9px,0.72vw,11px);font-weight:500;letter-spacing:0.34em;text-transform:uppercase;color:#14110E">
@@ -274,62 +873,7 @@
       <p style="margin:0 0 6px;max-width:26ch;text-align:right;font-size:clamp(11px,0.86vw,14px);font-weight:300;line-height:1.6;color:#6A6157;text-wrap:pretty">Backend systems, written to be read six months later.</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(16px,1.8vw,28px)">
-
-      <article style="position:relative;display:flex;flex-direction:column;background:#14110E;border-radius:22px;padding:clamp(14px,1.2vw,18px);color:#F4EFE6">
-        <div style="position:relative;width:100%;aspect-ratio:16 / 10;border-radius:14px;overflow:hidden;background:#221E19">
-          <image-slot id="proj-1" shape="rect" placeholder="Drop a screenshot of the e-commerce API"></image-slot>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px;padding:clamp(18px,1.6vw,24px) clamp(6px,0.6vw,10px) 0">
-          <h3 style="margin:0;font-weight:600;font-size:clamp(17px,1.35vw,22px);line-height:1.2;letter-spacing:-0.02em">E-Commerce Backend</h3>
-          <p style="margin:0;font-size:clamp(12px,0.94vw,15px);font-weight:300;line-height:1.55;color:rgba(244,239,230,0.72);text-wrap:pretty">Layered Spring Boot API with JWT auth, role-based access, and the full cart-to-payment flow.</p>
-        </div>
-        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:auto;padding:clamp(20px,2vw,30px) clamp(6px,0.6vw,10px) clamp(4px,0.5vw,8px)">
-          <div style="display:flex;flex-wrap:wrap;gap:7px">
-            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">Java</span>
-            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">Spring Boot</span>
-            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">MySQL</span>
-          </div>
-          <a href="#work" aria-label="Open E-Commerce Backend" style="flex:0 0 auto;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#F4EFE6;color:#14110E;font-size:15px;transition:background .3s ease,transform .3s ease" style-hover="background:#E8763A;transform:translate(2px,-2px)">&#8599;</a>
-        </div>
-      </article>
-
-      <article style="position:relative;display:flex;flex-direction:column;background:#14110E;border-radius:22px;padding:clamp(14px,1.2vw,18px);color:#F4EFE6">
-        <div style="position:relative;width:100%;aspect-ratio:16 / 10;border-radius:14px;overflow:hidden;background:#221E19">
-          <image-slot id="proj-2" shape="rect" placeholder="Drop a screenshot of the RL decision system"></image-slot>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px;padding:clamp(18px,1.6vw,24px) clamp(6px,0.6vw,10px) 0">
-          <h3 style="margin:0;font-weight:600;font-size:clamp(17px,1.35vw,22px);line-height:1.2;letter-spacing:-0.02em">Intelligent Decision System</h3>
-          <p style="margin:0;font-size:clamp(12px,0.94vw,15px);font-weight:300;line-height:1.55;color:rgba(244,239,230,0.72);text-wrap:pretty">Q-learning agent with FAISS retrieval and LLM reasoning, visualised side by side.</p>
-        </div>
-        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:auto;padding:clamp(20px,2vw,30px) clamp(6px,0.6vw,10px) clamp(4px,0.5vw,8px)">
-          <div style="display:flex;flex-wrap:wrap;gap:7px">
-            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">Python</span>
-            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">Flask</span>
-            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">FAISS</span>
-          </div>
-          <a href="#work" aria-label="Open Intelligent Decision System" style="flex:0 0 auto;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#F4EFE6;color:#14110E;font-size:15px;transition:background .3s ease,transform .3s ease" style-hover="background:#E8763A;transform:translate(2px,-2px)">&#8599;</a>
-        </div>
-      </article>
-
-      <article style="position:relative;display:flex;flex-direction:column;background:#14110E;border-radius:22px;padding:clamp(14px,1.2vw,18px);color:#F4EFE6">
-        <div style="position:relative;width:100%;aspect-ratio:16 / 10;border-radius:14px;overflow:hidden;background:#221E19">
-          <image-slot id="proj-3" shape="rect" placeholder="Drop a screenshot for project three"></image-slot>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px;padding:clamp(18px,1.6vw,24px) clamp(6px,0.6vw,10px) 0">
-          <h3 style="margin:0;font-weight:600;font-size:clamp(17px,1.35vw,22px);line-height:1.2;letter-spacing:-0.02em">Project Three</h3>
-          <p style="margin:0;font-size:clamp(12px,0.94vw,15px);font-weight:300;line-height:1.55;color:rgba(244,239,230,0.72);text-wrap:pretty">Placeholder slot — swap in the title, one-line summary, and stack when it ships.</p>
-        </div>
-        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:auto;padding:clamp(20px,2vw,30px) clamp(6px,0.6vw,10px) clamp(4px,0.5vw,8px)">
-          <div style="display:flex;flex-wrap:wrap;gap:7px">
-            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">Stack</span>
-            <span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">TBD</span>
-          </div>
-          <a href="#work" aria-label="Open project three" style="flex:0 0 auto;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#F4EFE6;color:#14110E;font-size:15px;transition:background .3s ease,transform .3s ease" style-hover="background:#E8763A;transform:translate(2px,-2px)">&#8599;</a>
-        </div>
-      </article>
-
-    </div>
+    <div id="project-grid" class="proj-grid"></div>
   </section>
 
   <section id="tools" data-screen-label="Home — Tools" style="padding:clamp(56px,9vh,120px) clamp(22px,3.2vw,52px) clamp(80px,12vh,160px)">
@@ -617,12 +1161,26 @@
             </div>
             <span style="font-size:clamp(9px,0.7vw,11px);font-weight:300;color:rgba(244,239,230,0.55);line-height:1.4">SharePoint &amp; SQL Sync</span>
           </a>
-          <a href="https://github.com/hemantwint-hey/ecommerce-management-system.git" target="_blank" rel="noreferrer" style="display:flex;flex-direction:column;gap:5px;padding:14px 16px;background:rgba(244,239,230,0.04);border:1px solid rgba(244,239,230,0.08);border-radius:14px;color:inherit;transition:background .25s ease,border-color .25s ease,transform .25s ease" style-hover="background:rgba(232,118,58,0.1);border-color:rgba(232,118,58,0.35);transform:translateY(-2px)">
+          <a href="https://github.com/hemantwint-hey/ecommerce-management-system" target="_blank" rel="noreferrer" style="display:flex;flex-direction:column;gap:5px;padding:14px 16px;background:rgba(244,239,230,0.04);border:1px solid rgba(244,239,230,0.08);border-radius:14px;color:inherit;transition:background .25s ease,border-color .25s ease,transform .25s ease" style-hover="background:rgba(232,118,58,0.1);border-color:rgba(232,118,58,0.35);transform:translateY(-2px)">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
               <span style="font-size:clamp(11px,0.88vw,14px);font-weight:600;color:#FFFFFF">E-Commerce</span>
               <span style="font-size:12px;color:#E8763A">&#8599;</span>
             </div>
             <span style="font-size:clamp(9px,0.7vw,11px);font-weight:300;color:rgba(244,239,230,0.55);line-height:1.4">Spring Boot REST API</span>
+          </a>
+          <a href="https://github.com/hemantwint-hey/Enterprise-Digital-Banking-System" target="_blank" rel="noreferrer" style="display:flex;flex-direction:column;gap:5px;padding:14px 16px;background:rgba(244,239,230,0.04);border:1px solid rgba(244,239,230,0.08);border-radius:14px;color:inherit;transition:background .25s ease,border-color .25s ease,transform .25s ease" style-hover="background:rgba(232,118,58,0.1);border-color:rgba(232,118,58,0.35);transform:translateY(-2px)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+              <span style="font-size:clamp(11px,0.88vw,14px);font-weight:600;color:#FFFFFF">Digital Banking</span>
+              <span style="font-size:12px;color:#E8763A">&#8599;</span>
+            </div>
+            <span style="font-size:clamp(9px,0.7vw,11px);font-weight:300;color:rgba(244,239,230,0.55);line-height:1.4">Spring Boot &amp; Kafka</span>
+          </a>
+          <a href="https://github.com/hemantwint-hey/Ml-model-with-Rl" target="_blank" rel="noreferrer" style="display:flex;flex-direction:column;gap:5px;padding:14px 16px;background:rgba(244,239,230,0.04);border:1px solid rgba(244,239,230,0.08);border-radius:14px;color:inherit;transition:background .25s ease,border-color .25s ease,transform .25s ease" style-hover="background:rgba(232,118,58,0.1);border-color:rgba(232,118,58,0.35);transform:translateY(-2px)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+              <span style="font-size:clamp(11px,0.88vw,14px);font-weight:600;color:#FFFFFF">Decision System</span>
+              <span style="font-size:12px;color:#E8763A">&#8599;</span>
+            </div>
+            <span style="font-size:clamp(9px,0.7vw,11px);font-weight:300;color:rgba(244,239,230,0.55);line-height:1.4">Q-Learning &amp; RAG</span>
           </a>
         </div>
       </article>
@@ -685,51 +1243,53 @@
     </div>
   </section>
 
-  <section id="contact" data-screen-label="Home — Contact" style="position:relative;overflow:hidden;background:#0B0A09;color:#F4EFE6">
-    <img src="assets/contact-portrait-v3.png" alt="Hemant Kumar Mahto, black and white portrait" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:72% 30%" />
-    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,10,9,0.96) 0%,rgba(11,10,9,0.9) 42%,rgba(11,10,9,0.45) 72%,rgba(11,10,9,0.25) 100%)"></div>
+  <section id="contact" data-screen-label="Home — Contact" style="position:relative;height:100vh;min-height:100vh;max-height:100vh;overflow:hidden;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;background:#0B0A09;color:#F4EFE6">
+    <img id="contact-base-portrait" src="assets/contact-portrait-v3.png" alt="Hemant Kumar Mahto, black and white portrait" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:72% 30%" />
 
-    <div style="position:relative;padding:clamp(80px,13vh,170px) clamp(22px,3.2vw,52px)">
-      <div style="width:100%;max-width:min(56ch,max(320px,54%));display:flex;flex-direction:column;gap:clamp(20px,3vh,34px)">
+    <!-- Dark gradient overlay behind text -->
+    <div id="contact-gradient-overlay" style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,10,9,0.96) 0%,rgba(11,10,9,0.9) 42%,rgba(11,10,9,0.45) 72%,rgba(11,10,9,0.25) 100%);z-index:3"></div>
+
+    <div id="contact-content-box" style="position:relative;z-index:4;flex:1;display:flex;flex-direction:column;justify-content:center;padding:clamp(20px,4vh,50px) clamp(22px,3.2vw,52px) clamp(8px,1.5vh,16px);box-sizing:border-box">
+      <div style="width:100%;max-width:min(56ch,max(320px,54%));display:flex;flex-direction:column;gap:clamp(12px,1.8vh,22px)">
 
         <div style="display:flex;align-items:center;gap:12px;font-size:clamp(9px,0.72vw,11px);font-weight:500;letter-spacing:0.34em;text-transform:uppercase;color:#E8763A">
           <span style="width:22px;height:1px;background:#E8763A"></span>
           <span>Contact</span>
         </div>
 
-        <h2 style="margin:0;font-weight:800;font-size:clamp(34px,5.4vw,84px);line-height:0.96;letter-spacing:-0.04em;color:#FFFFFF">Let's build<br />something<br /><span style="color:#E8763A">that lasts.</span></h2>
+        <h2 style="margin:0;font-weight:800;font-size:clamp(30px,4.8vw,72px);line-height:0.96;letter-spacing:-0.04em;color:#FFFFFF">Let's build<br />something<br /><span style="color:#E8763A">that lasts.</span></h2>
 
-        <p style="margin:0;max-width:38ch;font-size:clamp(13px,1.02vw,17px);font-weight:300;line-height:1.62;color:rgba(244,239,230,0.66);text-wrap:pretty">Open to software engineering roles and backend work. If you have a system that needs building or fixing, write to me.</p>
+        <p style="margin:0;max-width:38ch;font-size:clamp(12px,0.92vw,15.5px);font-weight:300;line-height:1.55;color:rgba(244,239,230,0.66);text-wrap:pretty">Open to software engineering roles and backend work. If you have a system that needs building or fixing, write to me.</p>
 
-        <div style="display:flex;flex-wrap:wrap;gap:clamp(10px,1vw,14px);margin-top:clamp(4px,1vh,10px)">
-          <a href="mailto:hemantmahto658@gmail.com" style="display:inline-flex;align-items:center;gap:clamp(18px,1.8vw,30px);padding:clamp(13px,1.15vw,19px) clamp(20px,1.7vw,28px);border-radius:999px;background:#E8763A;color:#14110E;font-size:clamp(10px,0.8vw,12px);font-weight:500;letter-spacing:0.22em;text-transform:uppercase;transition:background .35s ease,transform .35s ease" style-hover="background:#FFFFFF;transform:translateY(-2px)">
+        <div style="display:flex;flex-wrap:wrap;gap:clamp(10px,1vw,14px);margin-top:clamp(2px,0.6vh,6px)">
+          <a href="mailto:hemantmahto658@gmail.com" style="display:inline-flex;align-items:center;gap:clamp(16px,1.6vw,26px);padding:clamp(10px,0.9vh,15px) clamp(18px,1.5vw,26px);border-radius:999px;background:#E8763A;color:#14110E;font-size:clamp(10px,0.8vw,12px);font-weight:500;letter-spacing:0.22em;text-transform:uppercase;transition:background .35s ease,transform .35s ease" style-hover="background:#FFFFFF;transform:translateY(-2px)">
             <span>Email me</span>
             <span style="font-size:1.2em;line-height:1">&#8594;</span>
           </a>
-          <a href="#contact" style="display:inline-flex;align-items:center;gap:clamp(18px,1.8vw,30px);padding:clamp(13px,1.15vw,19px) clamp(20px,1.7vw,28px);border-radius:999px;border:1px solid rgba(244,239,230,0.32);color:#F4EFE6;font-size:clamp(10px,0.8vw,12px);font-weight:500;letter-spacing:0.22em;text-transform:uppercase;transition:border-color .35s ease,background .35s ease,color .35s ease" style-hover="border-color:#F4EFE6;background:#F4EFE6;color:#14110E">
+          <a href="assets/Hemant_Kumar_Mahto_Resume.pdf" target="_blank" rel="noreferrer" aria-label="Open Hemant's resume as a PDF" style="display:inline-flex;align-items:center;gap:clamp(16px,1.6vw,26px);padding:clamp(10px,0.9vh,15px) clamp(18px,1.5vw,26px);border-radius:999px;border:1px solid rgba(244,239,230,0.32);color:#F4EFE6;font-size:clamp(10px,0.8vw,12px);font-weight:500;letter-spacing:0.22em;text-transform:uppercase;transition:border-color .35s ease,background .35s ease,color .35s ease" style-hover="border-color:#F4EFE6;background:#F4EFE6;color:#14110E">
             <span>Download CV</span>
             <span style="font-size:1.1em;line-height:1">&#8595;</span>
           </a>
         </div>
 
-        <div style="display:flex;align-items:center;gap:clamp(14px,1.6vw,24px);margin-top:clamp(6px,1.4vh,14px)">
-          <a href="https://www.linkedin.com/" aria-label="LinkedIn" style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="#F4EFE6" style="display:block" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"></path></svg>
+        <div style="display:flex;align-items:center;gap:clamp(12px,1.4vw,20px);margin-top:clamp(2px,0.8vh,8px)">
+          <a href="https://www.linkedin.com/in/hemant-kumar-mahto-872b5334b/" aria-label="LinkedIn" style="display:grid;place-items:center;width:32px;height:32px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#F4EFE6" style="display:block" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"></path></svg>
           </a>
-          <a href="https://github.com/hemantwint-hey" aria-label="GitHub" style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
-            <img src="https://cdn.simpleicons.org/github/F4EFE6" alt="" width="15" height="15" style="display:block;width:15px;height:15px" />
+          <a href="https://github.com/hemantwint-hey" aria-label="GitHub" style="display:grid;place-items:center;width:32px;height:32px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
+            <img src="https://cdn.simpleicons.org/github/F4EFE6" alt="" width="14" height="14" style="display:block;width:14px;height:14px" />
           </a>
-          <a href="https://leetcode.com/u/HemantDWint/" aria-label="LeetCode" style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
-            <img src="https://cdn.simpleicons.org/leetcode/F4EFE6" alt="" width="15" height="15" style="display:block;width:15px;height:15px" />
+          <a href="https://leetcode.com/u/HemantDWint/" aria-label="LeetCode" style="display:grid;place-items:center;width:32px;height:32px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
+            <img src="https://cdn.simpleicons.org/leetcode/F4EFE6" alt="" width="14" height="14" style="display:block;width:14px;height:14px" />
           </a>
-          <a href="https://x.com/" aria-label="X" style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
-            <img src="https://cdn.simpleicons.org/x/F4EFE6" alt="" width="14" height="14" style="display:block;width:14px;height:14px" />
+          <a href="https://x.com/" aria-label="X" style="display:grid;place-items:center;width:32px;height:32px;border-radius:50%;border:1px solid rgba(244,239,230,0.2);transition:border-color .3s ease,background .3s ease" style-hover="border-color:#E8763A;background:rgba(232,118,58,0.14)">
+            <img src="https://cdn.simpleicons.org/x/F4EFE6" alt="" width="13" height="13" style="display:block;width:13px;height:13px" />
           </a>
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:12px;margin-top:clamp(24px,4.5vh,54px);padding-top:clamp(20px,3vh,32px);border-top:1px solid rgba(244,239,230,0.14)">
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:clamp(8px,1.4vh,18px);padding-top:clamp(8px,1.2vh,14px);border-top:1px solid rgba(244,239,230,0.14)">
           <span style="font-size:clamp(9px,0.7vw,11px);font-weight:500;letter-spacing:0.28em;text-transform:uppercase;color:#E8763A">Off the clock</span>
-          <a id="btn-other-profession" data-go-artist="true" href="{{ artistHref }}" onClick="{{ onGoArtist }}" onPointerEnter="{{ onWarmArtist }}" onFocus="{{ onWarmArtist }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:clamp(18px,1.8vw,30px);padding:clamp(13px,1.15vw,19px) clamp(20px,1.7vw,28px);border-radius:999px;background:#F4EFE6;border:1px solid #F4EFE6;color:#14110E;font-size:clamp(10px,0.8vw,12px);font-weight:600;letter-spacing:0.22em;text-transform:uppercase;box-shadow:0 0 0 6px rgba(232,118,58,0.16);transition:background .35s ease,color .35s ease,box-shadow .35s ease,transform .35s ease" style-hover="background:#E8763A;border-color:#E8763A;box-shadow:0 0 0 10px rgba(232,118,58,0.24);transform:translateY(-2px)">
+          <a id="btn-other-profession" data-go-artist="true" href="javascript:void(0)" onClick="{{ onGoArtist }}" onPointerEnter="{{ onWarmArtist }}" onFocus="{{ onWarmArtist }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:clamp(16px,1.6vw,26px);padding:clamp(10px,0.9vh,15px) clamp(18px,1.5vw,26px);border-radius:999px;background:#F4EFE6;border:1px solid #F4EFE6;color:#14110E;font-size:clamp(10px,0.8vw,12px);font-weight:600;letter-spacing:0.22em;text-transform:uppercase;box-shadow:0 0 0 6px rgba(232,118,58,0.16);transition:background .35s ease,color .35s ease,box-shadow .35s ease,transform .35s ease" style-hover="background:#E8763A;border-color:#E8763A;box-shadow:0 0 0 10px rgba(232,118,58,0.24);transform:translateY(-2px)">
             <span>My other profession</span>
             <span style="font-size:1.2em;line-height:1">&#8599;</span>
           </a>
@@ -738,14 +1298,663 @@
       </div>
     </div>
 
-    <footer style="position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding:clamp(18px,2.4vh,26px) clamp(22px,3.2vw,52px);border-top:1px solid rgba(244,239,230,0.12);font-size:clamp(9px,0.7vw,11px);font-weight:300;letter-spacing:0.18em;text-transform:uppercase;color:rgba(244,239,230,0.42)">
+    <footer style="position:relative;z-index:4;flex-shrink:0;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding:clamp(10px,1.4vh,16px) clamp(22px,3.2vw,52px);border-top:1px solid rgba(244,239,230,0.12);font-size:clamp(9px,0.7vw,11px);font-weight:300;letter-spacing:0.18em;text-transform:uppercase;color:rgba(244,239,230,0.42)">
       <span>Hemant Kumar Mahto</span>
       <span>Ranchi &middot; India</span>
       <span>v1.0 &mdash; 2026</span>
     </footer>
   </section>
 
+  <!-- =========================================================
+       ARTIST WORLD — a hand-drawn sketchbook, directly below Contact
+       in the same document. No route, no reload, no overlay.
+       ========================================================= -->
+  <section id="artist-world" data-screen-label="Artist World" style="position:relative;background:#F2EEE5;color:#16130F;font-family:'Poppins',system-ui,sans-serif">
 
+    <!-- ---------------------------------------------------------
+         NAVBAR — ink on paper, integrated rather than floating
+         --------------------------------------------------------- -->
+    <header id="artist-navbar" style="position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:clamp(16px,3vw,40px);padding:clamp(13px,1.7vh,20px) clamp(20px,3.4vw,58px);background:rgba(242,238,229,0.87);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);border-bottom:1px solid var(--rule)">
+      <a href="#artist-hero" style="display:flex;align-items:center;gap:9px;flex-shrink:0">
+        <span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(16px,1.25vw,21px);font-weight:600;letter-spacing:0.38em;text-transform:uppercase;color:var(--ink)">Hemant</span>
+        <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ink)"></span>
+      </a>
+
+      <nav id="artist-nav-links" style="display:flex;align-items:center;gap:clamp(18px,2.6vw,42px);font-size:clamp(11px,0.85vw,14px);font-weight:400;letter-spacing:0.02em">
+        <a href="#artist-hero" class="ink-link is-active">Home</a>
+        <a href="#artist-sketches" class="ink-link">Sketches</a>
+        <a href="#artist-poetry" class="ink-link">Poetry</a>
+        <a href="#artist-thoughts" class="ink-link">Thoughts</a>
+        <a href="#artist-about" class="ink-link">About</a>
+      </nav>
+
+      <button id="btn-back-dev" type="button" data-back-dev="true" onClick="{{ onBackToDeveloper }}" class="ink-btn" style="display:inline-flex;align-items:center;gap:9px;padding:9px 20px;border-radius:2px;border:1px solid var(--ink);background:transparent;color:var(--ink);font-family:inherit;font-size:clamp(10px,0.76vw,12.5px);font-weight:500;letter-spacing:0.05em;cursor:pointer;flex-shrink:0">
+        <span class="arr" style="font-size:1.05em;line-height:1">&#8592;</span>
+        <span>Back to Developer</span>
+      </button>
+    </header>
+
+    <!-- ---------------------------------------------------------
+         LANDING — the illustration IS the page. UI sits inside it.
+         --------------------------------------------------------- -->
+    <div id="artist-hero" style="position:relative;min-height:calc(100vh - 58px);display:flex;align-items:center;overflow:hidden;background:#F2EEE5">
+
+      <!-- The world itself, edge to edge. Nothing is layered over the artist. -->
+      <img id="artist-studio-art" src="assets/artist-studio-hero.png" alt="Hand-drawn ink illustration of Hemant at his studio desk surrounded by sketches, books and plants" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:64% 50%;z-index:0" />
+
+      <!-- Paper wash: lifts the left margin just enough to read ink type on it. -->
+      <div style="position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(242,238,229,0.96) 0%,rgba(242,238,229,0.9) 26%,rgba(242,238,229,0.58) 42%,rgba(242,238,229,0.12) 58%,rgba(242,238,229,0) 72%)"></div>
+      <div style="position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(242,238,229,0.55) 0%,transparent 16%,transparent 76%,rgba(242,238,229,0.72) 100%)"></div>
+
+      <!-- Art-book page index -->
+      <div id="artist-page-index" class="ink-in d1" style="position:absolute;left:clamp(16px,2.1vw,34px);top:clamp(22px,3.4vh,42px);z-index:3;display:flex;flex-direction:column;gap:5px;font-size:clamp(9px,0.7vw,11px);letter-spacing:0.24em;color:rgba(22,19,15,0.4);pointer-events:none">
+        <span style="color:var(--ink);font-weight:600;position:relative">01<span style="position:absolute;left:-10px;top:50%;width:6px;height:1px;background:var(--ink)"></span></span>
+        <span>02</span>
+        <span>03</span>
+        <span>04</span>
+        <span>05</span>
+      </div>
+
+      <!-- Hero copy sits in the blank paper margin, clear of the artist -->
+      <div id="artist-hero-copy" style="position:relative;z-index:3;padding:clamp(30px,5vh,54px) clamp(24px,3vw,48px) clamp(30px,5vh,54px) clamp(52px,6.4vw,112px);max-width:min(100%,600px);display:flex;flex-direction:column;gap:clamp(13px,1.9vh,22px)">
+
+        <div class="ink-in" style="display:flex;align-items:center;gap:11px;font-size:clamp(9px,0.7vw,11px);font-weight:500;letter-spacing:0.34em;text-transform:uppercase;color:var(--gray)">
+          <span style="width:20px;height:1px;background:var(--ink);opacity:.55"></span>
+          <span>Artist Mode</span>
+        </div>
+
+        <h1 class="ink-in d1" style="margin:0;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(46px,5.9vw,96px);line-height:0.93;letter-spacing:-0.018em;color:var(--ink)">
+          Same Mind.<br />Different<br />Canvas.
+        </h1>
+
+        <div class="ink-in d2" style="display:flex;flex-direction:column;gap:3px;max-width:30ch">
+          <span style="font-family:'Caveat',cursive;font-size:clamp(19px,1.62vw,27px);line-height:1.28;color:var(--charcoal)">A calmer me still exists somewhere inside.</span>
+          <span style="width:clamp(120px,13vw,190px);height:1px;background:var(--ink);opacity:.4"></span>
+        </div>
+
+        <p class="ink-in d3" style="margin:0;max-width:34ch;font-size:clamp(12.5px,0.95vw,15.5px);font-weight:300;line-height:1.72;color:var(--charcoal);text-wrap:pretty">
+          I draw what I feel, write what I observe, and turn thoughts into visual stories.
+        </p>
+
+        <div class="ink-in d4" style="margin-top:clamp(3px,0.8vh,10px)">
+          <a href="#artist-sketches" class="ink-btn" style="display:inline-flex;align-items:center;gap:15px;padding:clamp(12px,1.2vh,16px) clamp(22px,1.9vw,32px);border-radius:2px;border:1px solid var(--ink);background:transparent;color:var(--ink);font-size:clamp(10px,0.76vw,12px);font-weight:500;letter-spacing:0.17em;text-transform:uppercase">
+            <span>Explore my world</span>
+            <span class="arr" style="font-size:1.15em;line-height:1">&#8594;</span>
+          </a>
+        </div>
+
+        <div class="ink-in d5" style="font-size:clamp(9px,0.68vw,10.5px);letter-spacing:0.26em;text-transform:uppercase;color:rgba(22,19,15,0.45)">
+          Sketches &middot; Poetry &middot; Thoughts
+        </div>
+      </div>
+
+      <!-- Bottom rail: margin notes, the way a sketchbook page is labelled -->
+      <div class="ink-in d6" style="position:absolute;left:clamp(52px,6.4vw,112px);bottom:clamp(20px,3vh,38px);z-index:3;display:flex;flex-direction:column;gap:2px;font-size:clamp(8px,0.62vw,10px);letter-spacing:0.28em;text-transform:uppercase;color:rgba(22,19,15,0.42);pointer-events:none">
+        <span style="width:16px;height:1px;background:var(--ink);opacity:.5;margin-bottom:5px"></span>
+        <span>Art</span>
+        <span>Sketches</span>
+        <span>Poetry</span>
+        <span>Thoughts</span>
+      </div>
+
+      <div class="ink-in d6" style="position:absolute;left:50%;transform:translateX(-50%);bottom:clamp(18px,2.6vh,32px);z-index:3;display:flex;flex-direction:column;align-items:center;gap:7px;pointer-events:none">
+        <span style="width:1px;height:clamp(20px,3vh,32px);background:var(--ink);opacity:.35"></span>
+        <span style="font-size:clamp(8px,0.62vw,10px);letter-spacing:0.3em;text-transform:uppercase;color:rgba(22,19,15,0.5)">Scroll</span>
+        <span class="scroll-nudge" style="font-size:11px;line-height:1;color:var(--ink)">&#8595;</span>
+      </div>
+
+      <div class="ink-in d6" style="position:absolute;right:clamp(20px,3.4vw,58px);bottom:clamp(20px,3vh,38px);z-index:3;font-family:'Caveat',cursive;font-size:clamp(15px,1.15vw,20px);color:rgba(22,19,15,0.6);pointer-events:none">
+        Sketching a better tomorrow
+      </div>
+    </div>
+
+    <!-- ---------------------------------------------------------
+         SKETCHES — loose sheets pinned to the studio wall
+         --------------------------------------------------------- -->
+    <div id="artist-sketches" style="position:relative;padding:clamp(40px,6vh,74px) clamp(20px,3.4vw,58px) clamp(30px,5vh,60px);border-top:1px solid var(--rule);background:#F2EEE5">
+
+      <!-- running page index, same language as the landing -->
+      <div style="position:absolute;left:clamp(14px,1.7vw,28px);top:clamp(30px,4.6vh,58px);display:flex;flex-direction:column;gap:4px;font-size:clamp(8px,0.64vw,10px);letter-spacing:0.24em;color:rgba(22,19,15,0.34);pointer-events:none">
+        <span>01</span>
+        <span style="color:var(--ink);font-weight:600">02</span>
+        <span>03</span>
+        <span>04</span>
+        <span>05</span>
+      </div>
+
+      <!-- masthead -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:clamp(18px,3vw,48px);align-items:start;margin-bottom:clamp(30px,4.6vh,56px);padding-left:clamp(18px,2.6vw,44px)">
+        <div>
+          <div style="font-size:clamp(8px,0.64vw,10px);letter-spacing:0.28em;color:rgba(22,19,15,0.45);margin-bottom:6px">02<br />SKETCHES</div>
+          <h2 style="margin:0;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(40px,4.8vw,78px);line-height:0.94;color:var(--ink)">Sketches</h2>
+          <div style="margin-top:8px;font-family:'Caveat',cursive;font-size:clamp(19px,1.6vw,27px);line-height:1.25;color:var(--charcoal)">
+            Things I couldn't<br />explain with words.
+            <div style="width:clamp(140px,15vw,215px);height:1px;background:var(--ink);opacity:.45;margin-top:3px"></div>
+          </div>
+        </div>
+
+        <div style="padding-left:clamp(0px,1.6vw,26px);border-left:1px solid var(--rule);font-family:'Caveat',cursive;font-size:clamp(16px,1.3vw,22px);line-height:1.42;color:var(--charcoal);max-width:26ch">
+          Just a collection of moments, people, places and thoughts captured in lines.
+          <div style="width:26px;height:1px;background:var(--ink);opacity:.4;margin-top:10px"></div>
+        </div>
+
+        <div style="display:flex;gap:clamp(12px,1.6vw,24px);justify-content:flex-end;flex-wrap:wrap">
+          <div class="sk-pin" style="transform:rotate(1.8deg);max-width:150px;font-family:'Caveat',cursive;font-size:clamp(15px,1.2vw,20px);line-height:1.3;color:var(--charcoal)">
+            &ldquo;A quieter mind creates louder art.&rdquo;
+          </div>
+          <div class="sk-pin" style="transform:rotate(-2.2deg);font-family:'Caveat',cursive;font-size:clamp(15px,1.2vw,20px);line-height:1.45;color:var(--charcoal)">
+            Sketch<br />Observe<br />Feel<br />Repeat
+            <div style="width:22px;height:1px;background:var(--ink);opacity:.4;margin-top:7px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- the sheets -->
+      <div id="sketch-grid-cols" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));gap:clamp(22px,2.6vw,40px) clamp(18px,2vw,32px);padding:clamp(10px,1.6vh,20px) clamp(6px,1.4vw,26px) 0">
+        <!-- Cards are built from the SKETCHES table, so that table is the
+             only place a drawing is described. -->
+      </div>
+
+      <!-- bottom rail -->
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:clamp(34px,5vh,64px);padding-top:clamp(12px,1.8vh,18px);border-top:1px solid var(--rule);font-size:9px;letter-spacing:0.26em;text-transform:uppercase;color:rgba(22,19,15,0.42)">
+        <span>Art lives here</span>
+        <span>Same mind. Different canvas.</span>
+      </div>
+    </div>
+
+    <!-- ---------------------------------------------------------
+         POETRY — the open journal, quieter than the sketchbook
+         --------------------------------------------------------- -->
+    <div id="artist-poetry" style="position:relative;border-top:1px solid var(--rule);background:#E7E0CF">
+
+      <!-- ===== 03 · the open book ===== -->
+      <div style="position:relative;padding:clamp(30px,5vh,66px) clamp(16px,3vw,54px) clamp(26px,4vh,52px);overflow:hidden">
+
+        <!-- margin annotations, left -->
+        <div class="pm-margin-note" style="position:absolute;left:clamp(12px,1.8vw,30px);top:clamp(34px,6vh,76px);width:clamp(78px,7vw,108px);font-family:'Caveat',cursive;font-size:clamp(14px,1.1vw,19px);line-height:1.3;color:rgba(40,34,24,0.62);pointer-events:none">
+          Some thoughts<br />are better<br />in ink.
+          <div style="width:20px;height:1px;background:rgba(40,34,24,0.5);margin-top:7px"></div>
+        </div>
+
+        <!-- stacked spines, bottom left -->
+        <div class="pm-margin-note" style="position:absolute;left:clamp(10px,1.4vw,24px);bottom:clamp(24px,4vh,54px);display:flex;flex-direction:column;gap:5px;pointer-events:none">
+          <span style="padding:4px 9px;background:#DED5BF;border:1px solid rgba(60,50,34,0.3);font-size:8.5px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(40,34,24,0.72)">A quieter mind</span>
+          <span style="padding:4px 9px;background:#DED5BF;border:1px solid rgba(60,50,34,0.3);font-size:8.5px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(40,34,24,0.72)">Random thoughts</span>
+          <span style="padding:4px 9px;background:#DED5BF;border:1px solid rgba(60,50,34,0.3);font-size:8.5px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(40,34,24,0.72)">Half written poems</span>
+          <span style="padding:4px 9px;background:#DED5BF;border:1px solid rgba(60,50,34,0.3);font-size:8.5px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(40,34,24,0.72)">Places I feel</span>
+          <span style="padding:4px 9px;background:#DED5BF;border:1px solid rgba(60,50,34,0.3);font-size:8.5px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(40,34,24,0.72)">The version I hide</span>
+        </div>
+
+        <!-- margin annotation, right -->
+        <div class="pm-margin-note" style="position:absolute;right:clamp(12px,1.8vw,32px);bottom:clamp(30px,5vh,66px);width:clamp(78px,7vw,104px);font-family:'Caveat',cursive;font-size:clamp(15px,1.2vw,20px);line-height:1.3;color:rgba(40,34,24,0.6);text-align:center;pointer-events:none">
+          Good<br />Thoughts<br />Better<br />Days.
+        </div>
+
+        <!-- the book itself -->
+        <div id="poem-book" style="position:relative;max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1fr 16px 1fr;box-shadow:0 26px 60px rgba(52,44,30,0.34);border:1px solid rgba(60,50,34,0.26)">
+
+          <!-- LEFT LEAF -->
+          <div class="pm-page" style="padding:clamp(24px,3vw,48px) clamp(20px,2.6vw,42px);display:flex;flex-direction:column">
+            <div style="font-size:9px;letter-spacing:0.24em;color:rgba(40,34,24,0.5);margin-bottom:clamp(14px,2.4vh,26px)">03</div>
+
+            <div style="display:inline-block;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(40,34,24,0.66);border-bottom:1px solid rgba(60,50,34,0.4);padding-bottom:4px;margin-bottom:clamp(14px,2.2vh,24px)">Poetry</div>
+
+            <h2 style="margin:0;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(30px,3.5vw,56px);line-height:1.02;color:#16130F">
+              Words I Never<br />Said Out Loud.
+            </h2>
+
+            <div style="width:34px;height:1px;background:rgba(60,50,34,0.5);margin:clamp(13px,2vh,22px) 0"></div>
+
+            <p style="margin:0;font-family:'Caveat',cursive;font-size:clamp(17px,1.4vw,23px);line-height:1.45;color:rgba(40,34,24,0.82);max-width:26ch">
+              Some thoughts were easier to write than to speak.
+            </p>
+
+            <!-- an ink drawing tipped into the page -->
+            <div style="margin-top:auto;padding-top:clamp(16px,2.6vh,30px);display:flex;align-items:flex-end;justify-content:space-between;gap:14px">
+              <img src="assets/sketches/sketch4.png" alt="Ink study of desert dunes" style="width:clamp(120px,15vw,215px);aspect-ratio:16/10;object-fit:cover;display:block;filter:grayscale(1) contrast(1.12) brightness(1.06);mix-blend-mode:multiply;opacity:.88" />
+              <span style="font-family:'Caveat',cursive;font-size:clamp(14px,1.15vw,19px);line-height:1.28;color:rgba(40,34,24,0.62);text-align:right">A calmer<br />mind.<br />A kinder me.</span>
+            </div>
+          </div>
+
+          <div class="pm-spine"></div>
+
+          <!-- RIGHT LEAF — the featured poem -->
+          <div class="pm-page" style="padding:clamp(24px,3vw,48px) clamp(20px,2.6vw,42px);display:flex;flex-direction:column">
+            <div class="pm-margin-note" style="align-self:flex-end;font-family:'Caveat',cursive;font-size:clamp(14px,1.12vw,19px);line-height:1.28;color:rgba(40,34,24,0.6);text-align:right;margin-bottom:clamp(10px,1.8vh,20px)">
+              &ldquo;Nature is perfect.<br />It made you.&rdquo;
+            </div>
+
+            <h3 style="margin:0 0 clamp(12px,2vh,20px);font-size:clamp(11px,0.9vw,13.5px);letter-spacing:0.2em;text-transform:uppercase;color:#16130F">I Cannot Explain</h3>
+
+            <div class="pm-verse" style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(13.5px,1.08vw,17px);line-height:1.66;color:rgba(28,23,16,0.9)">
+              <p style="margin:0 0 clamp(11px,1.6vh,18px)">
+                How can I not say<br />
+                that nature is perfect,<br />
+                when it created a life like you?
+              </p>
+              <p style="margin:0 0 clamp(11px,1.6vh,18px)">
+                Your eyes&mdash;<br />
+                like a flowing stream,<br />
+                quiet and still,<br />
+                yet somehow sweet enough<br />
+                to make the world forget its noise.
+              </p>
+              <p style="margin:0 0 clamp(11px,1.6vh,18px)">
+                I never said I was a good man.<br />
+                I carry lust,<br />
+                anger,<br />
+                pain&mdash;<br />
+                things I don't always know how to silence.
+              </p>
+              <p style="margin:0 0 clamp(11px,1.6vh,18px)">
+                But then you smile.
+              </p>
+              <p style="margin:0 0 clamp(11px,1.6vh,18px)">
+                And somehow,<br />
+                everything inside me disappears,<br />
+                like those feelings<br />
+                were never mine to begin with.
+              </p>
+              <p style="margin:0 0 clamp(11px,1.6vh,18px)">
+                I don't know<br />
+                if it's only my imagination,<br />
+                or if there is something<br />
+                I cannot put into words.
+              </p>
+              <p style="margin:0 0 clamp(11px,1.6vh,18px)">
+                Maybe it's just a moment.<br />
+                Maybe it's nothing.
+              </p>
+              <p style="margin:0 0 clamp(11px,1.6vh,18px)">
+                But when I look at you,<br />
+                for a little while,<br />
+                the world feels right.
+              </p>
+              <p style="margin:0 0 clamp(11px,1.6vh,18px)">
+                And I don't know why.
+              </p>
+              <p style="margin:0 0 clamp(11px,1.6vh,18px)">
+                I just know<br />
+                I cannot explain it.
+              </p>
+            </div>
+
+            <div style="margin-top:auto;padding-top:clamp(16px,2.6vh,30px);display:flex;align-items:flex-end;justify-content:space-between;gap:14px">
+              <span style="width:22px;height:1px;background:rgba(60,50,34,0.45)"></span>
+              <span style="font-family:'Caveat',cursive;font-size:clamp(17px,1.4vw,23px);color:rgba(40,34,24,0.78)">&mdash; Hemant</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 04 · the collection ===== -->
+      <div style="position:relative;padding:clamp(34px,5.5vh,72px) clamp(20px,3.4vw,58px) clamp(30px,5vh,58px);background:#EFE9DB;border-top:1px solid rgba(60,50,34,0.16)">
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:clamp(16px,3vw,44px);align-items:start;margin-bottom:clamp(28px,4.4vh,52px)">
+          <div>
+            <div style="font-size:9px;letter-spacing:0.24em;color:rgba(40,34,24,0.48);margin-bottom:6px">04<br />POEM COLLECTION</div>
+            <h2 style="margin:0;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(32px,3.9vw,62px);line-height:1;color:#16130F">
+              A few pages<br />from my mind.
+            </h2>
+            <div style="width:32px;height:1px;background:rgba(60,50,34,0.5);margin-top:clamp(10px,1.6vh,18px)"></div>
+          </div>
+
+          <div style="padding-left:clamp(0px,1.6vw,26px);border-left:1px solid rgba(60,50,34,0.22);font-family:'Caveat',cursive;font-size:clamp(15px,1.25vw,21px);line-height:1.45;color:rgba(40,34,24,0.78);max-width:28ch">
+            Not all thoughts make sense.<br />Not all feelings stay.<br />But some of them become poems.
+            <div style="width:22px;height:1px;background:rgba(60,50,34,0.4);margin-top:9px"></div>
+          </div>
+
+          <div style="font-family:'Caveat',cursive;font-size:clamp(15px,1.25vw,21px);line-height:1.4;color:rgba(40,34,24,0.66);text-align:right">
+            Different days<br />Different versions<br />Same me.
+          </div>
+        </div>
+
+        <div id="poem-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:clamp(22px,2.6vw,38px) clamp(16px,1.8vw,28px);padding-top:clamp(8px,1.4vh,16px)"></div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:clamp(32px,5vh,60px);padding-top:clamp(12px,1.8vh,18px);border-top:1px solid rgba(60,50,34,0.2)">
+          <span style="font-family:'Caveat',cursive;font-size:clamp(14px,1.15vw,19px);line-height:1.3;color:rgba(40,34,24,0.62)">&ldquo;Poetry is how I stay<br />honest with myself.&rdquo;</span>
+          <span style="font-family:'Caveat',cursive;font-size:clamp(14px,1.15vw,19px);line-height:1.3;color:rgba(40,34,24,0.62);text-align:right">Same mind.<br />Different canvas.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------------------------------------------------------
+         04 · THOUGHTS — the notebook, opened further in
+         --------------------------------------------------------- -->
+    <div id="artist-thoughts" class="paper-grain" style="position:relative;overflow:hidden;padding:clamp(34px,5.5vh,74px) clamp(20px,3.4vw,58px) clamp(32px,5vh,64px);border-top:1px solid rgba(58,47,30,0.2);background:#EDE6D6;color:#16130F">
+
+      <!-- masthead -->
+      <div style="position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:clamp(16px,3vw,44px);align-items:start;margin-bottom:clamp(24px,3.6vh,44px)">
+        <div>
+          <div style="font-size:9px;letter-spacing:0.24em;color:rgba(38,31,21,0.48);margin-bottom:7px">04<br />THOUGHTS</div>
+          <h2 style="margin:0;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(34px,4.1vw,66px);line-height:0.98;color:#16130F">
+            Random<br />Thoughts,
+          </h2>
+          <div style="margin-top:7px;font-family:'Caveat',cursive;font-size:clamp(21px,1.85vw,32px);color:rgba(38,31,21,0.8)">A little deeper.</div>
+          <p style="margin:clamp(11px,1.8vh,18px) 0 0;font-family:'Caveat',cursive;font-size:clamp(15px,1.2vw,20px);line-height:1.45;color:rgba(38,31,21,0.7);max-width:28ch">
+            Somewhere between <span style="border-bottom:1px solid rgba(38,31,21,0.45)">overthinking</span> and finding clarity.
+          </p>
+        </div>
+
+        <div style="padding-left:clamp(0px,1.5vw,24px);border-left:1px solid rgba(58,47,30,0.24);font-family:'Caveat',cursive;font-size:clamp(15px,1.22vw,20px);line-height:1.5;color:rgba(38,31,21,0.74)">
+          Just a mind trying to make sense of things&hellip;
+          <div style="margin-top:11px">Different days.<br />Different perspectives.<br />Same me.</div>
+        </div>
+
+        <div class="th-margin" style="display:flex;flex-direction:column;align-items:flex-end;gap:clamp(12px,2vh,20px)">
+          <span style="font-family:'Caveat',cursive;font-size:clamp(15px,1.25vw,21px);line-height:1.32;color:rgba(38,31,21,0.66);text-align:right">A quieter<br />mind brighter<br />days.</span>
+          <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+            <span class="ab-spine">Ideas</span>
+            <span class="ab-spine">Observations</span>
+            <span class="ab-spine">What if ?</span>
+            <span class="ab-spine">Life</span>
+            <span class="ab-spine">Mistakes</span>
+            <span class="ab-spine">Lessons</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- categories -->
+      <div id="thought-filters" style="position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:clamp(14px,2.2vw,34px);padding-bottom:clamp(10px,1.6vh,16px);border-bottom:1px solid rgba(58,47,30,0.22);margin-bottom:clamp(24px,3.8vh,46px)">
+        <button class="th-filter on" type="button" data-cat="all">All</button>
+        <button class="th-filter" type="button" data-cat="life">Life</button>
+        <button class="th-filter" type="button" data-cat="overthinking">Overthinking</button>
+        <button class="th-filter" type="button" data-cat="growth">Growth</button>
+        <button class="th-filter" type="button" data-cat="perspectives">Perspectives</button>
+        <button class="th-filter" type="button" data-cat="people">People</button>
+      </div>
+
+      <!-- the notes -->
+      <div id="thought-grid" style="position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:clamp(22px,2.6vw,38px) clamp(15px,1.8vw,26px);padding-top:clamp(8px,1.4vh,14px)"></div>
+
+      <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:clamp(30px,4.6vh,56px);padding-top:clamp(12px,1.8vh,18px);border-top:1px solid rgba(58,47,30,0.2);font-family:'Caveat',cursive;font-size:clamp(14px,1.15vw,19px);color:rgba(38,31,21,0.62)">
+        <span>Thoughts change, but the search remains the same&hellip;</span>
+        <span style="text-align:right">Good thoughts.<br />Better days.</span>
+      </div>
+    </div>
+
+    <!-- ---------------------------------------------------------
+         05 · ABOUT — the scrapbook page
+         --------------------------------------------------------- -->
+    <div id="artist-about" class="paper-grain" style="position:relative;overflow:hidden;padding:clamp(34px,5.5vh,74px) clamp(20px,3.4vw,58px) clamp(26px,4vh,48px);border-top:1px solid rgba(58,47,30,0.2);background:#E6DFCD;color:#16130F">
+
+      <div id="about-grid" style="position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,0.95fr) minmax(0,1.05fr);gap:clamp(24px,3.6vw,60px);align-items:start">
+
+        <!-- who I am -->
+        <div style="display:flex;flex-direction:column;gap:clamp(12px,1.9vh,20px)">
+          <div style="font-size:9px;letter-spacing:0.24em;color:rgba(38,31,21,0.48)">05<br />ABOUT</div>
+          <h2 style="margin:0;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(38px,4.6vw,74px);line-height:0.98;color:#16130F">Art &amp; Me</h2>
+          <div style="font-family:'Caveat',cursive;font-size:clamp(19px,1.65vw,28px);line-height:1.25;color:rgba(38,31,21,0.8)">
+            A little more than<br />just what you see.
+          </div>
+          <div style="width:34px;height:1px;background:rgba(58,47,30,0.45)"></div>
+
+          <div style="display:flex;flex-direction:column;gap:clamp(9px,1.5vh,15px);font-family:'Caveat',cursive;font-size:clamp(15px,1.22vw,20px);line-height:1.5;color:rgba(38,31,21,0.82);max-width:34ch">
+            <p style="margin:0">I'm Hemant &mdash; a developer by profession, but an artist, thinker and a writer at heart.</p>
+            <p style="margin:0">This space is where I put the parts of me that don't fit into a resume.</p>
+            <p style="margin:0">I sketch to express.<br />I write to understand.<br />I think to grow.</p>
+            <p style="margin:0">Art, for me, is not just a hobby &mdash; it's a way of staying honest with myself.</p>
+          </div>
+
+          <div style="width:34px;height:1px;background:rgba(58,47,30,0.35);margin-top:4px"></div>
+
+          <div style="display:flex;align-items:center;gap:clamp(13px,1.5vw,20px);margin-top:2px">
+            <a href="https://www.instagram.com/" aria-label="Instagram" style="color:rgba(38,31,21,0.72);transition:color .25s ease" style-hover="color:#16130F">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 5.68a4.16 4.16 0 1 0 0 8.32 4.16 4.16 0 0 0 0-8.32zm0 6.86a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4zm5.3-7.02a.97.97 0 1 1-1.94 0 .97.97 0 0 1 1.94 0z"></path></svg>
+            </a>
+            <a href="https://github.com/hemantwint-hey" aria-label="GitHub" style="color:rgba(38,31,21,0.72)">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.35.78 1.05.78 2.12v3.15c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"></path></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/hemant-kumar-mahto-872b5334b/" aria-label="LinkedIn" style="color:rgba(38,31,21,0.72)">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zm1.78 13.02H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"></path></svg>
+            </a>
+            <a href="mailto:hemantmahto658@gmail.com" aria-label="Email" style="color:rgba(38,31,21,0.72)">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="1"></rect><path d="M2 6l10 7 10-7"></path></svg>
+            </a>
+          </div>
+
+          <span style="margin-top:clamp(10px,1.8vh,20px);font-family:'Caveat',cursive;font-size:clamp(15px,1.25vw,21px);line-height:1.3;color:rgba(38,31,21,0.6)">Building<br />a better me&hellip;</span>
+        </div>
+
+        <!-- the pinned wall -->
+        <div style="display:flex;flex-direction:column;gap:clamp(16px,2.4vw,30px)">
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:clamp(14px,2vw,26px);align-items:start">
+
+            <!-- portrait print -->
+            <div style="display:flex;flex-direction:column;gap:clamp(10px,1.6vh,16px)">
+              <div class="ab-polaroid" style="transform:rotate(-2.2deg)">
+                <img src="assets/artist-self-portrait.png" alt="Illustrated self-portrait of Hemant with ink markings" style="width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 22%;display:block;filter:grayscale(1) contrast(1.04)" />
+                <span style="position:absolute;left:0;right:0;bottom:12px;text-align:center;font-family:'Caveat',cursive;font-size:clamp(14px,1.1vw,18px);line-height:1.24;color:rgba(38,31,21,0.72)">Still the same boy&hellip;<br />Just a little more aware.</span>
+              </div>
+
+              <!-- negatives -->
+              <div class="ab-film" style="transform:rotate(1.4deg)">
+                <img src="assets/sketches/sketch4.png" alt="" style="width:33.33%;aspect-ratio:1;object-fit:cover;display:block;filter:grayscale(1) contrast(1.1) brightness(.85)" />
+                <img src="assets/sketches/sketch6.png" alt="" style="width:33.33%;aspect-ratio:1;object-fit:cover;display:block;filter:grayscale(1) contrast(1.1) brightness(.85)" />
+                <img src="assets/sketches/sketch5.png" alt="" style="width:33.33%;aspect-ratio:1;object-fit:cover;display:block;filter:grayscale(1) contrast(1.1) brightness(.85)" />
+              </div>
+            </div>
+
+            <!-- notes -->
+            <div style="display:flex;flex-direction:column;gap:clamp(14px,2vh,24px)">
+              <div class="ab-note" style="transform:rotate(1.5deg)">
+                <span class="th-pin"></span>
+                <h3 style="margin:0 0 9px;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(17px,1.35vw,22px);color:#16130F">What Drives Me</h3>
+                <ul style="font-family:'Caveat',cursive;font-size:clamp(14px,1.13vw,18.5px);line-height:1.42;color:rgba(38,31,21,0.82)">
+                  <li>Creating</li><li>Learning</li><li>Exploring</li><li>Finding meaning</li><li>Turning thoughts into something real</li>
+                </ul>
+              </div>
+
+              <div class="ab-note" style="transform:rotate(-1.7deg)">
+                <span class="th-pin"></span>
+                <h3 style="margin:0 0 9px;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(17px,1.35vw,22px);color:#16130F">Things I Believe In</h3>
+                <ul style="font-family:'Caveat',cursive;font-size:clamp(14px,1.13vw,18.5px);line-height:1.42;color:rgba(38,31,21,0.82)">
+                  <li>Progress over perfection</li><li>Consistency over motivation</li><li>Depth over noise</li><li>Curiosity over certainty</li><li>Art in everyday moments</li>
+                </ul>
+              </div>
+
+              <div class="ab-note" style="transform:rotate(0.9deg)">
+                <span class="th-pin"></span>
+                <h3 style="margin:0 0 9px;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(17px,1.35vw,22px);color:#16130F">Beyond The Screen</h3>
+                <ul style="font-family:'Caveat',cursive;font-size:clamp(14px,1.13vw,18.5px);line-height:1.42;color:rgba(38,31,21,0.82)">
+                  <li>Sketching</li><li>Writing poetry</li><li>Random thoughts</li><li>Long walks</li><li>Good music</li><li>Quieter days</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap">
+            <span style="font-family:'Caveat',cursive;font-size:clamp(18px,1.6vw,27px);line-height:1.22;color:rgba(38,31,21,0.78)">Same Mind.<br />Different Canvases.</span>
+            <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+              <span class="ab-spine">Sketch</span>
+              <span class="ab-spine">Write</span>
+              <span class="ab-spine">Think</span>
+              <span class="ab-spine">Explore</span>
+              <span class="ab-spine">Grow</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer style="position:relative;z-index:1;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-top:clamp(32px,5vh,64px);padding-top:clamp(13px,2vh,20px);border-top:1px solid rgba(58,47,30,0.24);font-size:9px;letter-spacing:0.24em;text-transform:uppercase;color:rgba(38,31,21,0.5)">
+        <span>Art lives here</span>
+        <button type="button" data-back-dev="true" onClick="{{ onBackToDeveloper }}" class="ink-btn" style="display:inline-flex;align-items:center;gap:10px;padding:9px 20px;border-radius:2px;border:1px solid #16130F;background:transparent;color:#16130F;font-family:inherit;font-size:9.5px;font-weight:500;letter-spacing:0.17em;text-transform:uppercase;cursor:pointer">
+          <span class="arr">&#8592;</span><span>Back to Developer</span>
+        </button>
+        <span>Same person. Different sides.</span>
+      </footer>
+    </div>
+  </section>
+
+
+
+  <!-- =========================================================
+       THOUGHT SHEET — a page torn from the notebook
+       ========================================================= -->
+  <div id="thought-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Thought">
+    <button id="thought-prev" class="pm-nav" type="button" aria-label="Previous thought" style="left:clamp(10px,4vw,62px)">&#8592;</button>
+    <button id="thought-next" class="pm-nav" type="button" aria-label="Next thought" style="right:clamp(10px,4vw,62px)">&#8594;</button>
+
+    <span class="th-margin" style="position:absolute;right:clamp(14px,5vw,80px);top:clamp(30px,9vh,96px);width:clamp(90px,9vw,150px);font-family:'Caveat',cursive;font-size:clamp(14px,1.15vw,19px);line-height:1.34;color:rgba(240,232,214,0.42);text-align:right;pointer-events:none">Thoughts change, but the search remains the same&hellip;</span>
+
+    <div id="thought-sheet">
+      <button id="thought-close" type="button" aria-label="Close" style="position:absolute;top:clamp(14px,1.8vw,24px);right:clamp(14px,1.8vw,24px);z-index:3;display:grid;place-items:center;width:34px;height:34px;border:0;background:transparent;color:#16130F;font-size:19px;line-height:1;cursor:pointer;font-family:inherit">&#10005;</button>
+
+      <div id="thought-swap">
+        <div style="font-size:10.5px;letter-spacing:0.22em;color:rgba(38,31,21,0.55);margin-bottom:clamp(12px,2vh,20px)"><span id="thought-counter">01 / 05</span></div>
+
+        <h3 id="thought-title" style="margin:0 0 clamp(6px,1vh,12px);font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(28px,3.2vw,46px);line-height:1.04;color:#16130F"></h3>
+        <div style="width:34px;height:1px;background:rgba(58,47,30,0.45);margin-bottom:clamp(14px,2.2vh,24px)"></div>
+
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(16px,2.6vw,40px);align-items:start">
+          <div id="thought-body" style="font-family:'Caveat',cursive;font-size:clamp(16px,1.34vw,22px);line-height:1.66;color:rgba(38,31,21,0.86)"></div>
+          <div class="th-margin" style="width:clamp(120px,14vw,220px);display:flex;flex-direction:column;gap:12px;align-items:flex-end">
+            <span id="thought-aside" style="font-family:'Caveat',cursive;font-size:clamp(14px,1.12vw,19px);line-height:1.3;color:rgba(38,31,21,0.56);text-align:right"></span>
+            <img id="thought-art" src="" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;filter:grayscale(1) contrast(1.12) brightness(1.06);mix-blend-mode:multiply;opacity:.9" />
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:clamp(20px,3.2vh,36px);padding-top:clamp(12px,1.8vh,18px);border-top:1px solid rgba(58,47,30,0.26)">
+          <span id="thought-date" style="font-size:10.5px;letter-spacing:0.2em;color:rgba(38,31,21,0.6)"></span>
+          <span style="font-family:'Caveat',cursive;font-size:clamp(18px,1.5vw,25px);color:rgba(38,31,21,0.8)">&mdash; H</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- =========================================================
+       POEM SHEET — a leaf set down on the desk. Content is written
+       by JS from the POEMS table (the reader's own writing).
+       ========================================================= -->
+  <div id="poem-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Poem">
+
+    <button id="poem-prev" class="pm-nav" type="button" aria-label="Previous poem">&#8592;</button>
+    <button id="poem-next" class="pm-nav" type="button" aria-label="Next poem">&#8594;</button>
+
+    <span class="pm-margin-note" style="position:absolute;left:clamp(14px,5vw,86px);bottom:clamp(26px,7vh,76px);font-family:'Caveat',cursive;font-size:clamp(15px,1.2vw,20px);line-height:1.3;color:rgba(240,233,217,0.42);pointer-events:none">Still<br />writing...<br />still me.</span>
+    <span class="pm-margin-note" style="position:absolute;right:clamp(14px,5vw,86px);bottom:clamp(26px,7vh,76px);font-family:'Caveat',cursive;font-size:clamp(15px,1.2vw,20px);line-height:1.3;color:rgba(240,233,217,0.42);text-align:right;pointer-events:none">Words<br />breathe<br />here.</span>
+
+    <div id="poem-sheet">
+      <button id="poem-close" type="button" aria-label="Close" style="position:absolute;top:clamp(14px,1.8vw,24px);right:clamp(14px,1.8vw,24px);z-index:3;display:grid;place-items:center;width:34px;height:34px;border:0;background:transparent;color:#16130F;font-size:19px;line-height:1;cursor:pointer;font-family:inherit">&#10005;</button>
+
+      <div id="poem-swap">
+        <div style="font-size:10.5px;letter-spacing:0.22em;color:rgba(40,34,24,0.55);margin-bottom:clamp(14px,2.2vh,24px)"><span id="poem-counter">01 / 13</span></div>
+
+        <h3 id="poem-title" style="margin:0 0 clamp(16px,2.6vh,28px);font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(27px,3.1vw,44px);line-height:1.06;color:#16130F"></h3>
+
+        <div style="display:flex;gap:clamp(14px,2.4vw,36px);align-items:flex-start">
+          <div id="poem-body" style="flex:1;min-width:0;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(15px,1.3vw,20.5px);line-height:1.92;color:rgba(28,23,16,0.92)"></div>
+          <span id="poem-aside" class="pm-margin-note" style="flex-shrink:0;width:clamp(62px,6vw,96px);padding-top:6px;font-family:'Caveat',cursive;font-size:clamp(14px,1.12vw,19px);line-height:1.3;color:rgba(40,34,24,0.58);text-align:right"></span>
+        </div>
+
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:clamp(22px,3.4vh,40px);padding-top:clamp(12px,1.8vh,18px);border-top:1px solid rgba(60,50,34,0.26)">
+          <span id="poem-date" style="font-size:10.5px;letter-spacing:0.2em;color:rgba(40,34,24,0.6)"></span>
+          <span id="poem-signature" style="font-family:'Caveat',cursive;font-size:clamp(18px,1.5vw,25px);color:rgba(40,34,24,0.8)">&mdash; Hemant</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       PROJECT DETAIL — same right-sliding drawer as the company
+       panel. Content is written by JS from the PROJECTS table.
+       ========================================================= -->
+  <div id="project-detail-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Project detail" style="position:fixed;inset:0;z-index:2147483641;pointer-events:none;opacity:0;transition:opacity 400ms ease;overflow:hidden;background:rgba(20,17,14,0.65);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)">
+
+    <div id="project-detail-drawer" style="position:absolute;top:0;right:0;bottom:0;width:100%;max-width:100vw;height:100vh;background:#ECECEA;transform:translateX(100%);transition:transform 550ms cubic-bezier(0.16,1,0.3,1);display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,1fr);overflow:hidden;box-shadow:-20px 0 60px rgba(0,0,0,0.35)">
+
+      <!-- Left column: the write-up, scrollable -->
+      <div style="position:relative;z-index:2;height:100%;overflow-y:auto;padding:clamp(22px,3.2vh,44px) clamp(22px,3.4vw,56px);display:flex;flex-direction:column;gap:clamp(18px,2.5vh,32px)">
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding-bottom:16px;border-bottom:1px solid rgba(20,17,14,0.16)">
+          <button id="btn-back-project" type="button" style="display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;background:rgba(20,17,14,0.08);border:1px solid rgba(20,17,14,0.16);font-family:'Poppins',sans-serif;font-size:clamp(10px,0.76vw,12px);font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#14110E;cursor:pointer;transition:all .25s ease">
+            <span>&larr;</span><span>Back</span>
+          </button>
+          <span id="project-counter" style="font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:rgba(20,17,14,0.45)"></span>
+          <button id="btn-close-project" type="button" aria-label="Close" style="display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:rgba(20,17,14,0.06);border:1px solid rgba(20,17,14,0.14);color:#14110E;font-size:16px;cursor:pointer;transition:all .25s ease">&#10005;</button>
+        </div>
+
+        <div id="project-detail-body" style="display:flex;flex-direction:column;gap:clamp(16px,2.2vh,28px)"></div>
+      </div>
+
+      <!-- Right column: the photograph, full height, faded into the panel -->
+      <div id="project-hero-col" style="position:relative;height:100%;overflow:hidden;background:#ECECEA;display:flex;align-items:flex-end;justify-content:center">
+        <img id="project-hero-img" src="assets/projects/kimono.png" alt="Hemant in a black kimono and hakama against a plain studio wall" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center;filter:grayscale(1) contrast(1.04);transition:transform 700ms cubic-bezier(0.16,1,0.3,1)" />
+        <div style="position:absolute;inset:0;background:linear-gradient(90deg, #ECECEA 0%, rgba(236,236,234,0) 25%);pointer-events:none"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =========================================================
+       SKETCH SHEET — a page lifted out of the sketchbook.
+       Content is written by JS from the SKETCHES table so the
+       artwork is always the reader's own file, never a copy.
+       ========================================================= -->
+  <div id="sketch-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Sketch detail">
+    <div id="sketch-sheet">
+
+      <button id="sketch-close" type="button" aria-label="Close" style="position:absolute;top:clamp(12px,1.6vw,22px);right:clamp(12px,1.6vw,22px);z-index:3;display:grid;place-items:center;width:34px;height:34px;border:0;background:transparent;color:#16130F;font-size:19px;line-height:1;cursor:pointer;font-family:inherit">&#10005;</button>
+
+      <div id="sketch-swap" style="display:flex;flex-direction:column;gap:clamp(14px,2vh,22px)">
+        <div id="sketch-modal-body" style="display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr);gap:clamp(20px,3vw,46px);align-items:start">
+
+          <!-- artwork, framed like a mounted sheet -->
+          <div style="display:flex;gap:clamp(10px,1.4vw,20px);align-items:flex-start">
+            <div class="sk-side-note" style="flex-shrink:0;width:clamp(58px,5.4vw,86px);padding-top:clamp(30px,6vh,70px);font-family:'Caveat',cursive;font-size:clamp(14px,1.1vw,18px);line-height:1.32;color:#6E675D;text-align:right">
+              <span id="sketch-sidenote">same person.<br />different days.</span>
+              <div style="width:20px;height:1px;background:#16130F;opacity:.35;margin:8px 0 0 auto"></div>
+            </div>
+            <div style="flex:1;min-width:0;padding:clamp(9px,1.1vw,16px);border:1px solid rgba(22,19,15,0.22);background:#FFFDF8">
+              <img id="sketch-modal-img" src="" alt="" style="width:100%;height:auto;max-height:min(64vh,620px);object-fit:contain;display:block;filter:grayscale(1) contrast(1.06)" />
+            </div>
+          </div>
+
+          <!-- the page's notes -->
+          <div style="display:flex;flex-direction:column;gap:clamp(11px,1.6vh,17px);padding-top:clamp(4px,1vh,14px)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:14px">
+              <span id="sketch-counter" style="font-size:11px;letter-spacing:0.2em;color:#6E675D">01 / 08</span>
+              <span style="display:flex;gap:8px">
+                <button id="sketch-prev" class="sk-ctl" type="button" aria-label="Previous sketch">&#8249;</button>
+                <button id="sketch-next" class="sk-ctl" type="button" aria-label="Next sketch">&#8250;</button>
+              </span>
+            </div>
+
+            <h3 id="sketch-title" style="margin:0;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(30px,3.2vw,52px);line-height:1;color:#16130F">Characters</h3>
+
+            <p id="sketch-desc" style="margin:0;font-family:'Caveat',cursive;font-size:clamp(17px,1.4vw,23px);line-height:1.42;color:#332E28;max-width:26ch"></p>
+
+            <div style="height:1px;background:rgba(22,19,15,0.22)"></div>
+
+            <dl style="margin:0;display:grid;grid-template-columns:auto 1fr;gap:7px clamp(12px,1.4vw,22px);font-size:11.5px;letter-spacing:0.06em;color:#332E28">
+              <dt style="letter-spacing:0.2em;text-transform:uppercase;color:#6E675D;font-size:10px">Medium</dt><dd id="sketch-medium" style="margin:0"></dd>
+              <dt style="letter-spacing:0.2em;text-transform:uppercase;color:#6E675D;font-size:10px">Size</dt><dd id="sketch-size" style="margin:0"></dd>
+              <dt style="letter-spacing:0.2em;text-transform:uppercase;color:#6E675D;font-size:10px">Date</dt><dd id="sketch-date" style="margin:0"></dd>
+            </dl>
+
+            <div style="height:1px;background:rgba(22,19,15,0.22)"></div>
+
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span style="letter-spacing:0.2em;text-transform:uppercase;color:#6E675D;font-size:10px">Notes</span>
+              <p id="sketch-notes" style="margin:0;font-family:'Caveat',cursive;font-size:clamp(16px,1.28vw,21px);line-height:1.45;color:#332E28;max-width:28ch"></p>
+            </div>
+
+            <span style="margin-top:auto;padding-top:clamp(8px,1.6vh,18px);font-family:'Caveat',cursive;font-size:clamp(15px,1.2vw,19px);color:#6E675D;text-align:right">A work in progress.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- =========================================================
+       WORLD WIPE — organic liquid wave that carries the reader
+       between the Developer and Artist worlds. Path is generated
+       per-frame in JS; this is just the surface it draws on.
+       ========================================================= -->
+  <div id="world-wipe" aria-hidden="true" style="position:fixed;inset:0;z-index:2147483600;pointer-events:none;display:none">
+    <svg id="world-wipe-svg" width="100%" height="100%" preserveAspectRatio="none" style="display:block;width:100%;height:100%">
+      <path id="world-wipe-path" fill="#0B0A09" fill-rule="evenodd" d=""></path>
+    </svg>
+  </div>
 
   <!-- =========================================================
        COMPANY EXPERIENCE DEEP-DIVE SLIDE-IN SHOWCASE
@@ -802,6 +2011,13 @@
           <!-- Core Contributions List -->
           <div style="display:flex;flex-direction:column;gap:12px">
             <span style="font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#14110E">Key Engineering Contributions</span>
+
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:14px;background:rgba(20,17,14,0.03);border:1px solid rgba(20,17,14,0.08)">
+              <span style="width:7px;height:7px;border-radius:50%;background:#E8763A;margin-top:7px;flex-shrink:0"></span>
+              <div style="font-size:clamp(12px,0.88vw,14px);line-height:1.56;color:#2B2620">
+                <strong>AI Question Generation Pipeline:</strong> Built an AI-powered interview question generation pipeline that researches role and company information, synthesizes knowledge using LLMs and RAG, and generates, validates, deduplicates, and classifies high-quality interview questions.
+              </div>
+            </div>
 
             <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:14px;background:rgba(20,17,14,0.03);border:1px solid rgba(20,17,14,0.08)">
               <span style="width:7px;height:7px;border-radius:50%;background:#E8763A;margin-top:7px;flex-shrink:0"></span>
@@ -923,6 +2139,7 @@
   </div>
 
 </div>
+
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;scrollLength&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:540,&quot;min&quot;:200,&quot;max&quot;:800,&quot;step&quot;:20,&quot;unit&quot;:&quot;vh&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;holdStart&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.06,&quot;min&quot;:0,&quot;max&quot;:0.5,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Portrait frames&quot;},&quot;holdEnd&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.36,&quot;min&quot;:0.2,&quot;max&quot;:0.6,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Portrait frames&quot;},&quot;pushStart&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.22,&quot;min&quot;:0.1,&quot;max&quot;:0.5,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Panel push&quot;},&quot;pushEnd&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.36,&quot;min&quot;:0.2,&quot;max&quot;:0.6,&quot;step&quot;:0.02,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Panel push&quot;}}">
 class Component extends DCLogic {
@@ -970,7 +2187,11 @@ class Component extends DCLogic {
     companyModal: React.createRef(), companyDrawer: React.createRef()
   };
 
-  state = { revealMounted: false, worldOpen: false };
+  state = {
+    revealMounted: false,
+    worldOpen: false,
+    transitionState: "IDLE"
+  };
 
   /* ------------------------------------------------------------------
      Company Experience Deep-Dive Showcase Methods
@@ -1055,54 +2276,875 @@ class Component extends DCLogic {
     }
   };
 
-  /* World swap: the artist page is revealed by a clip boundary sweeping
-     left -> right (see page-transition.js); the route commits at the end. */
-  ARTIST_URL = "Artist%20World.dc.html";
+  /* ------------------------------------------------------------------
+     WORLD WIPE — the only route between Developer and Artist.
 
-  /* The destination is the real Artist World component mounted in this tree
-     (see the reveal layer in the template) — no iframe, nothing to fetch, so
-     the sweep can start on the next frame after the click. */
+     Click-driven, never scroll-driven. A black liquid form swells from the
+     centre until it owns the screen; the worlds are swapped behind it; then
+     the same form re-opens as a hole, so the incoming page is uncovered by
+     an organic edge rather than a fade.
 
-  /* NO navigation. Both worlds live in this one document: the artist world is
-     mounted in a fixed layer and revealed by a clip boundary. A document load
-     would reset scroll, run the host loading bar, and re-run the hero's
-     scroll-driven opacity from a stale position — the dim-text-then-jump bug.
-     Keeping one document removes all three at the source. */
-  onGoArtist = (e) => {
-    if (e && e.preventDefault) e.preventDefault();
-    const btn = e && e.currentTarget;
-    if (btn && btn.style) {
-      btn.style.transform = "scale(0.94)";
-      btn.style.opacity = "0.85";
-      setTimeout(function () {
-        btn.style.transform = "";
-        btn.style.opacity = "";
-      }, 300);
+     The silhouette is a radial blob whose radius is perturbed by three
+     out-of-phase sines and smoothed through Catmull-Rom beziers — so it
+     reads as liquid, never as a circle. The wobble decays as it grows, which
+     also guarantees the corners are covered at full extent.
+  ------------------------------------------------------------------ */
+  WIPE_IN = 820;
+  WIPE_HOLD = 90;
+  WIPE_OUT = 560;
+
+  wipeBlob = (cx, cy, r, phase, wob) => {
+    const N = 56;
+    const pts = [];
+    for (let i = 0; i < N; i++) {
+      const a = (i / N) * Math.PI * 2;
+      const k = 1 + wob * (
+        0.34 * Math.sin(3 * a + phase) +
+        0.22 * Math.sin(5 * a - phase * 1.4) +
+        0.16 * Math.sin(2 * a + phase * 0.6)
+      );
+      pts.push([cx + Math.cos(a) * r * k, cy + Math.sin(a) * r * k]);
     }
-    const targetUrl = this.sibling(this.ARTIST_URL);
-    if (window.PageTransition && window.PageTransition.sweepTo) {
-      window.PageTransition.sweepTo(targetUrl, {
-        theme: "artist",
-        direction: "ltr",
-        title: "Artist World",
-        badge: "Entering Creative World",
-        quote: "“Creativity keeps me human in a world of logic.”",
-        subtitle: "Sketches · Art · Poetry"
-      });
-    } else {
-      window.location.href = targetUrl;
+    let d = "M" + pts[0][0].toFixed(1) + "," + pts[0][1].toFixed(1);
+    for (let i = 0; i < N; i++) {
+      const p0 = pts[(i - 1 + N) % N], p1 = pts[i], p2 = pts[(i + 1) % N], p3 = pts[(i + 2) % N];
+      d += "C" + (p1[0] + (p2[0] - p0[0]) / 6).toFixed(1) + "," + (p1[1] + (p2[1] - p0[1]) / 6).toFixed(1) +
+           " " + (p2[0] - (p3[0] - p1[0]) / 6).toFixed(1) + "," + (p2[1] - (p3[1] - p1[1]) / 6).toFixed(1) +
+           " " + p2[0].toFixed(1) + "," + p2[1].toFixed(1);
     }
+    return d + "Z";
   };
 
-  closeWorld = () => {};
+  runWorldWipe = (to) => {
+    if (this.wipeBusy) return;                                  // ignore repeat clicks
+    if (to === "artist" && this.artistOpen) return;
+    if (to === "developer" && !this.artistOpen) return;
 
-  warmArtist = () => {};
+    const layer = document.getElementById("world-wipe");
+    const svg = document.getElementById("world-wipe-svg");
+    const path = document.getElementById("world-wipe-path");
+    const artist = document.getElementById("artist-world");
+    if (!layer || !svg || !path || !artist) return;
 
-  /* Sibling page URL that keeps the current query string — the host serves
-     these files with an auth token there, and dropping it yields a blank page. */
-  sibling(file, hash) {
-    return file + (location.search || "") + (hash || "");
+    this.wipeBusy = true;
+
+    const w = Math.max(1, window.innerWidth);
+    const h = Math.max(1, window.innerHeight);
+    const cx = w / 2, cy = h / 2;
+    const maxR = (Math.hypot(w, h) / 2) * 1.25;
+    const rect = "M0,0H" + w + "V" + h + "H0Z";
+    svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+
+    layer.style.display = "block";
+    path.setAttribute("d", this.wipeBlob(cx, cy, 0, 0, 0.55));
+
+    /* Ease-in-out on the radius, not ease-out: the reader has to actually see
+       the small shape before it takes the screen. Wobble decays with e^2 so it
+       stays liquid deep into the travel, then flattens to guarantee coverage. */
+    const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const wobble = (e) => 0.5 * (1 - e * e) + 0.05;
+
+    const swapWorlds = () => {
+      if (to === "artist") {
+        artist.classList.add("world-open");
+        artist.scrollTop = 0;
+        this.artistOpen = true;
+      } else {
+        artist.classList.remove("world-open");
+        this.artistOpen = false;
+        const c = document.getElementById("contact");
+        if (c) window.scrollTo(0, Math.round(c.getBoundingClientRect().top + window.scrollY));
+      }
+      if (window.history && window.history.pushState) {
+        window.history.pushState({ world: to }, "", to === "artist" ? "#artist-world" : "#contact");
+      }
+    };
+
+    const openOut = () => {
+      const t1 = performance.now();
+      const step = (now) => {
+        const q = Math.min(1, (now - t1) / this.WIPE_OUT);
+        const e = easeInOut(q);
+        // rect + blob under evenodd = the blob is a hole punched in the black
+        path.setAttribute("d", rect + this.wipeBlob(cx, cy, maxR * e, 2.1 + e * 3.4, wobble(e)));
+        if (q < 1) {
+          this.wipeRaf = requestAnimationFrame(step);
+        } else {
+          layer.style.display = "none";
+          path.setAttribute("d", "");
+          this.wipeBusy = false;
+        }
+      };
+      this.wipeRaf = requestAnimationFrame(step);
+    };
+
+    const t0 = performance.now();
+    const closeIn = (now) => {
+      const p = Math.min(1, (now - t0) / this.WIPE_IN);
+      const e = easeInOut(p);
+      path.setAttribute("d", this.wipeBlob(cx, cy, maxR * e, e * 3.2, wobble(e)));
+      if (p < 1) {
+        this.wipeRaf = requestAnimationFrame(closeIn);
+      } else {
+        path.setAttribute("d", rect);   // settle to a clean full cover
+        swapWorlds();                   // swapped behind the black
+        setTimeout(openOut, this.WIPE_HOLD);
+      }
+    };
+
+    if (this.wipeRaf) cancelAnimationFrame(this.wipeRaf);
+    this.wipeRaf = requestAnimationFrame(closeIn);
+  };
+
+  onGoArtist = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (e && e.stopPropagation) e.stopPropagation();
+    this.runWorldWipe("artist");
+  };
+
+  onBackToDeveloper = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (e && e.stopPropagation) e.stopPropagation();
+    this.runWorldWipe("developer");
+  };
+
+  /* ------------------------------------------------------------------
+     SKETCH SHEETS — the reader's own files, never placeholders. Index
+     here matches data-sketch on each card in the gallery.
+  ------------------------------------------------------------------ */
+  SKETCHES = [
+    { src: "assets/sketches/sketch1.png", title: "Stillness", side: "everything loud<br />goes quiet here.",
+      desc: "Eyes closed, a crescent at the temple, and not one thing in a hurry.",
+      medium: "Pen and graphite on paper", size: "—", date: "—",
+      notes: "Drawn slowly on purpose. The calm had to be earned, not faked." },
+    { src: "assets/sketches/sketch2.png", title: "The Window", side: "look closer —<br />there's a room<br />in there.",
+      desc: "A whole window caught in one iris. I noticed it late and then couldn't unsee it.",
+      medium: "Pen on paper", size: "—", date: "—",
+      notes: "The lashes are the only part I'd redo. Everything else can stay." },
+    { src: "assets/sketches/senpai.png", title: "Senpai", side: "sometimes a teacher.<br />sometimes a sister.<br />always the one<br />who shows up.",
+      desc: "Teacher on some days, sister on others, friend on the rest. Senpai is all of them at once.",
+      medium: "Pen on paper", size: "—", date: "27 Jul 2024",
+      notes: "Teacher when I needed teaching, sister when I needed telling off, friend the rest of the time." },
+    { src: "assets/sketches/sketch3.png", title: "Adiyogi", side: "same god,<br />harder edge.",
+      desc: "The same subject as the first, turned side-on — and the whole mood turned with it.",
+      medium: "Pen on paper", size: "—", date: "—",
+      notes: "Sharper and less forgiving than I meant it to be. I kept it anyway." },
+    { src: "assets/sketches/sketch4.png", title: "The Long Way", side: "one rider.<br />a lot of sand.",
+      desc: "Nothing out here but ridges, light, and one small figure still going.",
+      medium: "Pen on paper", size: "—", date: "—",
+      notes: "Every dune is just lines leaning the same way. My hand ached for days." },
+    { src: "assets/sketches/sketch5.png", title: "Ronin", side: "standing in it,<br />not running<br />from it.",
+      desc: "Rain drawn as a thousand vertical strokes, and someone choosing to stand in it.",
+      medium: "Pen on paper", size: "—", date: "—",
+      notes: "The rain took longer than the figure did. That felt about right." },
+    { src: "assets/sketches/sketch6.png", title: "Adrift", side: "no oars.<br />no hurry.",
+      desc: "A full moon, two cliffs, and one empty boat that doesn't seem worried about it.",
+      medium: "Pen on paper", size: "—", date: "—",
+      notes: "Darkest thing I've drawn. The light only works because everything else is black." },
+    { src: "assets/sketches/sketch7.png", title: "Nott Stone", side: "signed it before<br />I second-guessed it.",
+      desc: "A face at a hard angle, glasses catching the light, a name scratched in the corner.",
+      medium: "Pen on paper", size: "—", date: "—",
+      notes: "The crosshatching got away from me and the drawing got better for it." },
+    { src: "assets/sketches/sketch8.png", title: "Ornament", side: "the only colour<br />I let in.",
+      desc: "Two eyes, flowers, jewellery — and the one time I let colour onto the page.",
+      medium: "Pen and ink, with colour", size: "—", date: "—",
+      notes: "Everything else I draw is black. These irises were worth the exception." },
+    { src: "assets/sketches/sketch9.png?v=2", title: "Quiet Company", side: "not sad.<br />just thinking.",
+      desc: "Hair drawn as a storm, face drawn as calm. Somebody caught mid-thought.",
+      medium: "Pen on paper", size: "—", date: "—",
+      notes: "The collar is my favourite part, which probably says something." },
+    { src: "assets/sketches/sketch10.png?v=2", title: "Held Gaze", side: "dead centre.<br />no looking away.",
+      desc: "Two eyes and a bindi, cropped so close there is nowhere else for you to go.",
+      medium: "Pen on paper", size: "—", date: "09 Mar 2024",
+      notes: "Hundreds of tiny strokes for the shading between the brows. Worth every one." },
+    { src: "assets/sketches/sketch11.png?v=2", title: "Tandava", side: "the dance that<br />ends things.",
+      desc: "Shiva mid-step, cloth flying, the ground breaking open under his foot.",
+      medium: "Pen on paper", size: "—", date: "22 Aug 2024",
+      notes: "I drew the motion first and the figure after. That is the only way it worked." }
+  ];
+
+  writeSketch = (i) => {
+    const s = this.SKETCHES[i];
+    if (!s) return;
+    const set = (id, val, html) => {
+      const el = document.getElementById(id);
+      if (el) { if (html) el.innerHTML = val; else el.textContent = val; }
+    };
+    const img = document.getElementById("sketch-modal-img");
+    if (img) { img.src = s.src; img.alt = s.title + " — " + s.desc; }
+    set("sketch-counter", String(i + 1).padStart(2, "0") + " / " + String(this.SKETCHES.length).padStart(2, "0"));
+    set("sketch-title", s.title);
+    set("sketch-desc", s.desc);
+    set("sketch-medium", s.medium);
+    set("sketch-size", s.size);
+    set("sketch-date", s.date);
+    set("sketch-notes", s.notes);
+    set("sketch-sidenote", s.side, true);
+    this.sketchIndex = i;
+  };
+
+  openSketch = (i) => {
+    const modal = document.getElementById("sketch-modal");
+    if (!modal) return;
+    this.writeSketch(i);
+    modal.style.display = "flex";
+    modal.setAttribute("aria-hidden", "false");
+    // next frame, so the opening transition has a state to travel from
+    requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add("open")));
+    const closeBtn = document.getElementById("sketch-close");
+    if (closeBtn) closeBtn.focus();
+  };
+
+  closeSketch = () => {
+    const modal = document.getElementById("sketch-modal");
+    if (!modal || modal.style.display !== "flex") return;
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    setTimeout(() => { modal.style.display = "none"; }, 420);
+  };
+
+  /* Slide the sheet's contents out, swap, slide the new one in from the
+     opposite edge — the modal itself never closes. */
+  stepSketch = (dir) => {
+    if (this.sketchSwapping) return;
+    const swap = document.getElementById("sketch-swap");
+    const n = this.SKETCHES.length;
+    const next = ((this.sketchIndex + dir) % n + n) % n;
+    if (!swap) { this.writeSketch(next); return; }
+    this.sketchSwapping = true;
+    swap.classList.add(dir > 0 ? "out-left" : "out-right");
+    setTimeout(() => {
+      this.writeSketch(next);
+      swap.classList.remove("out-left", "out-right");
+      swap.classList.add(dir > 0 ? "out-right" : "out-left");
+      requestAnimationFrame(() => {
+        swap.classList.remove("out-left", "out-right");
+        setTimeout(() => { this.sketchSwapping = false; }, 340);
+      });
+    }, 340);
+  };
+
+  /* Try a name across the extensions people actually export, and hand back
+     the first one that decodes. Lets a drop-in be .png OR .jpg. */
+  findImage = (base, exts, onFound, onNone) => {
+    const list = exts.slice();
+    const tryNext = () => {
+      if (!list.length) { if (onNone) onNone(); return; }
+      const url = base + "." + list.shift();
+      const probe = new Image();
+      probe.onload = () => onFound(url);
+      probe.onerror = tryNext;
+      probe.src = url;
+    };
+    tryNext();
+  };
+
+  PROJECTS = [
+    { title: "Enterprise Digital Banking System", blurb: "Enterprise-grade digital banking platform built with a distributed Spring Boot architecture, featuring secure authentication, transaction processing, event-driven communication, caching, and AI-powered banking capabilities.",
+      tags: ["Java", "Spring Boot", "Kafka", "Redis", "MySQL", "Spring AI"],
+      image: "assets/projects/Enterprise%20Banking%20system.png", alt: "Enterprise Digital Banking System dashboard shown on a laptop and phone",
+      overview: "Enterprise Digital Banking System is a scalable backend platform designed to simulate real-world digital banking operations. The system combines Spring Boot services, secure authentication and authorization, MySQL persistence, Redis caching, and Apache Kafka for asynchronous event-driven communication. Spring AI is integrated to provide intelligent capabilities while maintaining a modular and production-oriented backend architecture.",
+      features: ["Spring Boot backend architecture", "Secure authentication and authorization", "JWT-based security", "MySQL database persistence", "Redis caching", "Apache Kafka event-driven communication", "Spring AI integration", "REST APIs", "Transaction processing", "JPA / Hibernate", "Dockerized services", "Modular and scalable backend architecture"],
+      stack: ["Java", "Spring Boot", "Spring Security", "JWT", "MySQL", "Redis", "Apache Kafka", "Spring AI", "JPA / Hibernate", "REST API", "Docker", "Maven"],
+      github: "https://github.com/hemantwint-hey/Enterprise-Digital-Banking-System"
+    },
+    { title: "E-Commerce Backend", blurb: "Layered Spring Boot API with JWT authentication, role-based access, product and order management, and a complete cart-to-payment workflow.",
+      tags: ["Java", "Spring Boot", "MySQL", "JWT"],
+      image: "assets/projects/E-Commerce%20Backend.png", alt: "E-Commerce Backend project shown on a laptop and phone",
+      overview: "E-Commerce Backend is a production-oriented REST API designed to handle the core backend operations of an online shopping platform. It provides secure authentication and authorization, product management, shopping cart functionality, order processing, and the complete cart-to-payment workflow through a structured Spring Boot backend.",
+      built: "A single Spring Boot application split into controller, service, repository and model layers. Seven controllers cover authentication, users, categories, products, addresses, the cart and orders. Every service is written as an interface with a matching implementation, and requests and responses travel as payload objects rather than entities.",
+      features: ["Layered backend architecture", "RESTful APIs", "JWT authentication", "Role-based authorization", "User management", "Product management", "Shopping cart", "Order management", "Cart-to-payment workflow", "MySQL persistence", "JPA / Hibernate", "Input validation", "Exception handling"],
+      architecture: "Security is a JWT filter placed ahead of the Spring Security chain, with a custom user-details service resolving accounts and granted roles. The domain is modelled across User, Role, Address, Category, Product, Cart, CartItem, Order, OrderItem and Payment entities, all mapped with JPA and persisted in MySQL. Validation runs on the incoming payloads, and a dedicated exceptions package turns failures into consistent error responses.",
+      decisions: ["Services are declared as interfaces with separate implementations, so controllers depend on a contract rather than a class.", "ModelMapper converts between entities and payload objects instead of hand-written mapping code in every service.", "Roles are an enum backed by a Role table, which keeps user, seller and admin permissions in one place.", "Payment is its own entity joined one-to-one from Order, holding the gateway reference fields alongside the chosen method.", "Product images go through a dedicated file service, keeping storage concerns out of the product service."],
+      stack: ["Java", "Spring Boot", "Spring Security", "JWT (jjwt)", "MySQL", "JPA / Hibernate", "ModelMapper", "Lombok", "Bean Validation", "REST API", "Maven"],
+      github: "https://github.com/hemantwint-hey/ecommerce-management-system"
+    },
+    { title: "Intelligent Decision System", blurb: "Q-learning agent combined with FAISS retrieval and LLM reasoning to explore intelligent decision-making through a visual, interactive system.",
+      tags: ["Python", "Flask", "FAISS", "LLM"],
+      image: "assets/projects/Intelligent%20Decision%20System.png", alt: "Intelligent Decision System interface shown on a laptop and phone",
+      overview: "Intelligent Decision System combines reinforcement learning, vector retrieval and large language model reasoning into an interactive decision-making system. A Q-learning agent handles decision-making through learned state-action relationships, while FAISS provides efficient vector similarity retrieval and the LLM contributes contextual reasoning. Flask provides the backend and API layer connecting the system components.",
+      built: "An agent that moves through a five-by-five grid towards a fixed goal cell, choosing from four actions. Every request advances the agent one step: retrieval supplies a line of context, that context nudges the action values, the agent moves, the reward is applied and the Q-table is updated. The same call writes the experience into long-term memory and returns the new state, the action taken, the reward and the context that influenced it.",
+      features: ["Q-learning agent over a five-by-five grid world with four actions and a fixed goal", "Q-table updated by the standard temporal-difference rule, with a learning rate of 0.1 and a discount of 0.9", "Shaped rewards: a small step penalty, a larger penalty for walking into a wall, and a payoff at the goal", "Three selectable context modes chosen from the interface: static retrieval, language model, or memory recall", "FAISS flat L2 index searching sentence-transformer embeddings of a hand-written rule base", "Gemini asked for a single line of advice about the agent's current position", "Qdrant storing every state, action and reward as a 384-dimension vector for later recall", "Retrieved context applied as a bias on the action values before the greedy choice", "One Flask endpoint returning the next state, action, reward and the context that shaped it", "React and Tailwind front end showing the grid and the retrieved context side by side"],
+      architecture: "Three services run together under Docker Compose: the Flask backend, a Qdrant vector database with a persistent volume, and the React front end. A single MiniLM sentence-transformer is loaded once and shared by both the FAISS rule search and the Qdrant memory writes, so one embedding space serves retrieval and memory alike. The Q-table lives in a NumPy array held in process, which keeps a training step down to arithmetic.",
+      decisions: ["Retrieved advice biases the action values rather than replacing the policy, so the learned Q-table still decides the move.", "One encoder is shared between FAISS retrieval and memory writes, avoiding a second model in memory and keeping vectors comparable.", "A failed Qdrant connection disables memory instead of failing the request, so the agent still runs without the database.", "The language model call is wrapped so an API failure falls back to a fixed hint rather than breaking the step.", "The grid, goal, reward values and hyper-parameters sit at the top of the module as plain constants, so an experiment is a one-line change."],
+      stack: ["Python", "Flask", "Flask-CORS", "NumPy", "FAISS", "sentence-transformers (all-MiniLM-L6-v2)", "Google Gemini", "Qdrant", "React", "Tailwind CSS", "Docker Compose"],
+      github: "https://github.com/hemantwint-hey/Ml-model-with-Rl"
+    },
+    { title: "AnonCA — Anonymous Chat", blurb: "A judgment-free anonymous global chat where people can share thoughts, ideas and feelings without revealing their identity. Built with Flutter and Firebase for real-time communication.",
+      tags: ["Flutter", "Dart", "Firebase", "Firestore"],
+      image: "assets/projects/AnonCa.png", alt: "AnonCA anonymous chat app shown on a laptop and phone",
+      overview: "AnonCA is an anonymous global group chat designed to remove the social pressure attached to online identity. People can take part in conversations without exposing a personal profile, so attention stays on what is being said rather than who said it. The interface uses a dark purplish-blue palette to keep the room calm to sit in.",
+      built: "A four-screen Flutter application: an animated welcome screen, registration, login, and the chat room itself. Firebase Authentication handles accounts, and the room is a single Cloud Firestore collection that every signed-in person reads and writes. Sending a message is one document write; receiving is a live stream, so no screen ever polls for new messages.",
+      features: ["Sign-up and sign-in with email and password through Firebase Authentication", "One shared global room, backed by a single Firestore collection", "Live delivery through a Firestore snapshot stream, with no manual refresh", "Messages ordered by a Firestore server timestamp", "Own messages and other people's messages given different bubble shapes and colours", "Automatic scroll to the newest message after sending", "Animated welcome screen routing into login or registration", "Dark purplish-blue interface driven by a shared style constant file"],
+      architecture: "Each screen owns its own route and registers a static route identifier, so navigation stays declarative from the app root. The chat screen holds the composer and delegates the message list to a separate stream widget, which rebuilds from Firestore snapshots rather than from local state. A single bubble widget renders both sides of the conversation, taking a flag for whether the message belongs to the signed-in account.",
+      decisions: ["Server timestamps order the feed, so a wrong clock on one device cannot reorder the room.", "The list renders in reverse, which puts the newest message at the bottom without any scroll arithmetic.", "The message stream lives in its own widget, so a rebuild from Firestore never touches the composer's text field.", "Colours, input decoration and text styles sit in one constants file, which is what makes the dark palette consistent across every screen."],
+      stack: ["Flutter", "Dart", "Firebase Core", "Firebase Authentication", "Cloud Firestore", "Firestore Streams", "Material"],
+      github: "https://github.com/hemantwint-hey/AnonCA"
+    }
+  ];
+
+  /* One card, built from a PROJECTS entry. Markup matches the section's
+     original card exactly; only the content comes from the table. */
+  projectCardHTML(p, i) {
+    const tags = p.tags.map((t) =>
+      '<span style="padding:6px 11px;border:1px solid rgba(244,239,230,0.22);border-radius:999px;font-size:clamp(9px,0.68vw,11px);font-weight:400;letter-spacing:0.14em;text-transform:uppercase">' + t + '</span>').join("");
+    return '' +
+      '<div style="position:relative;width:100%;aspect-ratio:16 / 10;border-radius:14px;overflow:hidden;background:#221E19">' +
+        '<img class="proj-shot" src="' + p.image + '" alt="' + p.alt + '" style="width:100%;height:100%;object-fit:cover;display:block" />' +
+        '<span class="proj-empty" style="display:none;position:absolute;inset:0;place-items:center;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(244,239,230,0.3)">No screenshot yet</span>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:8px;padding:clamp(18px,1.6vw,24px) clamp(6px,0.6vw,10px) 0">' +
+        '<h3 style="margin:0;font-weight:600;font-size:clamp(17px,1.35vw,22px);line-height:1.2;letter-spacing:-0.02em">' + p.title + '</h3>' +
+        '<p style="margin:0;font-size:clamp(12px,0.94vw,15px);font-weight:300;line-height:1.55;color:rgba(244,239,230,0.72);text-wrap:pretty">' + p.blurb + '</p>' +
+      '</div>' +
+      '<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-top:auto;padding:clamp(20px,2vw,30px) clamp(6px,0.6vw,10px) clamp(4px,0.5vw,8px)">' +
+        '<div style="display:flex;flex-wrap:wrap;gap:7px">' + tags + '</div>' +
+        '<span class="proj-arrow" aria-hidden="true" style="flex:0 0 auto;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#F4EFE6;color:#14110E;font-size:15px">&#8599;</span>' +
+      '</div>';
   }
+
+  buildProjectCards() {
+    const grid = document.getElementById("project-grid");
+    if (!grid || grid.childElementCount) return;
+    this.PROJECTS.forEach((p, i) => {
+      const card = document.createElement("article");
+      card.className = "proj-card";
+      card.setAttribute("role", "button");
+      card.setAttribute("tabindex", "0");
+      card.setAttribute("aria-label", "Open " + p.title);
+      card.style.cssText = "position:relative;display:flex;flex-direction:column;background:#14110E;border-radius:22px;padding:clamp(14px,1.2vw,18px);color:#F4EFE6";
+      card.innerHTML = this.projectCardHTML(p, i);
+      const img = card.querySelector(".proj-shot");
+      const empty = card.querySelector(".proj-empty");
+      if (img) img.onerror = () => {
+        img.style.display = "none";
+        if (empty) empty.style.display = "grid";
+      };
+      card.onclick = () => this.openProject(i);
+      card.onkeydown = (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this.openProject(i); }
+      };
+      grid.appendChild(card);
+    });
+  }
+
+  /* A section is written only when the entry has something to put in it,
+     so a project never shows an empty heading. */
+  projectDetailHTML(p, i) {
+    const H = (t) => '<span style="font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#14110E">' + t + '</span>';
+    const para = (t) => '<p style="margin:0;font-size:clamp(12px,0.96vw,15.5px);font-weight:300;line-height:1.65;color:#2B2620;text-wrap:pretty">' + t + '</p>';
+    const bullets = (items) => items.map((t) =>
+      '<div style="display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:14px;background:rgba(255,255,255,0.55);border:1px solid rgba(20,17,14,0.1)">' +
+        '<span style="width:7px;height:7px;border-radius:50%;background:#14110E;margin-top:7px;flex-shrink:0"></span>' +
+        '<div style="font-size:clamp(12px,0.88vw,14px);line-height:1.56;color:#2B2620">' + t + '</div>' +
+      '</div>').join("");
+    const block = (title, inner) =>
+      '<div style="display:flex;flex-direction:column;gap:12px">' + H(title) + inner + '</div>';
+
+    let html = '' +
+      '<div style="display:flex;flex-direction:column;gap:8px">' +
+        '<div style="display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:999px;background:rgba(20,17,14,0.06);border:1px solid rgba(20,17,14,0.26);color:#2B2620;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;align-self:flex-start">' +
+          '<span>' + p.tags.slice(0, 3).join(" &middot; ") + '</span>' +
+        '</div>' +
+        '<h1 style="margin:4px 0 0;font-weight:800;font-size:clamp(26px,min(3.4vw,5vh),48px);line-height:1.02;letter-spacing:-0.035em;color:#14110E">' +
+          p.title + '<span style="color:#8A857D">.</span>' +
+        '</h1>' +
+      '</div>';
+
+    html += para(p.overview);
+    if (p.built) html += block("What I built", para(p.built));
+    if (p.features && p.features.length) html += block("Key features", bullets(p.features));
+    if (p.architecture) html += block("Architecture and engineering approach", para(p.architecture));
+    if (p.decisions && p.decisions.length) html += block("Technical decisions", bullets(p.decisions));
+
+    if (p.stack && p.stack.length) {
+      html += block("Technology stack",
+        '<div style="display:flex;flex-wrap:wrap;gap:8px">' + p.stack.map((t) =>
+          '<span style="padding:6px 13px;border-radius:999px;background:#14110E;color:#F4EFE6;font-size:11.5px;font-weight:500">' + t + '</span>').join("") + '</div>');
+    }
+
+    if (p.github || p.demo) {
+      const link = (href, label) =>
+        '<a href="' + href + '" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:9px;padding:10px 20px;border-radius:999px;border:1px solid #14110E;background:transparent;color:#14110E;font-size:clamp(10px,0.76vw,12px);font-weight:600;letter-spacing:0.14em;text-transform:uppercase">' +
+        '<span>' + label + '</span><span aria-hidden="true">&#8599;</span></a>';
+      let links = "";
+      if (p.github) links += link(p.github, "View source");
+      if (p.demo) links += link(p.demo, "Live demo");
+      html += block("Links", '<div style="display:flex;flex-wrap:wrap;gap:10px">' + links + '</div>');
+    }
+
+    return html;
+  }
+
+  writeProject = (i) => {
+    const p = this.PROJECTS[i];
+    if (!p) return;
+    const body = document.getElementById("project-detail-body");
+    if (body) body.innerHTML = this.projectDetailHTML(p, i);
+    const counter = document.getElementById("project-counter");
+    if (counter) counter.textContent = String(i + 1).padStart(2, "0") + " / " + String(this.PROJECTS.length).padStart(2, "0");
+    this.projectIndex = i;
+  };
+
+  openProject = (i) => {
+    const modal = document.getElementById("project-detail-modal");
+    const drawer = document.getElementById("project-detail-drawer");
+    if (!modal || !drawer) return;
+    this.writeProject(i);
+    this.projectDrawerOpen = true;
+    modal.setAttribute("aria-hidden", "false");
+    modal.style.pointerEvents = "all";
+    modal.style.opacity = "1";
+    drawer.style.transform = "translateX(0%)";
+    document.body.style.overflow = "hidden";
+    const back = document.getElementById("btn-back-project");
+    if (back) back.focus();
+  };
+
+  closeProject = () => {
+    const modal = document.getElementById("project-detail-modal");
+    const drawer = document.getElementById("project-detail-drawer");
+    if (!this.projectDrawerOpen) return;
+    this.projectDrawerOpen = false;
+    if (drawer) drawer.style.transform = "translateX(100%)";
+    if (modal) {
+      modal.style.opacity = "0";
+      modal.setAttribute("aria-hidden", "true");
+      setTimeout(() => {
+        if (!this.projectDrawerOpen && modal) modal.style.pointerEvents = "none";
+      }, 550);
+    }
+    document.body.style.overflow = "";
+  };
+
+  /* Sketches dropped into assets/sketches/ show up on their own. We walk the
+     numbering past the described set until two names in a row come back
+     missing, then stop. New files get a placeholder title until they are
+     named in the SKETCHES table. */
+  discoverSketches(done) {
+    let n = this.SKETCHES.length + 1;
+    let misses = 0;
+    const step = () => {
+      if (misses >= 2 || n > 60) { done(); return; }
+      const idx = n;
+      this.findImage("assets/sketches/sketch" + idx, ["jpg", "png", "jpeg", "webp"],
+        (url) => {
+          misses = 0;
+          this.SKETCHES.push({
+            src: url, title: "Untitled " + String(idx).padStart(2, "0"), side: "",
+            desc: "", medium: "—", size: "—", date: "—", notes: ""
+          });
+          n++; step();
+        },
+        () => { misses++; n++; step(); });
+    };
+    step();
+  }
+
+  /* One card, built from a SKETCHES entry. */
+  sketchCardHTML(s, i) {
+    return '<img src="' + s.src + '" alt="' + s.title + '" />' +
+      '<figcaption style="display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding:10px 2px 13px">' +
+      '<span><span style="font-size:9.5px;letter-spacing:0.2em;color:rgba(22,19,15,0.45)">' + String(i + 1).padStart(2, "0") + '</span><br />' +
+      '<span style="font-family:\'Instrument Serif\',Georgia,serif;font-size:clamp(15px,1.15vw,19px);color:var(--ink)">' + s.title + '</span></span>' +
+      '<span style="font-family:\'Caveat\',cursive;font-size:clamp(13px,1vw,16px);line-height:1.2;color:var(--gray);text-align:right">' + (s.side || "") + '</span>' +
+      '</figcaption>';
+  }
+
+  bindSketchGallery() {
+    if (this.sketchBound) return;
+    const grid = document.getElementById("sketch-grid-cols");
+    const modal = document.getElementById("sketch-modal");
+    const sheet = document.getElementById("sketch-sheet");
+    if (!grid || !modal || !sheet) return;
+    this.sketchBound = true;
+
+    const paint = () => {
+      for (let i = grid.childElementCount; i < this.SKETCHES.length; i++) {
+        const fig = document.createElement("figure");
+        fig.className = "sk-card";
+        fig.setAttribute("data-sketch", String(i));
+        fig.style.margin = "0";
+        fig.innerHTML = this.sketchCardHTML(this.SKETCHES[i], i);
+        fig.onclick = () => this.openSketch(i);
+        grid.appendChild(fig);
+      }
+    };
+    paint();
+
+    // Then append anything new that has turned up in assets/sketches/ since.
+    this.discoverSketches(paint);
+
+    const close = document.getElementById("sketch-close");
+    if (close) close.onclick = (e) => { e.stopPropagation(); this.closeSketch(); };
+    const prev = document.getElementById("sketch-prev");
+    if (prev) prev.onclick = (e) => { e.stopPropagation(); this.stepSketch(-1); };
+    const next = document.getElementById("sketch-next");
+    if (next) next.onclick = (e) => { e.stopPropagation(); this.stepSketch(1); };
+
+    // Backdrop closes; anything on the sheet does not.
+    modal.onclick = (e) => { if (e.target === modal) this.closeSketch(); };
+    sheet.onclick = (e) => e.stopPropagation();
+  }
+
+  sketchModalOpen = () => {
+    const m = document.getElementById("sketch-modal");
+    return !!(m && m.style.display === "flex");
+  };
+
+  /* ------------------------------------------------------------------
+     POEMS — the reader's own writing, carried over from the earlier
+     Artist World build. Dates and text are theirs; nothing invented.
+  ------------------------------------------------------------------ */
+  POEMS = [
+    { title: "In the Middle of Chaos", author: "Hemant", date: "18 Nov 2024", excerpt: "I built a quiet place in my mind where words breathe…",
+      aside: "In between chaos,<br />I found poetry.",
+      body: "I built a quiet place in my mind\nwhere words breathe\nand thoughts finally rest.\n\nIn the middle of chaos\nI still find pieces of peace.\nIn the things I create,\nin the silence I keep,\nand in the version of me\nthat never gave up." },
+    { title: "Same Moon", author: "Hemant", date: "05 Oct 2024", excerpt: "The same moon witnesses a different me…",
+      aside: "Still here.<br />Still me.<br />Just growing.",
+      body: "The same moon witnesses\na different me.\nSame sky,\nbut a quieter heart.\n\nMaybe growth\nis just learning to sit with\nyour own thoughts\nand still feel at home." },
+    { title: "What If", author: "Hemant", date: "21 Sep 2024", excerpt: "What if all this chaos is just a part of the path?…",
+      aside: "Questions I<br />keep folding<br />away.",
+      body: "What if all this chaos\nis just a part of the path?\n\nWhat if the overthinking,\nthe late nights,\nthe unanswered questions\nare shaping a version of me\nI'll be proud of one day?" },
+    { title: "A Quieter Me", author: "Hemant", date: "14 Aug 2024", excerpt: "A quieter me still exists somewhere inside…",
+      aside: "Away from<br />the noise.",
+      body: "A quieter me still exists\nsomewhere inside —\naway from the noise,\naway from expectations,\njust thoughts, a pen,\nand a sky full of possibilities." },
+    { title: "I Cannot Explain", author: "Hemant", date: "03 Apr 2024", excerpt: "How can I not say that nature is perfect…",
+      aside: "Nature is<br />perfect.<br />It made you.",
+      body: "How can I not say\nthat nature is perfect,\nwhen it created a life like you?\n\nYour eyes—\nlike a flowing stream,\nquiet and still,\nyet somehow sweet enough\nto make the world forget its noise.\n\nI never said I was a good man.\nI carry lust,\nanger,\npain—\nthings I don't always know how to silence.\n\nBut then you smile.\n\nAnd somehow,\neverything inside me disappears,\nlike those feelings\nwere never mine to begin with.\n\nI don't know\nif it's only my imagination,\nor if there is something\nI cannot put into words.\n\nMaybe it's just a moment.\nMaybe it's nothing.\n\nBut when I look at you,\nfor a little while,\nthe world feels right.\n\nAnd I don't know why.\n\nI just know\nI cannot explain it." },
+    { title: "If I Am Darkness", author: "Hemant", date: "12 Feb 2024", excerpt: "If I am darkness in my painting, then she is the light divine…",
+      aside: "Light needs<br />somewhere dark<br />to land.",
+      body: "If I am darkness in my painting,\nThen she is the light divine.\nWhen she arrives, my canvas breathes,\nThe snow are moments that we shared,\nSo fragile, pure, and white\nYet deep within, I know the truth\nIt all lives in my mind's quiet night." },
+    { title: "Dosti Ke Paar", author: "Aditya", date: "19 May 2024", excerpt: "Dosti ko daav par rakhkar maine tumse mohabbat kar liya hai…",
+      aside: "Dosti daav<br />par lag<br />gayi.",
+      body: "Dosti ko daav par rakhkar\nMaine tumse mohabbat kar liya hai,\nDarta hoon tumhari “na” se,\nIsi liye kehne mein itna intezaar kiya hai.\n\nAaj darr ko hataakar\nBahut himmat jutaayi hai,\nDosti ka chola odhkar\nMaine tumse ishq nibhaayi hai.\n\nHum saath hi bachche se bade hue,\nKyun na ab zindagi bhar hum saath rahein,\nDosti toh humne khoob nibhaayi,\nKyun na ab ishq ki raah par hum saath chalein.\n\nWoh teen lafz main kahunga nahi,\nPar kahe bina hi tumse mohabbat karunga,\nAb main dosti nibha paaunga nahi,\nPar kasam se, marte dam tak\nSirf tumse hi pyaar karunga...." },
+    { title: "Khoya Hua Wajood", author: "Aditya", date: "27 Jun 2024", excerpt: "Tujhe likhte likhte main ab khud ki khoobiyaan bhool gaya…",
+      aside: "Tujhe paate<br />paate khud ko<br />kho diya.",
+      body: "Tujhe likhte likhte\nMain ab khud ki khoobiyaan bhool gaya,\nTere ishq ke liye jeete jeete\nMain ab khud ke liye jeena bhool gaya.\n\nIshq toh karte hain sab,\nPar iski kamiyaan koi bataata nahi,\nAur ishq ko chhodna hai kab,\nIs zamaane mein kisi ko ye kala aati nahi.\n\nBhool jaate hain log wafa ko\nJab unhein mohabbat mil jaati hai,\nAur daga dete hain us pyaar ko\nJo un logon ke liye jee raha hota hai.\n\nMohabbat mein khud ko khona aasaan tha,\nPar khud ko paana mushkil ho gaya,\nTujhe chaahte chaahte ae sanam,\nMera wajood hi kahin khatam ho gaya." },
+    { title: "Qawwali", author: "Aditya", date: "23 Jul 2024", excerpt: "Tujhe meri har baat jaali lagti hai…",
+      aside: "Chaar lines.<br />Poori duniya.",
+      body: "Tujhe meri har baat jaali lagti hai.\nTeri kahi har baat mujhe qawwali lagti hai.\nAur jo tu na ho mere paas toh,\nMujhe poori duniya khaali lagti hai..." },
+    { title: "Pasand-e-Khaai", author: "Aditya", date: "11 Sep 2024", excerpt: "Pasand beshak ho tum mujhe, par tumhein pyaar karne ka mujhe haq nahi…",
+      aside: "Pasand ek<br />khaai hai.",
+      body: "Pasand beshak ho tum mujhe,\nPar tumhein pyaar karne ka mujhe haq nahi.\nTere har ek lafz se farq padta hai mujhe,\nPar tere aashiq kehlaane ka mujhe haq nahi.\n\nTumhare likhe har shabdon mein tumhein dhoondhta hoon,\nTumhein dekh baat karne ko har roz main tadapta hoon.\nTumhari har pasand se hi khud ko dhaal raha hoon,\nAb toh khud ko tumhare liye badal raha hoon.\n\nPyaar na sahi, pasand tumhein karta hoon,\nHaqeeqat mein na sahi, sapnon mein har roz milta hoon.\n\nJaanta hoon pasand ek khaai hai,\nPar usmein pyaar ko paane tak mujhe girna hai.\nAb peeche aane ka koi raasta bacha nahi,\nYa toh mukammal jahaan hai,\nYa phir ek-tarfa aashiq ban jeena hai." },
+    { title: "Kavita Ki Kalam", author: "Aditya", date: "29 Oct 2024", excerpt: "Ishq toh ladke karte hain, ladkiyaan toh nibhaana sikhaati hain…",
+      aside: "Woh kavita<br />ki kalam<br />hoti hai.",
+      body: "Ishq toh ladke karte hain,\nLadkiyaan toh nibhaana sikhaati hain.\nAur jis kaagaz mein hum kavita likhte hain,\nLadki usi kavita ki prerana-srot kalam hoti hai.\n\nHum ladke zubaan se zara kacche hote hain,\nWoh ladki hi hai jo humein jataana sikhaati hai.\nYoon toh hum zubaan se zyaada haath chalaate hain,\nWoh ladki hi hai jo humein hamare baare mein bataana sikhaati hai.\n\nHum unki saanson se saans lete hain,\nWoh humein saanson ki ahmiyat bataati hai.\nHar waqt hum unhe sataate hain,\nWoh bas humein apni aankhon se daraati hai.\n\nHamaari pasand ko jab woh pasand kare,\nDuniya mein humein un par guroor hota hai.\nHum saatve aasman par hote hain,\nJab woh humein apni pasand bataati hai." },
+    { title: "Mujhsa Pyaar", author: "Ankit", date: "08 Jul 2024", excerpt: "Ye casual waali duniya mein hamesha ka saath chahiye…",
+      aside: "Casual duniya.<br />Hamesha waala<br />saath.",
+      body: "Ye casual waali duniya mein\nHamesha ka saath chahiye,\nCool waali culture mein\nUnderstanding waala vichaar chahiye,\nYe soorat sundar duniya mein\nMan ke vichaar mein prem chahiye,\nHaan, mujhe ab mujhsa pyaar karne waala pyaar chahiye." },
+    { title: "Meri Soch Mein", author: "Ankit", date: "02 Dec 2024", excerpt: "Agar tujhe bayaan karun meri soch se, toh tujhsa khoobsurat koi nahi…",
+      aside: "Meri soch mein<br />tumse badhkar<br />koi nahi.",
+      body: "Agar tujhe bayaan karun meri soch se,\nToh tujhsa khoobsurat koi nahi,\nTumsa man ka pyaara koi nahi,\nMujhse zyaada tumhari fikr kaun hi kare,\nMeri soch mein tumse badhkar koi nahi." }
+  ];
+
+  /* Cards are built from the same table the sheet reads, so a new poem is
+     one entry and never two places to edit. */
+  buildPoemCards() {
+    const grid = document.getElementById("poem-grid");
+    if (!grid || grid.childElementCount) return;
+    const deco = ["pm-tape", "pm-clip", "pm-rings", "pm-tape"];
+    this.POEMS.forEach((p, i) => {
+      const card = document.createElement("article");
+      card.className = "pm-card";
+      card.setAttribute("data-poem", String(i));
+      card.innerHTML =
+        '<span class="' + deco[i % deco.length] + '"></span>' +
+        '<div style="font-size:9px;letter-spacing:0.2em;color:rgba(40,34,24,0.5)">' + String(i + 1).padStart(2, "0") + '</div>' +
+        '<h3 style="margin:6px 0 0;font-family:\'Instrument Serif\',Georgia,serif;font-weight:400;font-size:clamp(17px,1.45vw,23px);line-height:1.16;color:#16130F">' + p.title + '</h3>' +
+        '<div style="width:22px;height:1px;background:rgba(60,50,34,0.42);margin:10px 0 11px"></div>' +
+        '<p style="margin:0;font-family:\'Caveat\',cursive;font-size:clamp(14px,1.15vw,18px);line-height:1.42;color:rgba(40,34,24,0.78);min-height:4.2em">' + p.excerpt + '</p>' +
+        '<div style="margin-top:13px;display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(40,34,24,0.5)"><span>' + p.date + '</span><span style="letter-spacing:0.14em">' + (p.author || "") + '</span></div>' +
+        '<div class="pm-read" style="margin-top:11px;padding-top:10px;border-top:1px solid rgba(60,50,34,0.22);display:flex;align-items:center;gap:9px;font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:#16130F">Read <span class="arr">&#8594;</span></div>';
+      card.onclick = () => this.openPoem(i);
+      grid.appendChild(card);
+    });
+  }
+
+  writePoem = (i) => {
+    const p = this.POEMS[i];
+    if (!p) return;
+    const set = (id, val, html) => {
+      const el = document.getElementById(id);
+      if (el) { if (html) el.innerHTML = val; else el.textContent = val; }
+    };
+    set("poem-counter", String(i + 1).padStart(2, "0") + " / " + String(this.POEMS.length).padStart(2, "0"));
+    set("poem-title", p.title);
+    set("poem-date", p.date);
+    set("poem-signature", "— " + (p.author || "Hemant"));
+    set("poem-aside", p.aside, true);
+    // blank line -> stanza break, newline -> line break
+    set("poem-body", p.body.split("\n\n")
+      .map((st) => '<p style="margin:0 0 1.15em">' + st.replace(/\n/g, "<br />") + "</p>").join(""), true);
+    this.poemIndex = i;
+  };
+
+  openPoem = (i) => {
+    const modal = document.getElementById("poem-modal");
+    if (!modal) return;
+    this.writePoem(i);
+    modal.style.display = "flex";
+    modal.setAttribute("aria-hidden", "false");
+    requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add("open")));
+    const c = document.getElementById("poem-close");
+    if (c) c.focus();
+  };
+
+  closePoem = () => {
+    const modal = document.getElementById("poem-modal");
+    if (!modal || modal.style.display !== "flex") return;
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    setTimeout(() => { modal.style.display = "none"; }, 460);
+  };
+
+  /* Turn the leaf: it pivots away on its spine edge, the next one swings in
+     from the opposite side. The sheet itself never leaves. */
+  turnPoem = (dir) => {
+    if (this.poemTurning) return;
+    const swap = document.getElementById("poem-swap");
+    const n = this.POEMS.length;
+    const next = ((this.poemIndex + dir) % n + n) % n;
+    if (!swap) { this.writePoem(next); return; }
+    this.poemTurning = true;
+    swap.classList.add(dir > 0 ? "turn-next" : "turn-prev");
+    setTimeout(() => {
+      this.writePoem(next);
+      swap.classList.remove("turn-next", "turn-prev");
+      swap.classList.add(dir > 0 ? "turn-prev" : "turn-next");
+      requestAnimationFrame(() => {
+        swap.classList.remove("turn-next", "turn-prev");
+        setTimeout(() => { this.poemTurning = false; }, 440);
+      });
+    }, 440);
+  };
+
+  poemModalOpen = () => {
+    const m = document.getElementById("poem-modal");
+    return !!(m && m.style.display === "flex");
+  };
+
+  bindPoetry() {
+    if (this.poetryBound) return;
+    const modal = document.getElementById("poem-modal");
+    const sheet = document.getElementById("poem-sheet");
+    if (!modal || !sheet) return;
+    this.poetryBound = true;
+    this.buildPoemCards();
+
+    const close = document.getElementById("poem-close");
+    if (close) close.onclick = (e) => { e.stopPropagation(); this.closePoem(); };
+    const prev = document.getElementById("poem-prev");
+    if (prev) prev.onclick = (e) => { e.stopPropagation(); this.turnPoem(-1); };
+    const next = document.getElementById("poem-next");
+    if (next) next.onclick = (e) => { e.stopPropagation(); this.turnPoem(1); };
+
+    modal.onclick = (e) => { if (e.target === modal) this.closePoem(); };
+    sheet.onclick = (e) => e.stopPropagation();
+  }
+
+  /* ------------------------------------------------------------------
+     THOUGHTS — longer-form prose, filtered by theme.
+  ------------------------------------------------------------------ */
+  THOUGHTS = [
+    { title: "Comfort in Chaos", cat: "growth", date: "12 Jan 2024",
+      excerpt: "Sometimes the most beautiful growth happens in the most uncomfortable times…",
+      aside: "Growth rarely<br />feels like growth<br />while it happens.",
+      art: "assets/sketches/sketch4.png",
+      body: "Sometimes the most beautiful growth happens in the most uncomfortable times.\n\nNobody tells you that the stretch is supposed to hurt a little. That the version of you standing on the other side of it gets built out of the days you wanted to quit, not the days everything went smoothly.\n\nSo when it feels like too much, it might just be the shape of something changing." },
+    { title: "Distractions", cat: "overthinking", date: "28 Feb 2024",
+      excerpt: "A scattered mind in a world designed to distract…",
+      aside: "Attention is<br />the whole<br />currency now.",
+      art: "assets/sketches/sketch8.png",
+      body: "A scattered mind in a world designed to distract.\n\nEverything is built to pull at you. Every pause has something waiting to fill it. And slowly you forget what your own thinking sounds like without a soundtrack underneath it.\n\nI'm learning that focus isn't discipline. It's protection." },
+    { title: "What If ?", cat: "perspectives", date: "15 Mar 2024",
+      excerpt: "What if everything you're worried about right now turns out to be just a chapter, not the whole story…",
+      aside: "Same questions…<br />Different<br />perspectives…",
+      art: "assets/sketches/sketch6.png",
+      body: "What if everything you're worried about right now turns out to be just a chapter, not the whole story?\n\nWhat if the detours, the delays, the mistakes — they're all part of something bigger you can't see yet?\n\nMaybe the uncertainty isn't a dead end, but a redirection to something better. Maybe you're exactly where you need to be, even if it doesn't feel like it right now.\n\nSo breathe. Keep going. There's more to this story." },
+    { title: "A Quieter Me", cat: "life", date: "02 Apr 2024",
+      excerpt: "I think I'm finally learning the art of being okay with silence…",
+      aside: "Silence stopped<br />feeling like<br />something missing.",
+      art: "assets/sketches/sketch1.png",
+      body: "I think I'm finally learning the art of being okay with silence.\n\nFor a long time quiet felt like something had gone wrong. Now it feels like room. Room to notice things, to finish a thought, to sit with myself without needing to fix anything about it.\n\nThe noise was never the problem. Not knowing how to be still was." },
+    { title: "Still Here", cat: "growth", date: "21 Apr 2024",
+      excerpt: "A note to myself — You've been through a lot, and you're still here. That counts…",
+      aside: "That counts<br />for more than<br />it feels like.",
+      art: "assets/sketches/sketch5.png",
+      body: "A note to myself —\n\nYou've been through a lot, and you're still here. That counts.\n\nNot every season is meant to be productive. Some of them are just survived, and surviving them is the achievement. You don't owe anyone a highlight reel of it.\n\nStill here. Still me. Just growing." },
+    { title: "Good or Bad", cat: "people", date: "18 May 2024",
+      excerpt: "No one is inherently good or bad…",
+      aside: "Depends entirely<br />on where<br />you stand.",
+      art: "assets/sketches/sketch9.png",
+      body: "No one is inherently good or bad.\n\nWe become who we are through the circumstances we've lived, the choices we've made, and the perspectives we've developed.\n\nWhat looks good to one person may look bad to another." }
+  ];
+
+  buildThoughtCards() {
+    const grid = document.getElementById("thought-grid");
+    if (!grid || grid.childElementCount) return;
+    this.THOUGHTS.forEach((t, i) => {
+      const card = document.createElement("article");
+      card.className = "th-card";
+      card.setAttribute("data-thought", String(i));
+      card.setAttribute("data-cat", t.cat);
+      card.innerHTML =
+        '<span class="th-pin"></span>' +
+        '<div style="font-size:9px;letter-spacing:0.2em;color:rgba(38,31,21,0.5)">' + String(i + 1).padStart(2, "0") + '</div>' +
+        '<h3 style="margin:6px 0 0;font-family:\'Instrument Serif\',Georgia,serif;font-weight:400;font-size:clamp(16px,1.35vw,21px);line-height:1.16;color:#16130F">' + t.title + '</h3>' +
+        '<div style="width:20px;height:1px;background:rgba(58,47,30,0.42);margin:9px 0 10px"></div>' +
+        '<p style="margin:0;font-family:\'Caveat\',cursive;font-size:clamp(13.5px,1.1vw,17.5px);line-height:1.4;color:rgba(38,31,21,0.78);min-height:5em">' + t.excerpt + '</p>' +
+        '<div style="margin-top:12px;font-size:8.5px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(38,31,21,0.5)">' + t.date + '</div>' +
+        '<div style="margin-top:10px;padding-top:9px;border-top:1px solid rgba(58,47,30,0.22);display:flex;align-items:center;gap:9px;font-size:9.5px;letter-spacing:0.2em;text-transform:uppercase;color:#16130F">Read <span class="arr">&#8594;</span></div>';
+      card.onclick = () => this.openThought(i);
+      grid.appendChild(card);
+    });
+  }
+
+  filterThoughts = (cat) => {
+    const grid = document.getElementById("thought-grid");
+    if (!grid) return;
+    grid.querySelectorAll("[data-thought]").forEach((c) => {
+      c.style.display = (cat === "all" || c.getAttribute("data-cat") === cat) ? "" : "none";
+    });
+    document.querySelectorAll("#thought-filters .th-filter").forEach((b) => {
+      b.classList.toggle("on", b.getAttribute("data-cat") === cat);
+    });
+    // keep prev/next walking only what is on screen
+    this.thoughtPool = this.THOUGHTS
+      .map((t, i) => i)
+      .filter((i) => cat === "all" || this.THOUGHTS[i].cat === cat);
+  };
+
+  writeThought = (i) => {
+    const t = this.THOUGHTS[i];
+    if (!t) return;
+    const pool = this.thoughtPool && this.thoughtPool.length ? this.thoughtPool : this.THOUGHTS.map((x, k) => k);
+    const pos = Math.max(0, pool.indexOf(i));
+    const set = (id, val, html) => {
+      const el = document.getElementById(id);
+      if (el) { if (html) el.innerHTML = val; else el.textContent = val; }
+    };
+    set("thought-counter", String(pos + 1).padStart(2, "0") + " / " + String(pool.length).padStart(2, "0"));
+    set("thought-title", t.title);
+    set("thought-date", t.date);
+    set("thought-aside", t.aside, true);
+    set("thought-body", t.body.split("\n\n")
+      .map((p) => '<p style="margin:0 0 1em">' + p.replace(/\n/g, "<br />") + "</p>").join(""), true);
+    const art = document.getElementById("thought-art");
+    if (art) { art.src = t.art; art.alt = ""; }
+    this.thoughtIndex = i;
+  };
+
+  openThought = (i) => {
+    const modal = document.getElementById("thought-modal");
+    if (!modal) return;
+    this.writeThought(i);
+    modal.style.display = "flex";
+    modal.setAttribute("aria-hidden", "false");
+    requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add("open")));
+    const c = document.getElementById("thought-close");
+    if (c) c.focus();
+  };
+
+  closeThought = () => {
+    const modal = document.getElementById("thought-modal");
+    if (!modal || modal.style.display !== "flex") return;
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    setTimeout(() => { modal.style.display = "none"; }, 460);
+  };
+
+  turnThought = (dir) => {
+    if (this.thoughtTurning) return;
+    const swap = document.getElementById("thought-swap");
+    const pool = this.thoughtPool && this.thoughtPool.length ? this.thoughtPool : this.THOUGHTS.map((x, k) => k);
+    const at = Math.max(0, pool.indexOf(this.thoughtIndex));
+    const nextIdx = pool[((at + dir) % pool.length + pool.length) % pool.length];
+    if (!swap) { this.writeThought(nextIdx); return; }
+    this.thoughtTurning = true;
+    swap.classList.add(dir > 0 ? "turn-next" : "turn-prev");
+    setTimeout(() => {
+      this.writeThought(nextIdx);
+      swap.classList.remove("turn-next", "turn-prev");
+      swap.classList.add(dir > 0 ? "turn-prev" : "turn-next");
+      requestAnimationFrame(() => {
+        swap.classList.remove("turn-next", "turn-prev");
+        setTimeout(() => { this.thoughtTurning = false; }, 440);
+      });
+    }, 440);
+  };
+
+  thoughtModalOpen = () => {
+    const m = document.getElementById("thought-modal");
+    return !!(m && m.style.display === "flex");
+  };
+
+  bindThoughts() {
+    if (this.thoughtsBound) return;
+    const modal = document.getElementById("thought-modal");
+    const sheet = document.getElementById("thought-sheet");
+    if (!modal || !sheet) return;
+    this.thoughtsBound = true;
+    this.buildThoughtCards();
+    this.filterThoughts("all");
+
+    document.querySelectorAll("#thought-filters .th-filter").forEach((b) => {
+      b.onclick = () => this.filterThoughts(b.getAttribute("data-cat"));
+    });
+
+    const close = document.getElementById("thought-close");
+    if (close) close.onclick = (e) => { e.stopPropagation(); this.closeThought(); };
+    const prev = document.getElementById("thought-prev");
+    if (prev) prev.onclick = (e) => { e.stopPropagation(); this.turnThought(-1); };
+    const next = document.getElementById("thought-next");
+    if (next) next.onclick = (e) => { e.stopPropagation(); this.turnThought(1); };
+
+    modal.onclick = (e) => { if (e.target === modal) this.closeThought(); };
+    sheet.onclick = (e) => e.stopPropagation();
+  }
+
+  /* Mark the section the reader is actually in. The Artist world is its own
+     scroll container, so this watches that element, not the window. */
+  armArtistNav() {
+    const world = document.getElementById("artist-world");
+    if (!world || this.navSpyOn) return;
+    this.navSpyOn = true;
+    const ids = ["artist-hero", "artist-sketches", "artist-poetry", "artist-thoughts", "artist-about"];
+    const sync = () => {
+      let active = ids[0];
+      ids.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.42) active = id;
+      });
+      world.querySelectorAll("#artist-nav-links .ink-link").forEach((a) => {
+        a.classList.toggle("is-active", a.getAttribute("href") === "#" + active);
+      });
+    };
+    world.addEventListener("scroll", () => {
+      if (this.navSpyQueued) return;
+      this.navSpyQueued = true;
+      requestAnimationFrame(() => { this.navSpyQueued = false; sync(); });
+    }, { passive: true });
+    sync();
+  }
+
+  /* The landing reveals once, when the reader actually arrives at it. */
+  armArtistReveal() {
+    const hero = document.getElementById("artist-hero");
+    if (!hero || this.artistArmed) return;
+    this.artistArmed = true;
+    this.artistIo = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          this.artistIo.disconnect();
+          requestAnimationFrame(() => hero.classList.add("revealed"));
+        }
+      });
+    }, { threshold: 0.2 });
+    this.artistIo.observe(hero);
+  }
+
+  noop = () => {};
 
   /* Skills grid: one-shot stagger reveal in reading order, fired when the
      grid is ~25% visible. Idempotent — never re-hides once revealed. */
@@ -1205,62 +3247,267 @@ class Component extends DCLogic {
     ctx.restore();
   }
 
-  apply = () => {
-    this.raf = 0;
-    const p = this.progress();
-    const tracks = this.tracks || (this.tracks = this.buildTracks());
-    for (const k in tracks) {
-      const el = this.r[k] && this.r[k].current;
-      if (el) el.style.opacity = this.sample(tracks[k], p);
-    }
+  /* ------------------------------------------------------------------
+     Autonomous Scroll-Triggered Snap Transition Architecture
+     Sections:
+       0: Landing (scrollY = 0)
+       1: Experience (scrollY = 1 * vh)
+       2: What's Next / Vision (scrollY = 2 * vh)
+       3: Projects / #work (scrollY >= 3 * vh)
+  ------------------------------------------------------------------ */
+  currentSection = 0;
+  isTransitioning = false;
+  wheelDeltaAccum = 0;
+  wheelResetTimer = null;
+  touchStartY = 0;
+  currentVisionFrameIdx = 0;
 
-    const push = this.push || (this.push = this.buildPush());
+  renderStage = (S) => {
     const hero = this.r.heroLayer && this.r.heroLayer.current;
     const exp = this.r.expLayer && this.r.expLayer.current;
     const vision = this.r.visionLayer && this.r.visionLayer.current;
-
-    if (hero) {
-      hero.style.transform = "translateY(" + this.sample(push.heroY, p).toFixed(2) + "%)";
-      hero.style.opacity = "1";
-    }
-    if (exp) {
-      exp.style.transform = "translateY(" + this.sample(push.expY, p).toFixed(2) + "%)";
-      exp.style.opacity = "1";
-    }
-    if (vision) {
-      vision.style.transform = "translateY(" + this.sample(push.visionY, p).toFixed(2) + "%)";
-      vision.style.opacity = "1";
-    }
-
-    // Scrub 20-frame head-turn sequence on canvas:
-    // Starts at p = 0.54 (the instant Experience begins sliding up to exit and Vision enters)
-    // Runs smoothly until p = 0.90 (profile pose holds from 0.90 to 1.00)
     const canvas = this.r.visionCanvas && this.r.visionCanvas.current;
-    if (p >= 0.54) {
-      if (canvas && canvas.style.opacity !== "1") canvas.style.opacity = "1";
-      const turnSpan = 0.90 - 0.54;
-      const frameP = Math.min(1, Math.max(0, (p - 0.54) / turnSpan));
-      const frameIdx = Math.min(19, Math.round(frameP * 19));
-      if (this.currentVisionFrameIdx !== frameIdx) {
-        this.currentVisionFrameIdx = frameIdx;
-        this.drawVisionFrame(frameIdx);
+
+    // S is clamped between 0 and 2
+    if (S <= 1) {
+      // Phase 0 -> 1 (Landing -> Experience)
+      const p = Math.max(0, Math.min(1, S));
+
+      // Layer vertical transforms
+      if (hero) {
+        hero.style.transform = `translateY(${(-100 * p).toFixed(2)}%)`;
+        hero.style.opacity = "1";
       }
-    } else {
-      if (canvas && canvas.style.opacity !== "0") canvas.style.opacity = "0";
+      if (exp) {
+        exp.style.transform = `translateY(${(100 * (1 - p)).toFixed(2)}%)`;
+        exp.style.opacity = "1";
+      }
+      if (vision) {
+        vision.style.transform = "translateY(100%)";
+        vision.style.opacity = "1";
+      }
+
+      // Smoothly blend primary frames 1 -> 9
+      const val = p * (this.FRAMES - 1); // 0 to 8
+      for (let i = 2; i <= this.FRAMES; i++) {
+        const el = this.r["f" + i] && this.r["f" + i].current;
+        if (el) {
+          const u = Math.max(0, Math.min(1, val - (i - 2)));
+          el.style.opacity = (u * u * (3 - 2 * u)).toFixed(3);
+        }
+      }
+
+      // Canvas hidden during landing & experience
+      if (canvas) canvas.style.opacity = "0";
       if (this.currentVisionFrameIdx !== 0) {
         this.currentVisionFrameIdx = 0;
         this.drawVisionFrame(0);
       }
+    } else {
+      // Phase 1 -> 2 (Experience -> What's Next)
+      const p = Math.max(0, Math.min(1, S - 1));
+
+      // Layer vertical transforms
+      if (hero) {
+        hero.style.transform = "translateY(-100%)";
+        hero.style.opacity = "1";
+      }
+      if (exp) {
+        exp.style.transform = `translateY(${(-100 * p).toFixed(2)}%)`;
+        exp.style.opacity = "1";
+      }
+      if (vision) {
+        vision.style.transform = `translateY(${(100 * (1 - p)).toFixed(2)}%)`;
+        vision.style.opacity = "1";
+      }
+
+      // Frame 9 remains solid base
+      const f9 = this.r.f9 && this.r.f9.current;
+      if (f9) f9.style.opacity = "1";
+
+      // Canvas displays 20-frame head turn (forward -> full left profile)
+      if (canvas) canvas.style.opacity = "1";
+      const frameIdx = Math.min(19, Math.floor(p * 20));
+      if (this.currentVisionFrameIdx !== frameIdx) {
+        this.currentVisionFrameIdx = frameIdx;
+        this.drawVisionFrame(frameIdx);
+      }
     }
   };
 
-  onScroll = () => { if (!this.raf) this.raf = requestAnimationFrame(this.apply); };
+  animateTransition = (arg1, arg2) => {
+    const fromSection = arg1;
+    const toSection = arg2;
+    if (this.isTransitioning) return;
+    this.isTransitioning = true;
+    this.currentSection = toSection;
+
+    const vh = window.innerHeight;
+    const startScrollY = window.scrollY;
+    const targetScrollY = toSection * vh;
+
+    // Dedicated cinematic durations:
+    // Landing <-> Experience: FAST (~700ms)
+    // Experience <-> What's Next: SLOW CINEMATIC (~1600ms) for noticeable head-turning focus
+    // What's Next <-> Projects: smooth roll (~850ms)
+    let duration = 700;
+    if ((fromSection === 1 && toSection === 2) || (fromSection === 2 && toSection === 1)) {
+      duration = 1600;
+    } else if (fromSection >= 2 || toSection >= 2) {
+      duration = 850;
+    }
+
+    const startS = Math.min(2, Math.max(0, fromSection));
+    const targetS = Math.min(2, Math.max(0, toSection));
+    const startTime = performance.now();
+
+    // High-quality cinematic easeInOutCubic (smooth acceleration & deceleration)
+    const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    const step = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const rawP = Math.min(1, Math.max(0, elapsed / duration));
+      const easedP = ease(rawP);
+
+      // 1. Update visual layer positioning & frame crossfade
+      const curS = startS + (targetS - startS) * easedP;
+      this.renderStage(curS);
+
+      // 2. Update window scroll position smoothly
+      const curY = startScrollY + (targetScrollY - startScrollY) * easedP;
+      window.scrollTo(0, curY);
+
+      if (rawP < 1) {
+        this.raf = requestAnimationFrame(step);
+      } else {
+        // Snap exactly to final target state
+        this.renderStage(targetS);
+        window.scrollTo(0, targetScrollY);
+        this.currentSection = toSection;
+
+        // Debounce window to swallow any trailing trackpad momentum before accepting new gestures
+        setTimeout(() => {
+          this.isTransitioning = false;
+        }, 220);
+      }
+    };
+
+    if (this.raf) cancelAnimationFrame(this.raf);
+    this.raf = requestAnimationFrame(step);
+  };
+
+  handleScrollTrigger = (dir) => {
+    if (this.isTransitioning || this.companyDrawerOpen || this.projectDrawerOpen) return;
+
+    const vh = window.innerHeight;
+    const scrollY = window.scrollY;
+
+    // Sync section index with actual scroll position
+    let sec = this.currentSection ?? 0;
+    if (Math.abs(scrollY - 0) < vh * 0.4) sec = 0;
+    else if (Math.abs(scrollY - vh) < vh * 0.4) sec = 1;
+    else if (Math.abs(scrollY - 2 * vh) < vh * 0.4) sec = 2;
+    else if (scrollY >= 2.6 * vh) sec = 3;
+
+    if (dir > 0) {
+      // Downward navigation
+      if (sec === 0) this.animateTransition(0, 1);
+      else if (sec === 1) this.animateTransition(1, 2);
+      else if (sec === 2) this.animateTransition(2, 3);
+    } else {
+      // Upward navigation
+      if (sec === 3) this.animateTransition(3, 2);
+      else if (sec === 2) this.animateTransition(2, 1);
+      else if (sec === 1) this.animateTransition(1, 0);
+    }
+  };
+
+  onWheel = (e) => {
+    // The Artist world scrolls itself; the developer page must stay put.
+    if (this.artistOpen || this.wipeBusy || this.companyDrawerOpen || this.projectDrawerOpen) return;
+
+    // CRITICAL: Scroll Lock During Transition
+    if (this.isTransitioning) {
+      e.preventDefault();
+      return;
+    }
+
+    const vh = window.innerHeight;
+    const scrollY = window.scrollY;
+
+
+    const inSnapZone = scrollY < 2.95 * vh;
+    const atWorkTop = scrollY <= 3.08 * vh && e.deltaY < 0;
+
+    if (inSnapZone || atWorkTop) {
+      e.preventDefault();
+      if (this.isTransitioning) return;
+
+      this.wheelDeltaAccum = (this.wheelDeltaAccum || 0) + e.deltaY;
+      if (this.wheelResetTimer) clearTimeout(this.wheelResetTimer);
+      this.wheelResetTimer = setTimeout(() => { this.wheelDeltaAccum = 0; }, 180);
+
+      const THRESHOLD = 24;
+      if (Math.abs(this.wheelDeltaAccum) >= THRESHOLD) {
+        const dir = this.wheelDeltaAccum > 0 ? 1 : -1;
+        this.wheelDeltaAccum = 0;
+        this.handleScrollTrigger(dir);
+      }
+    }
+  };
+
+  onTouchStart = (e) => {
+    if (this.artistOpen || this.wipeBusy || this.companyDrawerOpen || this.projectDrawerOpen || this.isTransitioning || !e.touches || !e.touches[0]) return;
+    this.touchStartY = e.touches[0].clientY;
+  };
+
+  onTouchMove = (e) => {
+    if (this.artistOpen || this.wipeBusy || this.companyDrawerOpen || this.projectDrawerOpen) return;
+    if (this.isTransitioning) {
+      if (e.cancelable) e.preventDefault();
+      return;
+    }
+    const vh = window.innerHeight;
+    const scrollY = window.scrollY;
+
+
+    const inSnapZone = scrollY < 2.95 * vh;
+    if (inSnapZone && e.cancelable) {
+      e.preventDefault();
+    }
+  };
+
+  onTouchEnd = (e) => {
+    if (this.artistOpen || this.wipeBusy || this.companyDrawerOpen || this.projectDrawerOpen || this.isTransitioning || !e.changedTouches || !e.changedTouches[0]) return;
+    const touchEndY = e.changedTouches[0].clientY;
+    const diff = this.touchStartY - touchEndY;
+    const SWIPE_THRESHOLD = 30;
+
+    if (Math.abs(diff) >= SWIPE_THRESHOLD) {
+      const dir = diff > 0 ? 1 : -1;
+      this.handleScrollTrigger(dir);
+    }
+  };
+
+  onResize = () => {
+    this.drawVisionFrame(this.currentVisionFrameIdx || 0);
+    if (!this.isTransitioning && this.currentSection !== undefined && this.currentSection <= 2) {
+      const vh = window.innerHeight;
+      window.scrollTo(0, this.currentSection * vh);
+      this.renderStage(this.currentSection);
+    }
+  };
+
+  apply = () => {
+    this.renderStage(this.currentSection ?? 0);
+  };
 
   componentDidMount() {
+    if (this._didInit) return;
+    this._didInit = true;
+
     const el = this.r.stage.current;
-    if (el) el.style.height = (this.props.scrollLength ?? 540) + "vh";
-    this.tracks = this.buildTracks();
-    this.push = this.buildPush();
+    if (el) el.style.height = "300vh";
 
     // Preload all 20 frames for What's Next head-turn sequence
     this.visionFrames = [];
@@ -1278,35 +3525,114 @@ class Component extends DCLogic {
       this.visionFrames.push(img);
     }
 
-    window.addEventListener("scroll", this.onScroll, { passive: true });
-    window.addEventListener("resize", () => {
-      this.drawVisionFrame(this.currentVisionFrameIdx || 0);
-      this.onScroll();
-    });
-    this.apply();
-    this.armToolsReveal();
-    if (window.PageTransition && window.PageTransition.initReveal) {
-      window.PageTransition.initReveal({ theme: "developer", direction: "rtl" });
+    // Determine initial section based on initial scroll position
+    const vh = window.innerHeight;
+    const initialY = window.scrollY;
+    if (initialY < 0.5 * vh) {
+      this.currentSection = 0;
+      this.renderStage(0);
+      window.scrollTo(0, 0);
+    } else if (initialY < 1.5 * vh) {
+      this.currentSection = 1;
+      this.renderStage(1);
+      window.scrollTo(0, vh);
+    } else if (initialY < 2.5 * vh) {
+      this.currentSection = 2;
+      this.renderStage(2);
+      window.scrollTo(0, 2 * vh);
+    } else {
+      this.currentSection = 3;
+      this.renderStage(2);
     }
+
+    // Event listeners
+    window.addEventListener("wheel", this.onWheel, { passive: false });
+    window.addEventListener("touchstart", this.onTouchStart, { passive: true });
+    window.addEventListener("touchmove", this.onTouchMove, { passive: false });
+    window.addEventListener("touchend", this.onTouchEnd, { passive: true });
+    window.addEventListener("resize", this.onResize);
+
+    this.armToolsReveal();
+    this.armArtistReveal();
+    this.bindSketchGallery();
+    this.buildProjectCards();
+    this.bindPoetry();
+    this.bindThoughts();
+    this.armArtistNav();
     window.__dcComponentInstance = this;
     this.syncDeveloperStats();
+
     if (!this.landed) {
       this.landed = true;
       this.landOnHash();
-      // pre-paint the artist page while the visitor reads, so the reveal
-      // sweeps over real content the instant they click
-      const warm = this.warmArtist;
-      if (window.requestIdleCallback) requestIdleCallback(warm, { timeout: 3000 });
-      else setTimeout(warm, 2200);
-      // the embedded artist world asks to close through this event
-      window.addEventListener("portfolio-close-world", this.closeWorld);
     }
+
     this.onKeyDown = (e) => {
-      if (e.key === "Escape" && this.companyDrawerOpen) {
-        this.closeCompanyDrawer();
+      if (this.thoughtModalOpen()) {
+        if (e.key === "Escape") { e.preventDefault(); this.closeThought(); }
+        else if (e.key === "ArrowLeft") { e.preventDefault(); this.turnThought(-1); }
+        else if (e.key === "ArrowRight") { e.preventDefault(); this.turnThought(1); }
+        return;
+      }
+      if (this.poemModalOpen()) {
+        if (e.key === "Escape") { e.preventDefault(); this.closePoem(); }
+        else if (e.key === "ArrowLeft") { e.preventDefault(); this.turnPoem(-1); }
+        else if (e.key === "ArrowRight") { e.preventDefault(); this.turnPoem(1); }
+        return;
+      }
+      if (this.sketchModalOpen()) {
+        if (e.key === "Escape") { e.preventDefault(); this.closeSketch(); }
+        else if (e.key === "ArrowLeft") { e.preventDefault(); this.stepSketch(-1); }
+        else if (e.key === "ArrowRight") { e.preventDefault(); this.stepSketch(1); }
+        return;
+      }
+      if (e.key === "Escape") {
+        if (this.projectDrawerOpen) {
+          this.closeProject();
+          return;
+        }
+        if (this.companyDrawerOpen) {
+          this.closeCompanyDrawer();
+          return;
+        }
+        if (this.artistOpen) {
+          this.runWorldWipe("developer");
+          return;
+        }
+      }
+      if (this.artistOpen || this.wipeBusy) return;
+      if (this.companyDrawerOpen || this.projectDrawerOpen || this.isTransitioning) {
+        if (this.isTransitioning && (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "PageDown" || e.key === "PageUp" || e.key === " ")) {
+          e.preventDefault();
+        }
+        return;
+      }
+
+      const vh = window.innerHeight;
+      const scrollY = window.scrollY;
+
+      if (e.key === "ArrowDown" || e.key === "PageDown" || (e.key === " " && !e.shiftKey)) {
+        if (scrollY < 2.95 * vh) {
+          e.preventDefault();
+          this.handleScrollTrigger(1);
+        }
+      } else if (e.key === "ArrowUp" || e.key === "PageUp" || (e.key === " " && e.shiftKey)) {
+        if (scrollY <= 3.08 * vh && scrollY > 0) {
+          e.preventDefault();
+          this.handleScrollTrigger(-1);
+        }
       }
     };
     window.addEventListener("keydown", this.onKeyDown);
+
+    // "See the work" smooth navigation directly into Section 3
+    const seeWorkBtn = document.querySelector('a[href="#work"]');
+    if (seeWorkBtn) {
+      seeWorkBtn.onclick = (e) => {
+        e.preventDefault();
+        this.animateTransition(this.currentSection || 0, 3);
+      };
+    }
 
     // Direct DOM bindings for Company Experience Drawer & Tabs
     const expFut = document.getElementById("exp-card-futurense");
@@ -1319,6 +3645,16 @@ class Component extends DCLogic {
 
     const modalEl = document.getElementById("company-detail-modal");
     if (modalEl) modalEl.onclick = (e) => { if (e.target === modalEl) this.closeCompanyDrawer(); };
+
+    // Direct DOM bindings for the Project Detail drawer
+    const pjDrawer = document.getElementById("project-detail-drawer");
+    if (pjDrawer) pjDrawer.onclick = (e) => { e.stopPropagation(); };
+    const pjModal = document.getElementById("project-detail-modal");
+    if (pjModal) pjModal.onclick = (e) => { if (e.target === pjModal) this.closeProject(); };
+    const pjBack = document.getElementById("btn-back-project");
+    const pjClose = document.getElementById("btn-close-project");
+    if (pjBack) pjBack.onclick = (e) => { e.stopPropagation(); this.closeProject(); };
+    if (pjClose) pjClose.onclick = (e) => { e.stopPropagation(); this.closeProject(); };
 
     const tabFut = document.getElementById("tab-btn-futurense");
     const tab366 = document.getElementById("tab-btn-366pi");
@@ -1449,6 +3785,19 @@ class Component extends DCLogic {
      the first painted frame shows hero text at a stale (dimmed) opacity and
      the jump is visible as a flash. */
   landOnHash() {
+    /* Reload while in the Artist world: open it straight away, no wipe —
+       there is no previous screen to transition from. */
+    if (location.hash === "#artist-world") {
+      const artist = document.getElementById("artist-world");
+      const c = document.getElementById("contact");
+      if (c) window.scrollTo(0, Math.round(c.getBoundingClientRect().top + window.scrollY));
+      if (artist) {
+        artist.classList.add("world-open");
+        artist.scrollTop = 0;
+        this.artistOpen = true;
+      }
+      return;
+    }
     if (location.hash !== "#contact") return;
     const page = this.r.page.current;
     if (history.scrollRestoration) history.scrollRestoration = "manual";
@@ -1476,9 +3825,11 @@ class Component extends DCLogic {
   componentDidUpdate() { this.componentDidMount(); }
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this.onScroll);
-    window.removeEventListener("resize", this.onScroll);
-    window.removeEventListener("portfolio-close-world", this.closeWorld);
+    window.removeEventListener("wheel", this.onWheel);
+    window.removeEventListener("touchstart", this.onTouchStart);
+    window.removeEventListener("touchmove", this.onTouchMove);
+    window.removeEventListener("touchend", this.onTouchEnd);
+    window.removeEventListener("resize", this.onResize);
     if (this.onKeyDown) window.removeEventListener("keydown", this.onKeyDown);
     if (this.raf) cancelAnimationFrame(this.raf);
     if (this.io) this.io.disconnect();
@@ -1489,8 +3840,8 @@ class Component extends DCLogic {
       stageRef: this.r.stage, heroLayerRef: this.r.heroLayer,
       expLayerRef: this.r.expLayer, toolsGridRef: this.r.toolsGrid,
       pageRef: this.r.page,
-      artistHref: this.sibling(this.ARTIST_URL),
-      onGoArtist: this.onGoArtist, onWarmArtist: this.warmArtist,
+      onGoArtist: this.onGoArtist, onWarmArtist: this.noop,
+      onBackToDeveloper: this.onBackToDeveloper,
       revealRef: this.r.reveal, revealMounted: this.state.revealMounted,
       visionLayerRef: this.r.visionLayer,
       visionCanvasRef: this.r.visionCanvas,
@@ -1524,6 +3875,25 @@ class Component extends DCLogic {
     } else {
       window.addEventListener('load', function() { setTimeout(triggerSync, 400); });
     }
+
+    // Capture-phase binding for the two world-swap buttons.
+    document.addEventListener("click", function(e) {
+      var inst = window.__dcComponentInstance;
+      var goArtistBtn = e.target && e.target.closest && e.target.closest("#btn-other-profession, [data-go-artist]");
+      if (goArtistBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (inst && inst.onGoArtist) inst.onGoArtist(e);
+        return;
+      }
+
+      var backDevBtn = e.target && e.target.closest && e.target.closest("#btn-back-dev, [data-back-dev]");
+      if (backDevBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (inst && inst.onBackToDeveloper) inst.onBackToDeveloper(e);
+      }
+    }, true);
   })();
 </script>
 </body>
