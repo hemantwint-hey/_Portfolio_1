@@ -1192,7 +1192,7 @@
     <div style="position:absolute;inset:0;background:rgba(247,243,234,0.62)"></div>
 
     <div style="position:relative;padding:clamp(72px,11vh,150px) clamp(22px,3.2vw,52px)">
-      <div style="width:100%;max-width:min(58ch,max(340px,58%));margin-left:auto;display:flex;flex-direction:column;gap:clamp(28px,4.5vh,56px)">
+      <div style="width:100%;max-width:min(58ch,max(340px,58%));margin-left:auto;margin-right:clamp(0px,7vw,150px);display:flex;flex-direction:column;gap:clamp(28px,4.5vh,56px)">
 
         <div style="display:flex;flex-direction:column;gap:clamp(12px,2vh,20px)">
           <div style="display:flex;align-items:center;gap:12px;font-size:clamp(9px,0.72vw,11px);font-weight:500;letter-spacing:0.34em;text-transform:uppercase;color:#E8763A">
@@ -1262,10 +1262,10 @@
         <p style="margin:0;max-width:38ch;font-size:clamp(12px,0.92vw,15.5px);font-weight:300;line-height:1.55;color:rgba(244,239,230,0.66);text-wrap:pretty">Open to software engineering roles and backend work. If you have a system that needs building or fixing, write to me.</p>
 
         <div style="display:flex;flex-wrap:wrap;gap:clamp(10px,1vw,14px);margin-top:clamp(2px,0.6vh,6px)">
-          <a href="mailto:hemantmahto658@gmail.com" style="display:inline-flex;align-items:center;gap:clamp(16px,1.6vw,26px);padding:clamp(10px,0.9vh,15px) clamp(18px,1.5vw,26px);border-radius:999px;background:#E8763A;color:#14110E;font-size:clamp(10px,0.8vw,12px);font-weight:500;letter-spacing:0.22em;text-transform:uppercase;transition:background .35s ease,transform .35s ease" style-hover="background:#FFFFFF;transform:translateY(-2px)">
-            <span>Email me</span>
-            <span style="font-size:1.2em;line-height:1">&#8594;</span>
-          </a>
+          <button id="btn-email" type="button" aria-label="Show Hemant's email address" style="cursor:pointer;border:0;font-family:inherit;display:inline-flex;align-items:center;gap:clamp(16px,1.6vw,26px);padding:clamp(10px,0.9vh,15px) clamp(18px,1.5vw,26px);border-radius:999px;background:#E8763A;color:#14110E;font-size:clamp(10px,0.8vw,12px);font-weight:500;letter-spacing:0.22em;text-transform:uppercase;transition:background .35s ease,transform .35s ease" style-hover="background:#FFFFFF;transform:translateY(-2px)">
+            <span id="btn-email-label">Email me</span>
+            <span id="btn-email-icon" style="font-size:1.2em;line-height:1">&#8594;</span>
+          </button>
           <a href="assets/Hemant_Kumar_Mahto_Resume.pdf" target="_blank" rel="noreferrer" aria-label="Open Hemant's resume as a PDF" style="display:inline-flex;align-items:center;gap:clamp(16px,1.6vw,26px);padding:clamp(10px,0.9vh,15px) clamp(18px,1.5vw,26px);border-radius:999px;border:1px solid rgba(244,239,230,0.32);color:#F4EFE6;font-size:clamp(10px,0.8vw,12px);font-weight:500;letter-spacing:0.22em;text-transform:uppercase;transition:border-color .35s ease,background .35s ease,color .35s ease" style-hover="border-color:#F4EFE6;background:#F4EFE6;color:#14110E">
             <span>Download CV</span>
             <span style="font-size:1.1em;line-height:1">&#8595;</span>
@@ -2603,6 +2603,54 @@ class Component extends DCLogic {
       '</div>';
   }
 
+  /* The contact button shows the address in place rather than handing the
+     visitor off to a mail client they may not have set up. First press
+     reveals it and copies it; a second press copies again. */
+  EMAIL = "hemantmahto658@gmail.com";
+
+  bindEmailButton() {
+    const btn = document.getElementById("btn-email");
+    const label = document.getElementById("btn-email-label");
+    const icon = document.getElementById("btn-email-icon");
+    if (!btn || !label) return;
+
+    const copy = (text) => {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).then(() => true, () => false);
+      }
+      // older browsers, and any page not served over https
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.cssText = "position:fixed;top:-1000px;opacity:0";
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        return Promise.resolve(ok);
+      } catch (e) {
+        return Promise.resolve(false);
+      }
+    };
+
+    btn.onclick = (e) => {
+      e.preventDefault();
+      btn.style.letterSpacing = "0.06em";
+      btn.style.textTransform = "none";
+      label.textContent = this.EMAIL;
+      if (icon) icon.textContent = "\u29C9";        // copy glyph
+      btn.setAttribute("aria-label", this.EMAIL);
+
+      copy(this.EMAIL).then((ok) => {
+        if (!ok || !icon) return;
+        icon.textContent = "\u2713";                 // tick
+        clearTimeout(this._emailTick);
+        this._emailTick = setTimeout(() => { icon.textContent = "\u29C9"; }, 1800);
+      });
+    };
+  }
+
   buildProjectCards() {
     const grid = document.getElementById("project-grid");
     if (!grid || grid.childElementCount) return;
@@ -3556,6 +3604,7 @@ class Component extends DCLogic {
     this.armArtistReveal();
     this.bindSketchGallery();
     this.buildProjectCards();
+    this.bindEmailButton();
     this.bindPoetry();
     this.bindThoughts();
     this.armArtistNav();
